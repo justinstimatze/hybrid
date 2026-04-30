@@ -1,6 +1,6 @@
 # Stacking hybrid loops
 
-The trajectory the user named: hybrid loops compose recursively until the system has so many layers of typed introspection between raw generation and final action that the action is overwhelmingly determined by structure rather than free generation. *"Back and forth forever until what's getting generated and run is on top of so many layers of meta guardrails it basically always does the right thing."*
+The recursive-composition trajectory: hybrid loops compose recursively until the system has so many layers of typed introspection between raw generation and final action that the action is overwhelmingly determined by structure rather than free generation. *"Back and forth forever until what's getting generated and run is on top of so many layers of meta guardrails it basically always does the right thing."*
 
 This file unpacks that claim — what it buys, what it costs, when it saturates, and the discipline required to make it work.
 
@@ -42,11 +42,11 @@ When stacking is the goal, the architecture needs explicit composition disciplin
 
 A "finding" record, a "claim" record, an "entity" record — these should have standard shapes that multiple loops produce and consume. Without canonical schemas, composition is one-off integration that doesn't scale.
 
-The user's portfolio currently has *almost-canonical* shapes — slimemold claims, drivermap mechanisms, publicrecord findings, winze claims — but they're not aligned. A v1 of the hybrid pattern would standardize the cross-cutting record shapes.
+If a project family has *almost-canonical* shapes (claim records in one project, mechanism records in another, finding records in a third) but they're not aligned, a v1 of the hybrid pattern in that family would standardize the cross-cutting record shapes.
 
 ### 2. MCP-first for substrate providers
 
-If a loop's output is intended for another loop, expose it as MCP tools. This is the protocol that makes composition work at solo-developer scale. Winze and gemot already do this. Drivermap and publicrecord do this. Slimemold is hook-shaped and would need an MCP layer to compose.
+If a loop's output is intended for another loop, expose it as MCP tools. This is the protocol that makes composition work at solo-developer scale. Hook-shaped loops (those that fire automatically on lifecycle events) need an MCP layer added if their output should compose with other loops.
 
 ### 3. Calibration at every layer
 

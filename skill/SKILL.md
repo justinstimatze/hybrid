@@ -26,7 +26,7 @@ A design pattern for the **specific places** in a project where a fuzzy semantic
 
 In one sentence: an LLM does fuzzy judgment, a typed substrate captures the result as data, deterministic code does aggregation/restraint/scoring, another LLM reasons over the substrate, an action lands. **LLMs bring fluency. Substrates bring discrimination. Code brings restraint.**
 
-*Note on naming and synthesis.* "Hybrid loops" is the working name in this repository; the broader field has no settled name (see PRIOR_ART for adjacent terms — wesen's "generalization shaping," "compound AI systems," etc.). The why-it-works-now account in this skill (soft-input/hard-output dispatch fabric, pre-loaded world knowledge, cheap schema iteration, free-text rationales, MCP composition) is this repository's synthesis of tractability factors, not a single citation.
+*Note on naming and synthesis.* "Hybrid loops" is the working name in this repository; the broader field has no settled name (see PRIOR_ART.md for adjacent terms — "compound AI systems," "generalization shaping," etc.). The why-it-works-now account in this skill (soft-input/hard-output dispatch fabric, pre-loaded world knowledge, cheap schema iteration, free-text rationales, MCP composition) is this repository's synthesis of tractability factors, not a single citation.
 
 ## Phase 1 — find the surfaces
 
@@ -141,7 +141,7 @@ def test_ablation_substrate_helps():
     assert typed_score > raw_score, "Substrate is not earning its keep"
 ```
 
-Define "performance" per project. For a recruiter-triage tool: rate at which top-5 recommended candidates pass screen vs. random-5 baseline. For a writer's voice-checker: rate at which annotations are accepted by the writer. For slimemold-style claim-graph injection: whether downstream Claude turns produce meaningfully different reasoning when given vs. not given the findings.
+Define "performance" per project. For a recruiter-triage tool: rate at which top-5 recommended candidates pass screen vs. random-5 baseline. For a writer's voice-checker: rate at which annotations are accepted by the writer. For an ambient finding-injection hook: whether downstream model turns produce meaningfully different reasoning when given vs. not given the findings.
 
 Add the test from day one. Without it, the architecture is theater.
 

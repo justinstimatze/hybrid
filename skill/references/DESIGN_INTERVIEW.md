@@ -30,7 +30,7 @@ Default to quick-design for v0 projects. This file is loaded on demand.
 
 ## For surfaces that are both
 
-If a surface accumulates AND offers a typed repertoire (winze-shape), run both interviews and reconcile. Substrate often has separate "record" tables and "vocabulary" tables; the gate operates on both.
+If a surface accumulates AND offers a typed repertoire (the substrate-as-record-and-vocabulary case), run both interviews and reconcile. Substrate often has separate "record" tables and "vocabulary" tables; the gate operates on both.
 
 ## Schema design tips
 
