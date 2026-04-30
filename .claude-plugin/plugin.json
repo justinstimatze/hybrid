@@ -38,6 +38,15 @@
         "run",
         "."
       ]
+    },
+    "schemaforge": {
+      "command": "go",
+      "args": [
+        "-C",
+        "${CLAUDE_PLUGIN_ROOT}/mcp_servers/schemaforge",
+        "run",
+        "."
+      ]
     }
   }
 }

@@ -24,6 +24,10 @@ uv.lock
 # Go build outputs
 mcp_servers/cal_log/cal_log
 mcp_servers/cal_log/dist/
+mcp_servers/metacog/metacog
+mcp_servers/metacog/dist/
+mcp_servers/schemaforge/schemaforge
+mcp_servers/schemaforge/dist/
 
 # editor / OS
 .DS_Store
