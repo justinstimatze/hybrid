@@ -61,6 +61,18 @@ Four conjectures about what this work might contribute beyond the cited prior ar
 
 These four are the open ground after acknowledging wesen, DreamCoder, AlphaGo, OpenCog, and the classical-AI lineage. **The next material work in this repo is running the experiments above, not making more architectural claims.**
 
+## What this repo is and isn't
+
+**This is research output, not a product.** It documents a design pattern, a Claude Code skill that helps reach for the pattern, retrofit notes on existing projects, and four conjectures with named experiments. None of it is sold; nothing here is trying to be a SaaS or a paid tool. The user's existing portfolio (slimemold, drivermap, gemot, etc.) and wesen's portfolio are the *applied* artifacts; this repo is the *meta-artifact* that names what they have in common.
+
+If a hybrid-loop product is to be built, it would be one of the *applied* tools (a teacher's intervention tracker, a recruiter triage assistant, a small advocacy legislator-tracker — see `skill/references/EXAMPLES.md`), not the skill or the pattern itself. The pattern doesn't sell; specific tools built with it might.
+
+## Naming
+
+"Hybrid loops" is the **working name in this repository**, not a claim of universal nomenclature. The broader field has no settled name; adjacent terms with partial coverage include "compound AI systems" (Zaharia, BAIR 2024), "generalization shaping" (wesen), "schemaed cognition" (this repo, earlier draft, retired), "structured introspection" (informal practitioner usage). The pattern can be cited by any of these names with rough fidelity.
+
+A separate term sometimes used in this conversation is **"third mind"** — a *deployment context* for hybrid loops where the substrate is shared between collaborators (and possibly an AI), distinct from a personal external substrate ("second mind") or the user's own thinking ("first mind"). Third mind has prior occupancy in Burroughs/Gysin's 1978 sense (the emergent entity in collaborative writing); the user's usage extends this to substrates with their own metabolism (winze-style). **Third mind is a deployment shape; hybrid loops is the architectural pattern.** They are related but not synonyms.
+
 ## Status
 
 Pre-v1. The skill is the primary deliverable. Primitives (`cal_log`, `metacog`, `schemaforge`, `metabolism`) are mentioned in `skill/references/PRIMITIVES.md` but not yet packaged.

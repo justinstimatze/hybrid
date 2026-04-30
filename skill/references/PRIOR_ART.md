@@ -107,6 +107,24 @@ Cite to *distinguish*, not to align. Goertzel's patternist architecture (AtomSpa
 
 Hybrid loops invert OpenCog's bet: keep the typed substrate, let LLMs do the reasoning. Same architecture, different targets, finally tractable. Worth claiming the lineage; worth distinguishing the bet.
 
+## Knowledge-acquisition bottleneck (the structural reason hand-authored schemas didn't scale)
+
+Buchanan and Feigenbaum. *Rule-based expert systems: the MYCIN experiments of the Stanford Heuristic Programming Project.* Addison-Wesley, 1984.
+Hayes-Roth, Waterman, Lenat (eds). *Building Expert Systems.* Addison-Wesley, 1983.
+Lenat. *CYC: A Large-Scale Investment in Knowledge Infrastructure.* Communications of the ACM, 1995.
+
+Cite when explaining *why* the frames-and-rules tradition (Minsky 1974, MYCIN, XCON, Cyc) didn't scale despite having the architecture mostly right. Buchanan & Feigenbaum named the **knowledge-acquisition bottleneck** — the rate-limiting step in expert systems was knowledge engineers extracting and encoding domain knowledge into formal representations, which scaled poorly. Cyc was the most ambitious and sustained attempt to overcome it through brute force; Lenat's 1995 paper documents the multi-decade investment and the partial nature of progress. The bottleneck didn't go away in classical AI; it ended the era.
+
+LLMs change the cost structure on the two specific surfaces that killed expert systems:
+- **World knowledge** that Cyc tried to author by hand is pre-loaded in the model (replaces the encyclopedic-coverage problem).
+- **Schema iteration** that took knowledge engineers months can take hours with structured-outputs + an evaluation loop (replaces the rate-limiting authorship problem).
+
+This is the substantive content of the "tractability is sufficient" claim. The architecture worked then; the cost structure didn't.
+
+## A note on naming
+
+This repository uses "hybrid loops" as the working name for the pattern. The broader field has no settled name; adjacent terms with partial coverage include "compound AI systems" (Zaharia et al., BAIR 2024), "generalization shaping" (wesen), "schemaed cognition" (this repo, earlier draft, retired), "structured introspection" (informal). Citing the pattern by *any* of these names is fine; "hybrid loops" is the in-house term, not a claim of universal nomenclature.
+
 ## Burroughs / Gysin: The Third Mind
 
 Burroughs and Gysin. *The Third Mind*. 1978.

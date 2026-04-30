@@ -5,9 +5,28 @@ description: Find and design hybrid-loop surfaces in any complex project — pla
 
 # Hybrid Loops
 
+## TL;DR (one screen)
+
+> A design pattern for the **specific places** in a project where a fuzzy semantic judgment benefits from typed structure. **LLMs bring fluency. Substrates bring discrimination. Code brings restraint.**
+>
+> 5-phase diagnostic:
+> 1. Find candidate **surfaces** in the project (places where fuzzy judgment is happening or should be)
+> 2. **Scope** each: A (just call an LLM), B (don't use an LLM), or C (hybrid loop)
+> 3. Choose **shape**: substrate-as-record (analytical) or substrate-as-vocabulary (interventional)
+> 4. **Quick design** in 3 questions (input, schema, action) with sane defaults for the rest
+> 5. **Scaffold** to the surface, not the project. Always include a calibration log and an ablation test.
+>
+> Five roles: **lens** (LLM extracts) → **substrate** (typed records) → **gate** (deterministic policy) → **reasoner** (LLM consumes substrate) → **action** (deterministic effect). Plus **calibration** (predict + verdict log) and **metabolism** (substrate-wide audit, v1+).
+>
+> Decline when: one-shot transform, chatbot, pure UI, no fuzziness in input, output discarded once, or a deployment shape that imposes a substrate on workers who can't edit it.
+
+## Full skill
+
 A design pattern for the **specific places** in a project where a fuzzy semantic judgment benefits from typed structure. Most projects have 0-3 such places. The skill helps Claude identify them, decide whether each warrants the full pattern, and design what's there. Domain-agnostic — applies in health, education, ops, creative, social, business, engineering.
 
 In one sentence: an LLM does fuzzy judgment, a typed substrate captures the result as data, deterministic code does aggregation/restraint/scoring, another LLM reasons over the substrate, an action lands. **LLMs bring fluency. Substrates bring discrimination. Code brings restraint.**
+
+*Note on naming and synthesis.* "Hybrid loops" is the working name in this repository; the broader field has no settled name (see PRIOR_ART for adjacent terms — wesen's "generalization shaping," "compound AI systems," etc.). The why-it-works-now account in this skill (soft-input/hard-output dispatch fabric, pre-loaded world knowledge, cheap schema iteration, free-text rationales, MCP composition) is this repository's synthesis of tractability factors, not a single citation.
 
 ## Phase 1 — find the surfaces
 
@@ -180,7 +199,6 @@ The main file is enough for project planning and most design conversations. Load
 
 - `references/EXAMPLES.md` — when scaffolding by analogy to a known shape
 - `references/DESIGN_INTERVIEW.md` — when Phase 4's quick design isn't sufficient
-- `references/PORTFOLIO_RETROFIT.md` — when the user has existing projects and wants to see how the skill applies retroactively
 - `references/PRIOR_ART.md` — when defending novelty or citing lineage
 - `references/STACKING.md` — only when project is past v0 and explicitly stacks
 - `references/PRIMITIVES.md` — when scaffolding and looking for what's already packaged
