@@ -24,8 +24,10 @@
     "cal_log": {
       "command": "go",
       "args": [
+        "-C",
+        "${CLAUDE_PLUGIN_ROOT}/mcp_servers/cal_log",
         "run",
-        "${CLAUDE_PLUGIN_ROOT}/mcp_servers/cal_log"
+        "."
       ]
     }
   }
