@@ -22,11 +22,10 @@
   ],
   "mcpServers": {
     "cal_log": {
-      "command": "uv",
+      "command": "go",
       "args": [
         "run",
-        "--script",
-        "${CLAUDE_PLUGIN_ROOT}/mcp_servers/cal_log/server.py"
+        "${CLAUDE_PLUGIN_ROOT}/mcp_servers/cal_log"
       ]
     }
   }
