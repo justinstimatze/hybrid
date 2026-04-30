@@ -21,12 +21,45 @@ This pattern is not novel as architecture. It is recovered from frames (Minsky 1
 
 The closest practitioner prior art is **Manuel Odendahl** (wesen), whose work at [github.com/go-go-golems](https://github.com/go-go-golems) and writing at [the.scapegoat.dev](https://the.scapegoat.dev) has shaped this writeup directly. He has named the design principle of **"generalization shaping"** (deterministic machinery shaping what the LLM has to do); introduced or made canonical the use of **"diary,"** **"evidence database,"** **"substrate,"** and **"step"** in this design space; and identified the Blackboard System lineage as the right architectural frame. His shipped infrastructure — including [geppetto](https://github.com/go-go-golems/geppetto), [sessionstream](https://github.com/go-go-golems/sessionstream), [glazed](https://github.com/go-go-golems/glazed), [pinocchio](https://github.com/go-go-golems/pinocchio), [go-go-agent](https://github.com/wesen/2026-04-29--go-go-agent), and [docmgr](https://github.com/go-go-golems/docmgr) — concentrates on engineering-side typed LLM workflows. The portfolio in this repository concentrates on domain-applied tools that sit on top of similar infrastructure. The two bodies of work are complementary; see `skill/references/PRIOR_ART.md` for the full citation and credit.
 
-What is plausibly new in this work specifically (that wesen and the cited literature don't already own):
+## Conjectures (not asserted contributions)
 
-1. **Calibration discipline as a per-evaluator primitive** — every typed LLM judgment logs prediction + verdict over time, hit-rate aggregated. Wesen's minitrace and "diary" essay gesture; nothing ships this as a standalone. Open ground.
-2. **Cognitive-bias self-audit on substrate structure** (winze): running known cognitive-bias signatures against the structural metrics of the KB itself (provenance HHI as availability-bias proxy, irrelevant:challenged ratio as survivorship bias). No precedent found.
-3. **Schema discovery for cognitive schemas, not just program libraries** (lamina/poc/dense): DreamCoder/LILO discover program libraries; this work extends compress+verify to discovering descriptive notations for unstructured-text domains.
-4. **Domain-applied substrate-as-vocabulary tooling** across non-engineering domains (humor, dramatic arcs, behavioral mechanisms, AI-conversation analysis): the engineering-side infrastructure exists; the applied-side does not.
+Four conjectures about what this work might contribute beyond the cited prior art. **Each is testable; none has been tested.** They are conjectures, not asserted contributions, until the experiments below have data. The retrofit in `skill/references/PORTFOLIO_RETROFIT.md` provides initial empirical context.
+
+### Conjecture 1 — per-evaluator calibration is undershipped
+
+*Claim.* A standalone primitive that logs predictions and verdicts per typed LLM evaluator, with rolling-window hit-rate aggregation, would generalize across hybrid-loop projects and meaningfully change development decisions.
+
+*Falsifying experiment.* Build the primitive (`cal_log` per `skill/references/PRIMITIVES.md`); deploy on 3+ existing projects (candidates: slimemold, plancheck, drivermap); measure over 60 days whether the hit-rate signal changes any concrete development decision (prompt change, schema bump, gate adjustment). If hit-rate is collected but no decisions are made on it, the primitive is theater.
+
+*Status.* Conjecture. The portfolio retrofit shows every existing project gestures at calibration but none ships per-evaluator hit-rate; wesen's body of work shows the same gap. The empirical absence is consistent with the conjecture but doesn't confirm the primitive would be useful — only the deployment experiment does.
+
+### Conjecture 2 — cognitive-bias self-audit on substrate structure generalizes beyond winze
+
+*Claim.* The nine bias-detection metrics from winze (provenance HHI as availability-heuristic proxy, irrelevant:challenged ratio as survivorship-bias proxy, predicate entropy as base-rate-neglect proxy, etc.) work on any typed substrate, not only winze's typed Go AST.
+
+*Falsifying experiment.* Lift the `metacog` primitive out of winze; run it on slimemold's claim graph and drivermap's mechanism corpus. Have project owners mark which triggered findings correspond to actual structural problems vs. false positives. If false-positive rate is high or findings don't track owner intuition, the metrics are winze-specific rather than substrate-general.
+
+*Status.* Conjecture. No published precedent found; no cross-substrate testing done.
+
+### Conjecture 3 — schema discovery extends to non-program domains
+
+*Claim.* The dense compress+verify loop (DreamCoder/LILO descendant) can discover useful schemas for non-program domains — humor structures, dramatic arcs, behavioral mechanisms, AI-conversation patterns — not just code or notation for code.
+
+*Falsifying experiment.* Run dense on a corpus of 100+ examples in one non-program domain (drivermap's mechanism corpus is the obvious candidate); compare the discovered schema against the hand-authored one on downstream extraction quality, with a domain expert as the evaluator. If hand-authored beats discovered, the loop doesn't generalize past program-shaped domains.
+
+*Status.* Partially supported by dense's existing CRUD/SEC/patent results, but those domains are still program-adjacent. Non-program domain testing missing.
+
+### Conjecture 4 — there is unmet demand for domain-applied substrate-as-vocabulary tooling outside engineering
+
+*Claim.* Users in non-engineering domains (coaching, teaching, parenting, advocacy, creative work) would benefit from typed-repertoire-with-restraint tools and don't currently have them.
+
+*Falsifying experiment.* Build one such tool (the teacher's intervention tracker or the coach's typed library from `EXAMPLES.md`); ship to 5+ domain users; measure 30+ day retention. If retention is below baseline rates for similar consumer tools, the demand isn't there or the tool is wrong-shaped.
+
+*Status.* Conjecture. The author's existing portfolio is engineering-flavored; no shipped non-engineering substrate-as-vocabulary tools yet.
+
+---
+
+These four are the open ground after acknowledging wesen, DreamCoder, AlphaGo, OpenCog, and the classical-AI lineage. **The next material work in this repo is running the experiments above, not making more architectural claims.**
 
 ## Status
 
