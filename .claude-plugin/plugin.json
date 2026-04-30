@@ -1,0 +1,33 @@
+{
+  "name": "hybrid-loops",
+  "version": "0.1.0",
+  "description": "A design pattern + skill + working MCP server for the specific places in any project where an LLM doing fuzzy semantic judgment needs typed structure for downstream decisions. Diagnostic-first; domain-agnostic; ships cal_log primitive.",
+  "author": {
+    "name": "Justin Stimatze",
+    "url": "https://github.com/justinstimatze"
+  },
+  "homepage": "https://github.com/justinstimatze/hybrid",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/justinstimatze/hybrid"
+  },
+  "license": "MIT",
+  "keywords": [
+    "design-pattern",
+    "llm-evaluator",
+    "typed-substrate",
+    "calibration",
+    "compound-ai-systems",
+    "generalization-shaping"
+  ],
+  "mcpServers": {
+    "cal_log": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--script",
+        "${CLAUDE_PLUGIN_ROOT}/mcp_servers/cal_log/server.py"
+      ]
+    }
+  }
+}

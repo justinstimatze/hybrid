@@ -1,0 +1,10 @@
+{
+  "name": "hybrid-loops",
+  "version": "0.1.0",
+  "description": "A design pattern + skill + working MCP server for the specific places in any project where an LLM doing fuzzy semantic judgment needs typed structure for downstream decisions.",
+  "author": "Justin Stimatze",
+  "homepage": "https://github.com/justinstimatze/hybrid",
+  "license": "MIT",
+  "skillPath": "skills/hybrid-loops",
+  "_note": "Stub extension manifest for Gemini Code Assist / Gemini CLI. The skill content at skills/hybrid-loops/ is portable; adjust per Gemini's current extension spec. Issues/PRs welcome — see CROSS_AGENT.md."
+}

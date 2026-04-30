@@ -1,0 +1,14 @@
+{
+  "name": "hybrid-loops",
+  "owner": "justinstimatze",
+  "description": "Hybrid loops — design pattern, Claude Code skill, and cal_log MCP server for LLM-evaluator calibration.",
+  "plugins": [
+    {
+      "name": "hybrid-loops",
+      "description": "Find and design hybrid-loop surfaces in any complex project. Includes the diagnostic skill plus the cal_log MCP server (per-evaluator prediction logging with hit-rate aggregation).",
+      "version": "0.1.0",
+      "source": ".",
+      "strict": true
+    }
+  ]
+}
