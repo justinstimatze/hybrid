@@ -1,4 +1,36 @@
+# build artifacts and caches
 .defn/
 
-# user-private working notes (per-project context, not for distribution)
+# user-private working notes
 notes/
+
+# Python (kept while cal_log is Python; will mostly be removable after Go rewrite)
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.tox/
+build/
+dist/
+*.so
+
+# uv / virtualenvs
+.venv/
+uv.lock
+
+# Go build outputs
+mcp_servers/cal_log/cal_log
+mcp_servers/cal_log/dist/
+
+# editor / OS
+.DS_Store
+*.swp
+.vscode/
+.idea/
+
+# local cal_log databases (data, not code — never commit)
+*.cal_log/
+calibration.jsonl
