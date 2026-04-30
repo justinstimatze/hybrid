@@ -1,5 +1,6 @@
 # build artifacts and caches
 .defn/
+.claude/
 
 # user-private working notes
 notes/

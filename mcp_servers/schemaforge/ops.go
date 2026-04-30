@@ -49,14 +49,21 @@ func DesignNotation(
 Metrics from last round:
 %s
 
-Improve the notation to increase expansion ratio while maintaining roundtrip correctness:
-- Fix ambiguity wherever items scored low
-- Remove primitives that weren't used
-- Create compositional primitives for repeated patterns
+Decide whether to change the notation. The default is to keep it unchanged.
+Only modify the notation if there are SPECIFIC failures justifying the change:
+
+- If mean correctness >= 0.85 and no item scored below 0.70: output the notation UNCHANGED.
+  Minor terminology drift at this level is rubric noise, not notation failure.
+- If items scored below 0.70 due to a specific structural ambiguity in the notation:
+  make a TARGETED fix to that ambiguity. Do not touch unrelated parts.
+- If a primitive was clearly unused across all items: remove it.
+- Do NOT add new primitives unless a specific failure requires them.
+
+A growing notation that doesn't address concrete failures is a regression.
 
 The notation should expand to: %s
 
-Output ONLY the updated notation specification between <notation_spec> tags.`,
+Output ONLY the (possibly unchanged) notation specification between <notation_spec> tags.`,
 			previousNotation, previousMetricsSummary, target)
 	} else {
 		var seedsBuf strings.Builder

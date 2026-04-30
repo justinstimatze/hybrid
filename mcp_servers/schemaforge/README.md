@@ -103,6 +103,14 @@ The Claim: the dense-notation compress+verify loop generalizes to non-program co
 
 Either outcome is informative. A Conjecture-3-positive result means the primitive is domain-general. A Conjecture-3-negative result narrows what compress+verify is good for, which is also useful.
 
+### Pilot results (April 2026, naturalistic-prose meme corpus, 10 items × 3 rounds)
+
+A 10-item smoke against a non-program corpus (memes serialized to naturalistic prose, 11 latent fields) showed:
+
+- **Round 1 alone produces useful dense notation.** Two independent runs hit ER 45.6x at 0.89 correctness and ER 15.9x at 0.71 correctness; both clearly compressing, just at different densities depending on whether the model picked a sigil-based or pipe-delimited grammar by chance.
+- **The evolve prompt is load-bearing.** The first version of the evolve prompt explicitly invited improvement (`Create compositional primitives for repeated patterns`) and produced a 25% spec-size growth and 26% ER drop in round 2 with no correctness gain. The current version defaults to "output unchanged" unless concrete failures (items < 0.70) justify a targeted fix; round 2 in the same configuration produced a 1-character grammar edit, round 3 was byte-identical, while correctness drifted up modestly across rounds via compress/expand variance against a stable target.
+- **Limitation surfaced.** The conservative evolve prompt cannot escape a poor round-1 design — if round 1 picks a verbose notation philosophy, subsequent rounds hold the line rather than redesign. A future enhancement would trigger redesign-from-scratch when correctness < some-threshold for 2 consecutive rounds.
+
 ## Cost notes
 
 Each round on N items costs 1 + 3N LLM calls (1 design + N compress + N expand + N evaluate). Prompt caching on the notation spec brings the marginal cost of compress+expand calls down within a round. For corpora >20 items a single `run_round` call may still take tens of minutes — caller's responsibility to budget accordingly.
@@ -113,6 +121,7 @@ Each round on N items costs 1 + 3N LLM calls (1 design + N compress + N expand +
 - **Baseline measurement.** Optional "generate target without notation, count tokens" pass to compute compression ratio against an unaided baseline. Lamina's reference implementation has this; cut from the primitive to keep scope tight.
 - **Corpus chunking.** Very large corpora (100s of items) should run rounds in batches to keep individual `run_round` calls bounded.
 - **Fine-tuning extraction.** `ExtractTrainingPairs` produces (notation → expanded) pairs above a score threshold; not yet exposed as an MCP tool but trivially could be.
+- **Redesign-from-scratch path.** Currently the evolve prompt only modifies an existing notation. A `redesign_notation` op that re-runs the round-1 design call (ignoring `previous_notation`) would let the loop escape a poor initial design when correctness stays below threshold across rounds.
 
 ## Module path
 
