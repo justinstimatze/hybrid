@@ -4,33 +4,50 @@ Cite these when defending the architecture. Most relevant first.
 
 ## Practitioner prior art — Manuel Odendahl ("wesen")
 
-Manuel Odendahl has been building this pattern for ~3 years across `github.com/go-go-golems/*` and `github.com/wesen/*`. **The single most important practitioner reference; closest existing terminology and tooling.** Cite when the question is "has anyone been doing this in the wild?"
+Manuel Odendahl is a software developer (open-source author of the [go-go-golems](https://github.com/go-go-golems) toolchain, blogger at [the.scapegoat.dev](https://the.scapegoat.dev)) who has been working in this design space for several years and is one of the clearest writers on it. His public work is the most important practitioner reference for this pattern; his terminology and tooling deserve direct citation in any writeup of hybrid loops.
 
-His clearest theoretical framing: **"generalization shaping"** — the design move of *restructuring a problem with notation/tools/typed interfaces so the LLM does only the in-distribution mapping work and deterministic machinery carries correctness*. Essay: ["Tool use and notation as shaping LLM generalization"](https://the.scapegoat.dev/tool-use-and-notation-as-generalization-shaping/) (Feb 2026). Money quote: *"Tools don't make cognition deeper—they make the world simple in exactly the places we need it to be."*
+### Theoretical framing he has named
 
-Generalization shaping is **a design principle inside hybrid loops**, not a synonym. It corresponds specifically to the gate role + the lens schema design — the parts where deterministic machinery shapes what the LLM has to do. Hybrid loops add the typed substrate, calibration log, metabolism, and recursive composition on top. Cite wesen's principle when explaining why a hybrid loop's gate carries the load it does.
+**"Generalization shaping"** — the design move of *restructuring a problem with notation, tools, and typed interfaces so the LLM does only the in-distribution mapping work and deterministic machinery carries correctness*. Essay: ["Tool use and notation as shaping LLM generalization"](https://the.scapegoat.dev/tool-use-and-notation-as-generalization-shaping/) (Feb 2026). Quoted: *"Tools don't make cognition deeper — they make the world simple in exactly the places we need it to be."*
 
-Wesen's vocabulary worth borrowing where it fits:
-- **diary** — narrative memory artifact (deliberately chosen over "ledger" / "log"; the word activates LLM behaviors he wants). See ["Why I Make My Agents Keep Diaries"](https://the.scapegoat.dev/why-i-make-my-agents-keep-diaries/).
+Generalization shaping is best understood as a **design principle inside hybrid loops** (corresponding to the gate role + the lens schema design — the deterministic-machinery side of the loop), not a synonym for the whole pattern. Hybrid loops as used in this repo add the typed substrate, calibration log, metabolism, and recursive composition on top of generalization-shaping at the boundary. When defending why a hybrid loop's gate carries the load it does, cite this principle and credit the framing to him.
+
+### Vocabulary he has introduced or made canonical
+
+- **diary** — narrative memory artifact, deliberately chosen over "ledger" / "log." See ["Why I Make My Agents Keep Diaries"](https://the.scapegoat.dev/why-i-make-my-agents-keep-diaries/) for his argument that the word "diary" itself activates LLM behaviors he wants.
 - **evidence database** — the SQLite typed-record store agent runs leave behind. From [`wesen/2026-04-29--go-go-agent`](https://github.com/wesen/2026-04-29--go-go-agent).
-- **substrate** — he literally uses this term in the [`go-go-golems/sessionstream`](https://github.com/go-go-golems/sessionstream) README for the typed event-streaming layer.
+- **substrate** — he uses this term in the [`go-go-golems/sessionstream`](https://github.com/go-go-golems/sessionstream) README for the typed event-streaming layer; this repo's use of "substrate" is consistent with his.
 - **step** — the unit of typed LLM operation in [`go-go-golems/geppetto`](https://github.com/go-go-golems/geppetto). Each step is a typed function from flags+args to structured records.
 - **spray test** — empirical variance probe of a prompt (regenerate N times, measure variance). From ["From prompt and pray to prompt engineering"](https://the.scapegoat.dev/from-prompt-and-pray-to-prompt-engineering/) (Apr 2026). Calibration-adjacent.
 
-Most relevant repos:
+When using any of these terms, attribute to wesen explicitly.
 
-- [**geppetto**](https://github.com/go-go-golems/geppetto) (Go LLM framework) — typed-step abstraction; underpins everything.
-- [**pinocchio**](https://github.com/go-go-golems/pinocchio) (CLI/REPL) — prompt-library-with-metadata (groupchat-cousin).
-- [**go-go-agent**](https://github.com/wesen/2026-04-29--go-go-agent) — terminal agent with explicit evidence database for replay/inspection. **Closest direct parallel to a hybrid loop with calibration.**
-- [**sessionstream**](https://github.com/go-go-golems/sessionstream) — generic typed event-streaming "substrate" (his word).
-- [**minitrace**](https://github.com/wesen/minitrace) + [**go-minitrace**](https://github.com/go-go-golems/go-minitrace) — common JSON trace format unifying many agent session formats; query with DuckDB. The closest thing in his stack to a calibration log.
-- [**docmgr**](https://github.com/go-go-golems/docmgr) — structured document manager for LLM-assisted workflows; PKM with LLM-aware metadata.
-- [**Codex-Reflect-Skill**](https://github.com/wesen/Codex-Reflect-Skill) — runs Codex in parallel over past Codex sessions to surface patterns; production-time LLM-as-judge over a typed session corpus.
-- [**glazed**](https://github.com/go-go-golems/glazed) — foundational typed-rows-and-columns library underpinning his stack. When wesen says "typed substrate," glazed rows are the concrete representation.
+### Most relevant repositories
 
-Important note: wesen explicitly disclaims agent/zero-shot maximalism and points readers at the **Blackboard System** (Hayes-Roth 1985, Wikipedia) as a more useful conceptual frame than "agents." This is independent corroboration of the "you've recovered classical symbolic AI architectures" framing — wesen has reached the same conclusion from a different starting point. Useful when defending against "haven't expert systems already done this?": *yes, and the most thoughtful practitioner of this pattern in the LLM era explicitly calls his work blackboard-style, not agent-style.*
+- [**geppetto**](https://github.com/go-go-golems/geppetto) — Go LLM framework built around the typed-step abstraction. Underpins much of his stack.
+- [**pinocchio**](https://github.com/go-go-golems/pinocchio) — CLI/REPL frontend; YAML-based prompt-library-with-metadata.
+- [**prompto**](https://github.com/go-go-golems/prompto) and [**promptos**](https://github.com/go-go-golems/promptos) — prompt-context library with metadata; scans configured repos for `prompto/` directories and treats files (and executables) as named, retrievable contexts.
+- [**go-go-agent**](https://github.com/wesen/2026-04-29--go-go-agent) — terminal agent with an explicit evidence database for replay/inspection. The closest direct parallel in his work to a hybrid loop with calibration-style provenance.
+- [**sessionstream**](https://github.com/go-go-golems/sessionstream) — recently extracted (April 2026) generic typed event-streaming substrate, lifted out of pinocchio's evtstream.
+- [**minitrace**](https://github.com/wesen/minitrace) and [**go-minitrace**](https://github.com/go-go-golems/go-minitrace) — common JSON trace format unifying multiple agent session formats; query with DuckDB. (Note: upstream is `fukami/minitrace`; wesen maintains a fork and Go port.)
+- [**docmgr**](https://github.com/go-go-golems/docmgr) — structured document manager for LLM-assisted workflows; PKM with LLM-aware metadata, frontmatter conventions, vocabulary management, code↔doc relations, health checks.
+- [**Codex-Reflect-Skill**](https://github.com/wesen/Codex-Reflect-Skill) — runs Codex in parallel over past Codex sessions to surface patterns and propose new skills.
+- [**bucheron**](https://github.com/go-go-golems/bucheron) — structured-log upload service for client-side bug reporting.
+- [**glazed**](https://github.com/go-go-golems/glazed) — foundational typed-rows-and-columns library underpinning the stack. When his projects refer to "typed substrate," glazed rows are the concrete representation.
 
-What's still genuinely missing in his work (as of April 2026): **a calibration / prediction-logging layer that closes the loop between intended judgment and actual outcome.** minitrace + bucheron + the diary essay gesture at it; no shipped tool yet. This is the gap the user's N3 (calibration log on every typed evaluator) addresses, and the wesen body of work is independent evidence that the gap is real and unowned.
+### Architectural framing — Blackboard Systems
+
+In his [`go-go-workshop`](https://github.com/go-go-golems/go-go-workshop) materials, wesen notes that he does not use agents and zero-shot prompting for most of his use cases, and points readers toward the Blackboard System (Hayes-Roth 1985) as a more useful conceptual frame than "agents." Two practitioners arriving independently at the same architectural lineage from different starting points is meaningful evidence about the lineage itself; cite this when the question is whether hybrid loops are well-grounded in classical AI architectures. (The reading of wesen's framing as "independent corroboration" is this repo's, not a claim wesen has made about other practitioners.)
+
+### Complementarity with this work
+
+Wesen's public contributions concentrate on engineering-side infrastructure for typed LLM workflows — typed-step frameworks, session-streaming substrates, evidence databases, prompt-context libraries, document managers. The portfolio in this repo concentrates on domain-applied tools that sit on top of similar infrastructure (humor, behavioral mechanisms, dramatic arcs, AI-conversation analysis, accountability data, multi-agent deliberation). The two bodies of work are complementary rather than competitive; both are concrete instances of the same architectural pattern at different layers of the stack.
+
+One area of the pattern that neither body of work has yet shipped as a standalone primitive (as of April 2026) is a **calibration / prediction-logging layer** — a tool that closes the loop between an evaluator's intended judgment and the eventual outcome it can be checked against. Minitrace, bucheron, and the diary essay each gesture at parts of this; nothing assembles them into a per-evaluator hit-rate primitive that other projects can drop in. The N3 north star in this repo is to ship that primitive. If wesen is building toward the same thing, this would be a natural place for the two threads to converge.
+
+### Acknowledgments
+
+The framing of "generalization shaping," the deliberate choice of "diary" over "log," the use of "substrate" for typed event-streaming layers, and the Blackboard-Systems-not-agents architectural reading are all wesen's. This repository's pattern writeup is meaningfully shaped by his prior work; any public presentation of hybrid loops should credit his contributions explicitly.
 
 ## AlphaGo / AlphaZero
 

@@ -19,7 +19,7 @@ The skill references real projects across the portfolio (slimemold, drivermap, s
 
 This pattern is not novel as architecture. It is recovered from frames (Minsky 1974), blackboards (Hayes-Roth 1985), and Soar (Newell 1990); the bootstrapping loop is in AlphaGo (2016) and DreamCoder (2021); LLMs as fuzzy schema-fillers are what makes the architecture finally tractable in 2026.
 
-The closest practitioner prior art is **Manuel Odendahl's (wesen) work** at [github.com/go-go-golems](https://github.com/go-go-golems) and his blog [the.scapegoat.dev](https://the.scapegoat.dev). He coined **"generalization shaping"** for the design principle inside hybrid loops; he uses **"diary"**, **"evidence database"**, and **"substrate"** as terms; he explicitly cites Blackboard Systems as the right lineage. His shipped infrastructure (geppetto, sessionstream, glazed, go-go-agent) is engineering-focused; this repo's portfolio is more domain-applied. See `skill/references/PRIOR_ART.md` for the full mapping.
+The closest practitioner prior art is **Manuel Odendahl** (wesen), whose work at [github.com/go-go-golems](https://github.com/go-go-golems) and writing at [the.scapegoat.dev](https://the.scapegoat.dev) has shaped this writeup directly. He has named the design principle of **"generalization shaping"** (deterministic machinery shaping what the LLM has to do); introduced or made canonical the use of **"diary,"** **"evidence database,"** **"substrate,"** and **"step"** in this design space; and identified the Blackboard System lineage as the right architectural frame. His shipped infrastructure — including [geppetto](https://github.com/go-go-golems/geppetto), [sessionstream](https://github.com/go-go-golems/sessionstream), [glazed](https://github.com/go-go-golems/glazed), [pinocchio](https://github.com/go-go-golems/pinocchio), [go-go-agent](https://github.com/wesen/2026-04-29--go-go-agent), and [docmgr](https://github.com/go-go-golems/docmgr) — concentrates on engineering-side typed LLM workflows. The portfolio in this repository concentrates on domain-applied tools that sit on top of similar infrastructure. The two bodies of work are complementary; see `skill/references/PRIOR_ART.md` for the full citation and credit.
 
 What is plausibly new in this work specifically (that wesen and the cited literature don't already own):
 
@@ -31,6 +31,12 @@ What is plausibly new in this work specifically (that wesen and the cited litera
 ## Status
 
 Pre-v1. The skill is the primary deliverable. Primitives (`cal_log`, `metacog`, `schemaforge`, `metabolism`) are mentioned in `skill/references/PRIMITIVES.md` but not yet packaged.
+
+## Acknowledgments
+
+This writeup is meaningfully shaped by **Manuel Odendahl** (wesen)'s prior work in this design space. The "generalization shaping" framing, the deliberate choice of "diary" over "log," the use of "substrate" for typed event-streaming layers, and the Blackboard-Systems architectural reading are all his. Any public presentation of hybrid loops should credit his contributions; a fuller account is in `skill/references/PRIOR_ART.md`.
+
+Thanks also to the maintainers of [DreamCoder](https://github.com/ellisk42/ec), [LILO](https://github.com/gabegrand/lilo), [Voyager](https://github.com/MineDojo/Voyager), and the [Polis](https://pol.is/) and [Talk to the City](https://github.com/AIObjectives/talktothe.city) projects, whose published work is referenced throughout the skill.
 
 ## Form factor: skill now, plugin later
 
