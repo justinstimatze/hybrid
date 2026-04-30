@@ -49,6 +49,24 @@ One area of the pattern that neither body of work has yet shipped as a standalon
 
 The framing of "generalization shaping," the deliberate choice of "diary" over "log," the use of "substrate" for typed event-streaming layers, and the Blackboard-Systems-not-agents architectural reading are all wesen's. This repository's pattern writeup is meaningfully shaped by his prior work; any public presentation of hybrid loops should credit his contributions explicitly.
 
+For wesen's own manifesto on the design philosophy of his ecosystem, see ["I want my software to be visionary — the go-go-golems ecosystem"](https://the.scapegoat.dev/i-want-my-software-to-be-visionary-the-go-go-golems-ecosystem/). Notable principles articulated there: rich data representation (applications preserve the structural knowledge embedded in their data rather than reducing everything to printf-style output), discoverability (self-contained, well-documented tools), and relentless refinement (willingness to break APIs to maintain coherent vision). Quoted: *"The only way I know to properly identify what these concepts are about is to turn them into working code."*
+
+## Aesthetic and craft lineage — Devine Lu Linvega / Hundred Rabbits
+
+Wesen has cited Devine Lu Linvega ([100r.co](https://100r.co), Hundred Rabbits) as a personal influence on his sensibility, separate from but compatible with the practitioner-prior-art described above. Devine builds small, opinionated, typed software tools — Orca (live-coded sequencer), Left (text editor), Dotgrid (vector tool), Ronin (image processing), uxn (a small virtual machine in the permacomputing tradition) — that prioritize craft, ownership, locality, and minimalism. None of this work is LLM-augmented; none of it has to be. Devine's aesthetic is what hybrid loops aspire to *for the deterministic-shell half* of the pattern.
+
+Cite Devine when defending design choices around: small tool size, single-purpose primitives, typed I/O between tools, permacomputing / locality (substrate stays on the user's machine and isn't a cloud service), and the deliberate rejection of platform-scale frameworks in favor of assemblies of focused tools.
+
+The Hundred Rabbits collective (Devine + Rek Bell), the uxn ecosystem, and the Merveilles network more broadly are the canonical references for the aesthetic of *a personal collection of typed tools the user actually owns*. Hybrid-loop projects in non-engineering domains tend to feel right when they share this aesthetic — drivermap, effigy, score, and the personal/parent/writer examples in `EXAMPLES.md` are closer to Devine's register than slimemold or winze are.
+
+## Pattern languages — Christopher Alexander
+
+Alexander, Christopher. *A Pattern Language: Towns, Buildings, Construction*. 1977. Companion volume: *The Timeless Way of Building*. 1979.
+
+Alexander's pattern language framework is the right structural reference for *what hybrid loops is, as a unit of design*. A pattern in Alexander's sense has a recurring problem, a context where it applies, a solution structure, and named consequences for downstream patterns. Hybrid loops is itself a pattern in this strict sense; the five roles plus meta-layers form a small pattern language with internal nesting (a substrate pattern, a gate pattern, a calibration pattern, etc.).
+
+When writing about this work for an audience that includes designers (not just engineers), Alexander's framing lands more cleanly than the AI-engineering vocabulary. Cite *A Pattern Language* for the structural argument; cite *The Timeless Way* for the philosophical one (the "wholeness" thesis that distinguishes living pattern languages from catalogs of tricks). The standard software adaptation — Gamma, Helm, Johnson, Vlissides's *Design Patterns* (1994) — preserves Alexander's *structure* but not his *sensibility*; reading Alexander directly is the thing.
+
 ## AlphaGo / AlphaZero
 
 Silver, Huang, Maddison, et al. *Mastering the game of Go with deep neural networks and tree search*. Nature, 2016.
