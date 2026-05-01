@@ -122,7 +122,9 @@ flowchart TB
 
 **Modern absorption.** In 2023 codegen-with-verification was often standalone — give an LLM a function signature, get back a function with tests, run the tests, iterate. By 2026 the pattern usually lives inside a [ReAct](#react--reason--act-with-tool-calls) loop where the test runner is one tool among many. The diagram above is the conceptually-clean version; in practice you'll see ReAct with a test-runner tool. The shape still matters as a teaching diagram — it makes the syntactic-vs-semantic distinction visible, and it shows the deterministic verifier is what makes the LLM's authoring trustworthy enough to ship.
 
-**In the wild**: Aider's auto-test mode, Cursor's debug-with-tests workflow, the SWE-bench harness setup (agent + test suite per task), Claude Code with test-runner subagents. The TypeScript/Python type-checker tightens the loop in IDE coding-assist generally. [plancheck](https://github.com/justinstimatze/plancheck) applies the same shape pre-execution: deterministic compiler over an `ExecutionPlan` JSON checks orphan files, cascade risk, reference graph consistency; LLM revises the plan against findings until a score threshold clears.
+**In the wild**: Aider's auto-test mode, Cursor's debug-with-tests workflow, the SWE-bench harness setup (agent + test suite per task), Claude Code with test-runner subagents. The TypeScript/Python type-checker tightens the loop in IDE coding-assist generally.
+
+*Maintainer's experiment at a much smaller scope* (not in the league of the above): [plancheck](https://github.com/justinstimatze/plancheck) applies the same shape pre-execution rather than to code itself. A deterministic compiler over an `ExecutionPlan` JSON checks orphan files, cascade risk, and reference-graph consistency; *subagents then simulate the planned change*, and their tool-call traces become a second substrate the LLM evaluates the plan against. Revise-until-threshold loops over both layers.
 
 ### Multi-agent conversation
 
@@ -312,7 +314,9 @@ flowchart TB
 
 Code-as-substrate does triple duty: LLM-readable (no markdown intermediate), executable (the language runtime can run it), analyzable by deterministic tools (linters, type checkers, AST queries). One artifact, three readers.
 
-**In the wild**: less common as a deployed shape — most knowledge bases use markdown or RDF-style triples. AI-augmented codebases that treat *the code itself* as a knowledge artifact ([defn](https://github.com/justinstimatze/defn) round-trips between Go AST and SQL view). The OpenCog tradition is the academic cousin. Concept-tracking PKM tools (Logseq, Roam) approach this from the other direction with structured-content + light analysis but typically lack the LLM-author + deterministic-validate triple.
+**In the wild**: less common as a deployed shape — most knowledge bases use markdown or RDF-style triples. The OpenCog tradition is the academic cousin. Concept-tracking PKM tools (Logseq, Roam) approach this from the other direction with structured-content + light analysis but typically lack the LLM-author + deterministic-validate triple.
+
+*Maintainer's experiment at a much smaller scope*: [defn](https://github.com/justinstimatze/defn) treats Go code itself as the knowledge artifact, round-tripping between Go AST and a SQL view that deterministic audits run against.
 
 ### Dense-notation NPC with runtime context assembly
 
@@ -341,7 +345,9 @@ flowchart TB
 
 The notation is authored once at dev time and treated as production code thereafter. Runtime context assembly is fast and deterministic; the LLM sees only the slice relevant to the current state. Same shape works for any persona-driven LLM application — customer-service personas, tutoring systems, coaching tools.
 
-**In the wild**: [character.ai](https://character.ai/)'s persona system (deeper persona-conditioning happens server-side). NVIDIA's [NeMo Guardrails](https://github.com/NVIDIA/NeMo-Guardrails) for character constraints. [Effigy](https://github.com/justinstimatze/effigy) is a runnable instance for dense-character notation.
+**In the wild**: [character.ai](https://character.ai/)'s persona system (deeper persona-conditioning happens server-side). NVIDIA's [NeMo Guardrails](https://github.com/NVIDIA/NeMo-Guardrails) for character constraints.
+
+*Maintainer's experiment at a much smaller scope*: [Effigy](https://github.com/justinstimatze/effigy) is a small instance of the dense-character-notation pattern.
 
 ### Conversation-topology hook
 
@@ -367,7 +373,9 @@ flowchart TB
 
 The injected suggested response is *context-as-code* — text in markdown that the next LLM call interprets as instructions. The topology audit is a pure-graph computation; the LLM doesn't need to assess its own reasoning, the deterministic gate does. Slimemold-shape.
 
-**In the wild**: [slimemold](https://github.com/justinstimatze/slimemold) is the runnable instance — a Claude Code hook that does exactly this graph. Argumentation frameworks (Dung 1995, [On the Acceptability of Arguments](https://www.sciencedirect.com/science/article/pii/000437029400041X)) provide the typed claim-with-attack-edges substrate. Less directly: claim-mapping tools (Kialo, Argunet) approximate the typed substrate without the LLM-extraction layer.
+**In the wild**: argumentation frameworks (Dung 1995, [On the Acceptability of Arguments](https://www.sciencedirect.com/science/article/pii/000437029400041X)) provide the typed claim-with-attack-edges substrate. Less directly: claim-mapping tools (Kialo, Argunet) approximate the typed substrate without the LLM-extraction layer.
+
+*Maintainer's experiment at a much smaller scope*: [slimemold](https://github.com/justinstimatze/slimemold) is a small Claude Code hook that does roughly this graph.
 
 ---
 
