@@ -9,7 +9,7 @@ import (
 // helper to build a record quickly
 func rec(verdict string, summary string, prov []Provenance, edges []Edge, group, cluster string, complexity float64) Record {
 	return Record{
-		ID: "r-" + verdict + "-" + summary[:min(len(summary), 4)],
+		ID:      "r-" + verdict + "-" + summary[:min(len(summary), 4)],
 		Verdict: verdict, SummaryText: summary,
 		Provenance: prov, Edges: edges,
 		Group: group, Cluster: cluster, Complexity: complexity,
@@ -287,13 +287,13 @@ func TestAllAuditors_RunWithoutPanic(t *testing.T) {
 	rich := []Record{
 		{ID: "a", Verdict: "confirmed", SummaryText: "Obviously a neutral text.",
 			Provenance: []Provenance{{Type: "wikipedia"}},
-			Edges: []Edge{{Predicate: "supports", To: "b"}},
-			Group: "g1", Cluster: "c1", Complexity: 0.2,
+			Edges:      []Edge{{Predicate: "supports", To: "b"}},
+			Group:      "g1", Cluster: "c1", Complexity: 0.2,
 			CreatedAt: time.Now()},
 		{ID: "b", Verdict: "refuted", SummaryText: "A controversial claim.",
 			Provenance: []Provenance{{Type: "arxiv"}},
-			Edges: []Edge{{Predicate: "contradicts", To: "a"}},
-			Group: "g2", Cluster: "c2", Complexity: 0.8,
+			Edges:      []Edge{{Predicate: "contradicts", To: "a"}},
+			Group:      "g2", Cluster: "c2", Complexity: 0.8,
 			CreatedAt: time.Now()},
 		{ID: "c", Verdict: "irrelevant",
 			Provenance: []Provenance{{Type: "news"}}},

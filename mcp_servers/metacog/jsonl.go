@@ -12,7 +12,7 @@ import (
 // Empty lines and JSON parse errors are skipped silently (the latter so that
 // a malformed line doesn't kill the audit; metacog flags this in stats).
 type JSONLSubstrate struct {
-	Path string
+	Path    string
 	skipped int // count of lines that failed to parse
 }
 

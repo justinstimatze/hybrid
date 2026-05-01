@@ -23,6 +23,10 @@ The skill is **diagnostic-first** — most of any project isn't this pattern, an
 
 ## Install — Claude Code
 
+**Prerequisites**:
+- Go 1.21+ on `$PATH` (the MCP servers compile and run via `go run`).
+- `ANTHROPIC_API_KEY` in your environment if you want to use `schemaforge` tools (the other two servers don't need it).
+
 ```bash
 # Add this repo as a marketplace, then install the plugin
 /plugin marketplace add justinstimatze/hybrid
@@ -30,6 +34,8 @@ The skill is **diagnostic-first** — most of any project isn't this pattern, an
 ```
 
 Plugin installs the skill (`hybrid-loops`) plus three MCP servers (auto-registered): `cal_log`, `metacog`, and `schemaforge`. Skill auto-triggers on relevant prompts; tools are callable as `mcp__cal_log__*`, `mcp__metacog__*`, `mcp__schemaforge__*`.
+
+The marketplace command requires this GitHub repo to be reachable. While it's still under early review the repo may be private — in that case clone the repo and use the local-path forms: `/plugin marketplace add /path/to/hybrid` and `/plugin install hybrid-loops@hybrid-loops`.
 
 If you prefer just the skill without the plugin scaffolding: symlink `skills/hybrid-loops/` into `~/.claude/skills/hybrid-loops/`.
 

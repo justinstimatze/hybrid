@@ -14,43 +14,43 @@ import (
 // It's everything score_round needs and everything a caller wants to inspect
 // when a particular item scored poorly.
 type ItemResult struct {
-	ID              string  `json:"id"`
-	NotationText    string  `json:"notation_text"`
-	NotationTokens  int     `json:"notation_tokens"`
-	ExpandedText    string  `json:"expanded_text"`
-	ExpandedTokens  int     `json:"expanded_tokens"`
-	RoundtripScore  float64 `json:"roundtrip_score"`
-	ScoreReasoning  string  `json:"score_reasoning"`
-	ExpansionRatio  float64 `json:"expansion_ratio"`
-	SkippedReason   string  `json:"skipped_reason,omitempty"`
+	ID             string  `json:"id"`
+	NotationText   string  `json:"notation_text"`
+	NotationTokens int     `json:"notation_tokens"`
+	ExpandedText   string  `json:"expanded_text"`
+	ExpandedTokens int     `json:"expanded_tokens"`
+	RoundtripScore float64 `json:"roundtrip_score"`
+	ScoreReasoning string  `json:"score_reasoning"`
+	ExpansionRatio float64 `json:"expansion_ratio"`
+	SkippedReason  string  `json:"skipped_reason,omitempty"`
 }
 
 // RoundMetrics is the aggregate written to round{N}/metrics.json. The Summary
 // field is a human-readable string that's also fed back into the next round's
 // design call as previousMetricsSummary.
 type RoundMetrics struct {
-	RoundNumber          int          `json:"round_number"`
-	NotationSpecTokens   int          `json:"notation_spec_tokens"`
-	ItemCount            int          `json:"item_count"`
-	SkippedCount         int          `json:"skipped_count"`
-	MeanExpansionRatio   float64      `json:"mean_expansion_ratio"`
-	MeanCorrectness      float64      `json:"mean_correctness"`
-	TotalNotationTokens  int          `json:"total_notation_tokens"`
-	TotalExpandedTokens  int          `json:"total_expanded_tokens"`
-	Items                []ItemResult `json:"items"`
-	Summary              string       `json:"summary"`
+	RoundNumber         int          `json:"round_number"`
+	NotationSpecTokens  int          `json:"notation_spec_tokens"`
+	ItemCount           int          `json:"item_count"`
+	SkippedCount        int          `json:"skipped_count"`
+	MeanExpansionRatio  float64      `json:"mean_expansion_ratio"`
+	MeanCorrectness     float64      `json:"mean_correctness"`
+	TotalNotationTokens int          `json:"total_notation_tokens"`
+	TotalExpandedTokens int          `json:"total_expanded_tokens"`
+	Items               []ItemResult `json:"items"`
+	Summary             string       `json:"summary"`
 }
 
 // RunRoundParams are the inputs to one full round.
 type RunRoundParams struct {
-	CorpusPath           string
-	Target               string
-	Rubric               string
-	Model                string
-	OutputDir            string // run-level dir; round subdir created inside
-	RoundNumber          int
-	PreviousNotation     string // empty for round 1
-	PreviousMetricsPath  string // path to prior round's metrics.json; empty for round 1
+	CorpusPath          string
+	Target              string
+	Rubric              string
+	Model               string
+	OutputDir           string // run-level dir; round subdir created inside
+	RoundNumber         int
+	PreviousNotation    string // empty for round 1
+	PreviousMetricsPath string // path to prior round's metrics.json; empty for round 1
 }
 
 // RunRound drives one full round: design → compress all → expand all →

@@ -45,15 +45,15 @@ type Edge struct {
 
 // AuditorResult is the output of one bias auditor running on a substrate.
 type AuditorResult struct {
-	Bias       string  `json:"bias"`        // canonical identifier (e.g. "confirmation_bias")
-	BiasName   string  `json:"bias_name"`   // human-readable name
-	Metric     string  `json:"metric"`      // what was measured
-	Value      float64 `json:"value"`       // measured value
-	Threshold  float64 `json:"threshold"`   // alerting threshold
-	Triggered  bool    `json:"triggered"`   // value exceeds threshold
+	Bias       string  `json:"bias"`      // canonical identifier (e.g. "confirmation_bias")
+	BiasName   string  `json:"bias_name"` // human-readable name
+	Metric     string  `json:"metric"`    // what was measured
+	Value      float64 `json:"value"`     // measured value
+	Threshold  float64 `json:"threshold"` // alerting threshold
+	Triggered  bool    `json:"triggered"` // value exceeds threshold
 	Severity   string  `json:"severity,omitempty"`
-	Detail     string  `json:"detail"`      // numeric breakdown
-	Conclusion string  `json:"conclusion"`  // what this means; what to do
+	Detail     string  `json:"detail"`     // numeric breakdown
+	Conclusion string  `json:"conclusion"` // what this means; what to do
 	Skipped    bool    `json:"skipped,omitempty"`
 	SkipReason string  `json:"skip_reason,omitempty"`
 }

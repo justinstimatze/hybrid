@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: ${{ matrix.server }} (Go ${{ matrix.go }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        go: ['1.21', '1.22', '1.23']
+        server: [cal_log, metacog, schemaforge]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go }}
+
+      - name: Resolve module cache
+        working-directory: mcp_servers/${{ matrix.server }}
+        run: go mod download
+
+      - name: gofmt
+        working-directory: mcp_servers/${{ matrix.server }}
+        run: |
+          unformatted=$(gofmt -l .)
+          if [ -n "$unformatted" ]; then
+            echo "Files need gofmt:"
+            echo "$unformatted"
+            exit 1
+          fi
+
+      - name: go vet
+        working-directory: mcp_servers/${{ matrix.server }}
+        run: go vet ./...
+
+      - name: Unit tests
+        working-directory: mcp_servers/${{ matrix.server }}
+        run: go test -race ./...

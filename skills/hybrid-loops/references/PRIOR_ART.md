@@ -1,8 +1,14 @@
 # Prior art for hybrid loops
 
-Cite these when defending the architecture. Most relevant first.
+Cite these when defending the architecture. Three tiers below: **directly informed the design**, **cite to distinguish**, and **further reading / orientation**. If you only want the load-bearing references, the first tier is enough.
 
-## Practitioner prior art — Manuel Odendahl ("wesen")
+---
+
+## Tier 1 — directly informed the design
+
+These citations meaningfully shaped how this repo describes the pattern, the primitives it ships, or the architectural choices behind both. Reach for them in any defense of the design.
+
+### Practitioner prior art — Manuel Odendahl ("wesen")
 
 Manuel Odendahl is a software developer (open-source author of the [go-go-golems](https://github.com/go-go-golems) toolchain, blogger at [the.scapegoat.dev](https://the.scapegoat.dev)) who has been working in this design space for several years and is one of the clearest writers on it. His public work is the most important practitioner reference for this pattern; his terminology and tooling deserve direct citation in any writeup of hybrid loops.
 
@@ -51,7 +57,7 @@ The framing of "generalization shaping," the deliberate choice of "diary" over "
 
 For wesen's own manifesto on the design philosophy of his ecosystem, see ["I want my software to be visionary — the go-go-golems ecosystem"](https://the.scapegoat.dev/i-want-my-software-to-be-visionary-the-go-go-golems-ecosystem/). Notable principles articulated there: rich data representation (applications preserve the structural knowledge embedded in their data rather than reducing everything to printf-style output), discoverability (self-contained, well-documented tools), and relentless refinement (willingness to break APIs to maintain coherent vision). Quoted: *"The only way I know to properly identify what these concepts are about is to turn them into working code."*
 
-## Aesthetic and craft lineage — Devine Lu Linvega / Hundred Rabbits
+### Aesthetic and craft lineage — Devine Lu Linvega / Hundred Rabbits
 
 Wesen has cited Devine Lu Linvega ([100r.co](https://100r.co), Hundred Rabbits) as a personal influence on his sensibility, separate from but compatible with the practitioner-prior-art described above. Devine builds small, opinionated, typed software tools — Orca (live-coded sequencer), Left (text editor), Dotgrid (vector tool), Ronin (image processing), uxn (a small virtual machine in the permacomputing tradition) — that prioritize craft, ownership, locality, and minimalism. None of this work is LLM-augmented; none of it has to be. Devine's aesthetic is what hybrid loops aspire to *for the deterministic-shell half* of the pattern.
 
@@ -59,7 +65,7 @@ Cite Devine when defending design choices around: small tool size, single-purpos
 
 The Hundred Rabbits collective (Devine + Rek Bell), the uxn ecosystem, and the Merveilles network more broadly are the canonical references for the aesthetic of *a personal collection of typed tools the user actually owns*. Hybrid-loop projects in non-engineering domains (the personal/parent/writer/coach/teacher examples in `EXAMPLES.md`) tend to feel right when they share this aesthetic; the engineering-side projects (knowledge-base auditors, conversation-topology hooks) sit further from Devine's register and that's a deliberate scope choice, not a mistake.
 
-## Pattern languages — Christopher Alexander
+### Pattern languages — Christopher Alexander
 
 Alexander, Christopher. *A Pattern Language: Towns, Buildings, Construction*. 1977. Companion volume: *The Timeless Way of Building*. 1979.
 
@@ -67,7 +73,7 @@ Alexander's pattern language framework is the right structural reference for *wh
 
 When writing about this work for an audience that includes designers (not just engineers), Alexander's framing lands more cleanly than the AI-engineering vocabulary. Cite *A Pattern Language* for the structural argument; cite *The Timeless Way* for the philosophical one (the "wholeness" thesis that distinguishes living pattern languages from catalogs of tricks). The standard software adaptation — Gamma, Helm, Johnson, Vlissides's *Design Patterns* (1994) — preserves Alexander's *structure* but not his *sensibility*; reading Alexander directly is the thing.
 
-## AlphaGo / AlphaZero
+### AlphaGo / AlphaZero
 
 Silver, Huang, Maddison, et al. *Mastering the game of Go with deep neural networks and tree search*. Nature, 2016.
 Silver, Schrittwieser, Simonyan, et al. *Mastering the game of Go without human knowledge*. Nature, 2017.
@@ -76,7 +82,7 @@ Architectural template for hybrid loops. Policy network (fuzzy/learned) proposes
 
 Difference from hybrid loops as the user uses the term: AlphaGo's structural prior (rules of Go, board) is fixed. The user's pattern operates over a structural prior that an earlier LLM call generated. That's the load-bearing novelty.
 
-## DreamCoder
+### DreamCoder
 
 Ellis, Wong, Nye, Sablé-Meyer, Morales, Hewitt, Cary, Solar-Lezama, Tenenbaum. *DreamCoder: Bootstrapping inductive program synthesis with wake-sleep library learning*. Nature Communications, 2021. arXiv:2006.08381.
 
@@ -89,25 +95,19 @@ Maps directly onto:
 
 DreamCoder limitations to acknowledge: pre-LLM (recognition is small neural net), works in toy domains, library compression can collapse to golf-y abstractions.
 
-## LILO
+### LILO
 
 Grand, Wong, Bowers, Olausson, Liu, Tenenbaum, Andreas. *LILO: Learning Interpretable Libraries by Compressing and Documenting Code*. NeurIPS 2024. arXiv:2310.19791.
 
 LLM-era DreamCoder descendant. Closest cognate to lamina/poc/dense's notation discovery in the published literature.
 
-## Voyager
+### Voyager
 
 Wang, Xie, Jiang, Mandlekar, Xiao, Zhu, Fan, Anandkumar. *Voyager: An Open-Ended Embodied Agent with Large Language Models*. arXiv:2305.16291. 2023.
 
 Skill library learning for Minecraft agents. LLM proposes new skills; successful skills enter library; library available for future tasks. Direct DreamCoder descendant in agent context. Demonstrates hybrid loops outside program synthesis.
 
-## OpenCog / Hyperon (Goertzel et al.)
-
-Cite to *distinguish*, not to align. Goertzel's patternist architecture (AtomSpace + PLN + MOSES + ECAN) had the right architectural intuition — typed substrate that metabolizes — and the wrong bet. Tried to do symbolic *reasoning* (PLN) when statistical learning was about to dominate. Failed for the bitter-lesson reason.
-
-Hybrid loops invert OpenCog's bet: keep the typed substrate, let LLMs do the reasoning. Same architecture, different targets, finally tractable. Worth claiming the lineage; worth distinguishing the bet.
-
-## Knowledge-acquisition bottleneck (the structural reason hand-authored schemas didn't scale)
+### Knowledge-acquisition bottleneck (the structural reason hand-authored schemas didn't scale)
 
 Buchanan and Feigenbaum. *Rule-based expert systems: the MYCIN experiments of the Stanford Heuristic Programming Project.* Addison-Wesley, 1984.
 Hayes-Roth, Waterman, Lenat (eds). *Building Expert Systems.* Addison-Wesley, 1983.
@@ -121,27 +121,49 @@ LLMs change the cost structure on the two specific surfaces that killed expert s
 
 This is the substantive content of the "tractability is sufficient" claim. The architecture worked then; the cost structure didn't.
 
+---
+
+## Tier 2 — cite to distinguish
+
+Same architecture, different bet. Useful for showing the lineage and where this work explicitly disagrees.
+
+### OpenCog / Hyperon (Goertzel et al.)
+
+Cite to *distinguish*, not to align. Goertzel's patternist architecture (AtomSpace + PLN + MOSES + ECAN) had the right architectural intuition — typed substrate that metabolizes — and the wrong bet. Tried to do symbolic *reasoning* (PLN) when statistical learning was about to dominate. Failed for the bitter-lesson reason.
+
+Hybrid loops invert OpenCog's bet: keep the typed substrate, let LLMs do the reasoning. Same architecture, different targets, finally tractable. Worth claiming the lineage; worth distinguishing the bet.
+
+---
+
 ## A note on naming
 
 This repository uses "hybrid loops" as the working name for the pattern. The broader field has no settled name; adjacent terms with partial coverage include "compound AI systems" (Zaharia et al., BAIR 2024), "generalization shaping" (wesen), "schemaed cognition" (this repo, earlier draft, retired), "structured introspection" (informal). Citing the pattern by *any* of these names is fine; "hybrid loops" is the in-house term, not a claim of universal nomenclature.
 
-## Burroughs / Gysin: The Third Mind
+---
+
+## Tier 3 — further reading / orientation
+
+Loosely related citations useful for orienting readers from adjacent fields. Not load-bearing for any defense of the architecture; cite when the audience comes from these traditions and benefits from the pointer.
+
+### Burroughs / Gysin: The Third Mind
 
 Burroughs and Gysin. *The Third Mind*. 1978.
 
 Cite when discussing the social/team version of hybrid loops. The third mind was the emergent entity from two minds collaborating; a team-shared substrate with periodic metabolism phases becomes that emergent entity in the AI era. The agency criterion is the load-bearing distinguisher between "passive store" (not a third mind) and "third mind proper."
 
-## Engelbart: Augmenting Human Intellect
+### Engelbart: Augmenting Human Intellect
 
 Engelbart, Douglas. *Augmenting Human Intellect: A Conceptual Framework*. 1962.
 
 Cite when discussing collective IQ / shared external substrate. Engelbart's vision of structured shared artifacts as collective-intelligence amplifier never fully shipped because the substrate was too expensive to build and maintain. LLMs as the substrate-authoring layer change that cost structure. Team-shared collective-IQ deployments are closer to Engelbart's vision than to Burroughs's.
 
-## Active inference / predictive coding (Friston et al.)
+### Active inference / predictive coding (Friston et al.)
 
 Friston, Karl. *The free-energy principle: a unified brain theory?*. Nature Reviews Neuroscience, 2010.
 
 Loosely relevant. Hybrid loops have a flavor of bidirectional inference (top-down predictions constrain bottom-up perception, and vice versa). Don't lean on this citation hard — the formal connection is thin — but it's a useful pointer for readers from cognitive science.
+
+---
 
 ## What is conjectured beyond cited prior art
 

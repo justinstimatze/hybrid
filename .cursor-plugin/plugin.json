@@ -1,7 +1,7 @@
 {
   "name": "hybrid-loops",
   "version": "0.1.0",
-  "description": "A design pattern + skill + working MCP server for the specific places in any project where an LLM doing fuzzy semantic judgment needs typed structure for downstream decisions.",
+  "description": "A design pattern + skill + three working MCP servers for the specific places in any project where an LLM doing fuzzy semantic judgment needs typed structure for downstream decisions.",
   "author": {
     "name": "Justin Stimatze",
     "url": "https://github.com/justinstimatze"

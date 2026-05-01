@@ -4,12 +4,13 @@
 // Append-only event log at $CAL_LOG_PATH (default: ~/.cal_log/calibration.jsonl).
 //
 // Six tools:
-//   predict(loop, input_hash, prediction, model_id, ...) -> {prediction_id, verdict_due_by}
-//   resolve(prediction_id, verdict, verdict_source) -> resolved record
-//   hit_rate(loop, window_days) -> {hit_rate, total_resolved, verdict_breakdown}
-//   list_pending(loop?, limit) -> unresolved predictions ordered by due date
-//   list_recent(loop?, limit) -> recent predictions, most recent first
-//   stats() -> per-loop summary across all predictions
+//
+//	predict(loop, input_hash, prediction, model_id, ...) -> {prediction_id, verdict_due_by}
+//	resolve(prediction_id, verdict, verdict_source) -> resolved record
+//	hit_rate(loop, window_days) -> {hit_rate, total_resolved, verdict_breakdown}
+//	list_pending(loop?, limit) -> unresolved predictions ordered by due date
+//	list_recent(loop?, limit) -> recent predictions, most recent first
+//	stats() -> per-loop summary across all predictions
 //
 // Stdio transport. The hybrid claim: an evaluator that can't show its hit-rate is theater.
 package main
