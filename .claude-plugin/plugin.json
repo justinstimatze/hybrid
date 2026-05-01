@@ -1,7 +1,7 @@
 {
   "name": "hybrid-loops",
-  "version": "0.1.0",
-  "description": "A design pattern + skill + three working MCP servers for the specific places in any project where an LLM doing fuzzy semantic judgment needs typed structure for downstream decisions. Diagnostic-first; domain-agnostic. Ships cal_log (calibration logger), metacog (cognitive-bias auditor), and schemaforge (compress+verify schema discovery) primitives.",
+  "version": "0.2.0",
+  "description": "Hybrid loops: a design pattern where LLM judgment and deterministic code alternate in a cycle that's mutually generative — each half produces the working surface the other operates over. Stacks at runtime AND during development. The plugin ships the diagnostic-first skill and the library of named graph-shapes; reference MCP servers (cal_log, metacog, schemaforge) live in the repo as forkable starter kits but aren't bundled into the install.",
   "author": {
     "name": "Justin Stimatze",
     "url": "https://github.com/justinstimatze"
@@ -19,34 +19,5 @@
     "calibration",
     "compound-ai-systems",
     "generalization-shaping"
-  ],
-  "mcpServers": {
-    "cal_log": {
-      "command": "go",
-      "args": [
-        "-C",
-        "${CLAUDE_PLUGIN_ROOT}/mcp_servers/cal_log",
-        "run",
-        "."
-      ]
-    },
-    "metacog": {
-      "command": "go",
-      "args": [
-        "-C",
-        "${CLAUDE_PLUGIN_ROOT}/mcp_servers/metacog",
-        "run",
-        "."
-      ]
-    },
-    "schemaforge": {
-      "command": "go",
-      "args": [
-        "-C",
-        "${CLAUDE_PLUGIN_ROOT}/mcp_servers/schemaforge",
-        "run",
-        "."
-      ]
-    }
-  }
+  ]
 }

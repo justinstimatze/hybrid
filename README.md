@@ -1,131 +1,163 @@
-# hybrid
+# hybrid — a design pattern for LLM-and-code cycles
 
-A design pattern + Claude Code plugin for the **specific places in any project** where an LLM doing fuzzy semantic judgment needs to feed structured decisions downstream. Ships a diagnostic skill, three working MCP servers (calibration logger, cognitive-bias auditor, schema-discovery loop), and stub manifests for other coding agents.
+**A cycle, not a pipeline.** Concretely: a tool that watches a recurring stream of soft input — agent traces, evaluator outputs, meeting transcripts, knowledge-base entries — labels each new item against a curated vocabulary, and flags when a pattern you said you'd address recurs. LLM extracts (lens) → typed records accumulate (substrate) → deterministic code filters and ranks (gate) → LLM reasons over the filtered slice (reasoner) → notification or action lands. Each new item becomes input for the next turn's lens.
 
-## What's in it for you
+That's a *hybrid loop*. The design pattern places LLM judgment and deterministic code in alternating layers that *mutually generate each other's working surface* — not just constraining each other, but producing the very inputs the other half operates over. The LLM generates typed records (and often the schema, notation, or code those records live in). The deterministic layer takes those records and produces filtered, scored, ranked context that becomes the next LLM call's input. Each half makes the other possible.
 
-If you're building anything where an LLM reads non-deterministic content (transcripts, dialogues, plans, documents, screenshots, behavior logs) and produces decisions or recommendations another part of the system acts on, you probably have **0-3 specific places** where the architecture matters. This repo helps you find those places and design what goes there:
+```mermaid
+flowchart LR
+    classDef llm fill:#fff4d6,stroke:#b8860b,color:#000
+    classDef code fill:#d6e9ff,stroke:#1e6ab8,color:#000
+    classDef data fill:#e8e8e8,stroke:#666,color:#000
 
-- **Typed schemas** that capture LLM judgments as structured records
-- **Deterministic gates** that handle restraint, scoring, ranking — what LLMs are bad at
-- **Calibration logs** that track whether your evaluators actually work (the `cal_log` MCP server, included)
-- **Cognitive-bias self-audit** on substrate structure (the `metacog` MCP server, included)
-- **Schema discovery** for finding dense notations over a corpus via compress+verify (the `schemaforge` MCP server, included)
-- **Anti-pattern detection** so you don't over-apply the architecture where it doesn't fit
+    soft[(soft input<br/>transcript / doc / event)]:::data
+    lens["LENS<br/>LLM extracts"]:::llm
+    sub[(SUBSTRATE<br/>typed records)]:::data
+    gate["GATE<br/>code: filter / score / rank"]:::code
+    reason["REASONER<br/>LLM consumes substrate"]:::llm
+    action["ACTION<br/>code: apply / dispatch"]:::code
 
-The skill is **diagnostic-first** — most of any project isn't this pattern, and identifying which part is (and which isn't) is half the value.
+    soft --> lens
+    lens --> sub
+    sub --> gate
+    gate --> reason
+    reason --> action
+    action -. new content .-> soft
+```
+
+Yellow = LLM acts. Blue = code acts. Grey = data flowing between. Two meta-layers close additional loops: *calibration* (predict + verdict log per evaluator — does the lens actually work?) and *metabolism* (substrate-wide audit — is the accumulated record drifting?).
+
+## What this project actually is
+
+What you get from reading this repo: a vocabulary for naming recurring shapes in LLM-and-code systems, a Claude Code skill that auto-triggers when you describe one of those shapes, and pointers to working repos exemplifying each shape.
+
+The skill is diagnostic-first — most projects don't need this pattern, and the skill tells Claude when not to use it. When a project does need it, the skill points at a library of recognizable shapes (RAG, ReAct, codegen-with-verification, multi-agent panels, the canonical 5-role hybrid loop, dev-time critique loops, knowledge-base auditors, plus a couple of cross-domain metaphors for the shape) so the design conversation has somewhere to start.
+
+The framework's actual content is the *disciplines* the new block type (LLMs as fuzzy pattern mappers) requires beyond the conventional von-Neumann graph algebra: per-block calibration, context-as-code as load-bearing infrastructure, and the dev-time hybrid loop wrapping the runtime. These are named in [`THE_CASE.md`](skills/hybrid-loops/references/THE_CASE.md).
 
 ## Who it's for
 
-- Solo developers and small teams building tools that involve LLM judgment
-- AI engineers shipping production LLM features who need typed observability
-- Domain experts (teachers, advocates, writers, coaches, anyone who makes repeated judgments) who want personal typed-judgment tools rather than chatbots
+- AI engineers shipping production LLM features. The framework provides a unifying vocabulary for what DSPy / LangGraph / AutoGen / pydantic each implement pieces of, and names the disciplines those tools leave open: calibration, context-as-code, dev-time loops.
+- Solo developers and small teams building tools that involve LLM judgment, who haven't internalized the agent-framework ecosystem yet and want a starting model.
 
 ## Install — Claude Code
 
-**Prerequisites**:
-- Go 1.21+ on `$PATH` (the MCP servers compile and run via `go run`).
-- `ANTHROPIC_API_KEY` in your environment if you want to use `schemaforge` tools (the other two servers don't need it).
+The skill is markdown; install it however you prefer.
+
+**Symlink (simplest, recommended for solo use):**
 
 ```bash
-# Add this repo as a marketplace, then install the plugin
+ln -s /path/to/hybrid/skills/hybrid-loops ~/.claude/skills/hybrid-loops
+```
+
+**Marketplace install (discoverable, recommended for sharing):**
+
+```bash
 /plugin marketplace add justinstimatze/hybrid
 /plugin install hybrid-loops@hybrid-loops
 ```
 
-Plugin installs the skill (`hybrid-loops`) plus three MCP servers (auto-registered): `cal_log`, `metacog`, and `schemaforge`. Skill auto-triggers on relevant prompts; tools are callable as `mcp__cal_log__*`, `mcp__metacog__*`, `mcp__schemaforge__*`.
+Either path gives you the same thing: the `hybrid-loops` skill auto-triggers on relevant prompts. To confirm install worked, type something like *"build me a tool that watches my evaluator outputs and flags when a regression pattern recurs"* — the skill should activate and start asking diagnostic questions about surfaces, scope, and shape. If it doesn't, the install didn't take — file a GitHub issue.
 
-The marketplace command requires this GitHub repo to be reachable. While it's still under early review the repo may be private — in that case clone the repo and use the local-path forms: `/plugin marketplace add /path/to/hybrid` and `/plugin install hybrid-loops@hybrid-loops`.
-
-If you prefer just the skill without the plugin scaffolding: symlink `skills/hybrid-loops/` into `~/.claude/skills/hybrid-loops/`.
+The marketplace command requires this GitHub repo to be reachable. For forks or local development, use the local-path forms: `/plugin marketplace add /path/to/hybrid` and `/plugin install hybrid-loops@hybrid-loops`.
 
 ## Install — other agents
 
-The skill content and MCP server are model-agnostic. Stub manifests are included for OpenAI Codex, Cursor, and Gemini — see `CROSS_AGENT.md`. The maintainer's primary platform is Claude Code; PRs from users on other agents are welcome.
+The skill content is model-agnostic. Stub manifests are included for OpenAI Codex, Cursor, and Gemini — see `CROSS_AGENT.md`. The maintainer's primary platform is Claude Code; PRs from users on other agents are welcome.
+
+## Where to start reading
+
+If you arrived here cold and want one entry point: [`SKILL.md`](skills/hybrid-loops/SKILL.md) is the operational center.
+
+The reference docs each have a different reader in mind:
+
+| if you... | read |
+|---|---|
+| are skeptical this is anything more than 1945 von Neumann | [`THE_CASE.md`](skills/hybrid-loops/references/THE_CASE.md) (the algebra-vs-alphabet-vs-disciplines argument) |
+| want to scaffold a hybrid-loop project by analogy | [`BLOCK_GRAPHS.md`](skills/hybrid-loops/references/BLOCK_GRAPHS.md) (catalog of recognizable compositions with Mermaid diagrams) |
+| want the algebra of the eight primitive blocks | [`BUILDING_BLOCKS.md`](skills/hybrid-loops/references/BUILDING_BLOCKS.md) |
+| think this is just DSPy / LangGraph / AutoGen / pydantic with extra theory | [`AGENT_FRAMEWORKS.md`](skills/hybrid-loops/references/AGENT_FRAMEWORKS.md) (per-tool comparison + adjacent ecosystems) |
+| are doing a lit review | [`PRIOR_ART.md`](skills/hybrid-loops/references/PRIOR_ART.md) (4-tier citation index) |
+| want to think about composition past v0 | [`STACKING.md`](skills/hybrid-loops/references/STACKING.md) (runtime vs dev-time stacking) |
+
+## Runnable instances in the wild
+
+The pattern is illustrated in working repos rather than via a canonical example in this one — diagnostic-first means there's no single "hello world" hybrid loop; the right shape depends on the surface, and the surface is project-specific. **If you only have time to read one, start with [winze](https://github.com/justinstimatze/winze)**: it's a knowledge base that maintains its own model of reality, audits itself for cognitive biases, predicts where it's wrong, and tracks whether it's right — three of the framework's roles in one project, end-to-end.
+
+Then reach for the entry in [`BLOCK_GRAPHS.md`](skills/hybrid-loops/references/BLOCK_GRAPHS.md) that matches your project's surface, and pick from the list below for shape.
+
+### Maintainer's projects
+
+The shape characterizations below are this writeup's reading of the maintainer's own work:
+
+- **[winze](https://github.com/justinstimatze/winze)** — *knowledge-base-auditor + calibration*. A KB that maintains its own model of reality, audits itself for cognitive biases, predicts where it's wrong, tracks whether it's right. The most direct on-pattern instance.
+- **[defn](https://github.com/justinstimatze/defn)** — *knowledge-base-auditor* applied to Go code. Round-trips between Go AST and SQL view; deterministic AST audits flag structural issues; LLM proposes edits to source.
+- **[slimemold](https://github.com/justinstimatze/slimemold)** — *conversation-topology hook*. Claude Code hook that extracts claims per turn, runs a graph topology audit, injects a suggested response into the next turn's context.
+- **[effigy](https://github.com/justinstimatze/effigy)** — *dense-notation NPC*. LLM authors character notation once at dev-time; deterministic context assembly per runtime turn; LLM consumes the assembled context to generate output.
+- **[gemot](https://github.com/justinstimatze/gemot)** — *adversarial-panel review*. Structured deliberation MCP server for multi-agent coordination.
+- **[ismyaialive](https://github.com/justinstimatze/ismyaialive)** — *lens + substrate-as-vocabulary*. Identifies patterns in AI conversations (sycophancy, validation cascades) against published research codebooks.
+- **[drivermap](https://github.com/justinstimatze/drivermap)** — *substrate-as-vocabulary* in pure form. Behavioral-mechanisms KB; agents consume the typed library to predict and verbalize human behavior.
+- **[score](https://github.com/justinstimatze/score)** — *coach's typed-move-library* applied to immersive-experience design. 356-play library + structural linter + participant planner + Miro sidebar app.
+- **[adit-code](https://github.com/justinstimatze/adit-code)** — *structural-analysis substrate*. Deterministic metrics on AI-edited codebases identify high-friction files; LLM-readable findings tell you what to refactor.
+- **[lucida](https://github.com/justinstimatze/lucida)** — *ambient lens*. Passive Claude Code observer; LLM extracts viz-worthy structures from conversation; deterministic renderer mints Vega/Mermaid/SVG outputs.
+- **[gastown](https://github.com/justinstimatze/gastown)** — *multi-agent orchestration*. Workspace manager for coordinating 20–30 agents with persistent state and a three-tier watchdog (also cited in `references/PRIOR_ART.md` Tier 2).
+- **[buddy](https://github.com/justinstimatze/buddy)** — coding companion (tamagotchi-style: 21 species, persistent personality, MCP-client-agnostic). The maintainer's contribution is essentially a port of slimemold's hook architecture into the companion shell.
+
+### Adjacent practitioner work — Manuel Odendahl ("wesen")
+
+This writeup is meaningfully shaped by **wesen's** prior work. His stack at [github.com/go-go-golems](https://github.com/go-go-golems) and his writing at [the.scapegoat.dev](https://the.scapegoat.dev) directly influenced how this pattern is described — the *generalization shaping* framing, the use of "diary" over "log," "mapping" / "interface-mapping" as the right way to describe what an LLM does at the systems-design level, and "substrate" for typed event-streaming layers are all his. He'd describe his own projects in his own vocabulary — these aren't instances of *this writeup's* taxonomy, they're independent practitioner work in the same broader space, and they reward reading on their own terms.
+
+Worthwhile entry points to his ecosystem (linked here as a friendly pointer; his framing lives in his own READMEs and essays):
+
+- **[geppetto](https://github.com/go-go-golems/geppetto)** — Go LLM framework with a typed-step abstraction underpinning much of his stack
+- **[pinocchio](https://github.com/go-go-golems/pinocchio)** — CLI/REPL frontend; YAML-based prompt-library-with-metadata
+- **[go-go-agent](https://github.com/wesen/2026-04-29--go-go-agent)** — terminal agent with an explicit evidence database for replay and inspection
+- **[Codex-Reflect-Skill](https://github.com/wesen/Codex-Reflect-Skill)** — runs Codex over past Codex sessions to surface patterns and propose new skills
+- **[sessionstream](https://github.com/go-go-golems/sessionstream)** — typed event-streaming substrate
+- **[docmgr](https://github.com/go-go-golems/docmgr)** — structured document manager for LLM-assisted workflows
+
+For the full credit and complementarity-with-this-writeup account, see [`PRIOR_ART.md`](skills/hybrid-loops/references/PRIOR_ART.md) Tier 1.
 
 ## What's in the repo
 
 ```
 hybrid/
+├── README.md
+├── skills/hybrid-loops/
+│   ├── SKILL.md            the skill (one-screen TL;DR + 5-phase diagnostic)
+│   └── references/         the framework's actual content (loaded on demand by the skill)
 ├── .claude-plugin/         Claude Code plugin + marketplace manifests
-├── skills/
-│   └── hybrid-loops/
-│       ├── SKILL.md           the skill (one-screen TL;DR + 5-phase diagnostic)
-│       └── references/        loaded on demand
-├── mcp_servers/
-│   ├── cal_log/            calibration logger (Go, 8 tests passing)
-│   ├── metacog/            cognitive-bias auditor (Go, 20 tests passing)
-│   └── schemaforge/        schema-discovery (compress+verify) loop (Go, 18 tests passing, pilot run)
-├── .codex-plugin/          Codex stub
-├── .cursor-plugin/         Cursor stub
-├── gemini-extension.json   Gemini stub
-├── CROSS_AGENT.md          portability notes
-└── README.md               (this file)
+├── .codex-plugin/          Codex stub (community PRs welcome)
+├── .cursor-plugin/         Cursor stub (community PRs welcome)
+├── gemini-extension.json   Gemini stub (community PRs welcome)
+└── CROSS_AGENT.md          portability notes
 ```
 
-## What's in the primitives
-
-Three stdio MCP servers, one per shippable conjecture-falsifier:
-
-- **`cal_log`** — calibration logger. Append-only JSONL at `$CAL_LOG_PATH` (default `~/.cal_log/calibration.jsonl`). Tools: `predict`, `resolve`, `hit_rate`, `list_pending`, `list_recent`, `stats`. 8/8 unit tests. See `mcp_servers/cal_log/README.md`.
-- **`metacog`** — cognitive-bias auditor. Nine bias-signature checks against any typed substrate (provenance HHI as availability-heuristic proxy, predicate entropy as base-rate-neglect proxy, etc.). Tools: `audit`, `audit_one`, `list_auditors`. 20/20 unit tests. See `mcp_servers/metacog/README.md`.
-- **`schemaforge`** — schema-discovery (compress+verify) loop. Designs dense notation for a corpus, translates items into it, expands back, scores roundtrip, evolves across rounds. Tools: `design_notation`, `compress`, `expand`, `evaluate_roundtrip`, `score_round`, `run_round`. 18/18 unit tests, pilot run on a 10-item non-program corpus (3 rounds, results in `mcp_servers/schemaforge/README.md`). Requires `ANTHROPIC_API_KEY`.
+The repo is markdown + manifests. There's no shipped code beyond the skill itself; the disciplines are illustrated by the runnable instances above (maintainer's other repos and wesen's), not by anything in this directory.
 
 ## Status
 
-**Research output, not a product.** Documents a design pattern, ships a working skill + three working MCP servers. Nothing is sold and nothing is trying to be a SaaS. The pattern itself doesn't sell; specific tools built with it might.
-
-The four claims about what's plausibly new are framed as **conjectures with named falsifying experiments** — see "Conjectures" below. Each of `cal_log`, `metacog`, `schemaforge` is the runnable primitive for one conjecture; running them at scale on real projects is the experiment. As of April 2026, only Conjecture 3 has been partially exercised — see `mcp_servers/schemaforge/README.md` for the pilot results.
+**Practitioner notes, not a research artifact.** Not sold, not a SaaS. The maintainer also runs [gemot](https://github.com/justinstimatze/gemot), a commercial product built with this perspective. Audience is overwhelmingly AI engineers.
 
 ## Naming
 
-"Hybrid loops" is the **working name in this repository**, not a claim of universal nomenclature. The broader field has no settled name. Adjacent terms with partial coverage:
+"Hybrid loops" is the *working name in this repo*, not a claim of universal nomenclature. The broader field has no settled name. Adjacent terms with partial coverage:
 
-- **"Compound AI systems"** (Zaharia et al., BAIR 2024) — broader umbrella; this pattern is one shape inside it
-- **"Generalization shaping"** (Manuel Odendahl / wesen, 2026) — the design principle inside hybrid loops; closest practitioner framing
-- **"Structured introspection"** — informal practitioner usage; partial overlap
+- *"Compound AI systems"* (Zaharia et al., BAIR 2024) — broader umbrella; this pattern is one shape inside it
+- *"Generalization shaping"* (Manuel Odendahl / wesen, 2026) — the design principle inside hybrid loops; closest practitioner framing
+- *"Structured prompt-driven development"* (Patel/Sharif/Fowler, martinfowler.com 2026) — closest engineering-discipline cousin in current practitioner literature
+- *"Compound engineering"* (Klaassen, Every.to 2026) — adjacent practitioner methodology
+- *"Cognitive Architectures for Language Agents" / CoALA* (Sumers et al., NeurIPS 2024) — academic taxonomy
 
-The pattern can be cited by any of these names.
-
-A separate term used here: **"third mind"** — a *deployment context* where the substrate is shared between collaborators (and possibly an AI), distinct from a personal external substrate or one's own thinking. Burroughs/Gysin's 1978 sense (the emergent entity in collaborative writing) extended to substrates that themselves metabolize. **Third mind is a deployment shape; hybrid loops is the architectural pattern.**
-
-## Conjectures
-
-Four conjectures about what this work might contribute beyond the cited prior art. **Each is testable; only Conjecture 3 has been partially exercised so far.**
-
-### Conjecture 1 — per-evaluator calibration is undershipped
-
-*Claim.* A standalone primitive that logs predictions and verdicts per typed LLM evaluator, with rolling-window hit-rate aggregation, would generalize across hybrid-loop projects and meaningfully change development decisions.
-
-*Falsifying experiment.* Use the `cal_log` MCP server (in this repo) on 3+ existing projects of varied shape; measure over 60 days whether the hit-rate signal changes any concrete development decision (prompt change, schema bump, gate adjustment). If hit-rate is collected but no decisions are made on it, the primitive is theater.
-
-### Conjecture 2 — cognitive-bias self-audit on substrate structure generalizes
-
-*Claim.* Cognitive-bias signature checks (provenance HHI as availability-heuristic proxy, irrelevant:challenged ratio as survivorship-bias proxy, predicate entropy as base-rate-neglect proxy, etc.) work on any typed substrate, not only the substrate they were prototyped on.
-
-*Falsifying experiment.* Run the `metacog` MCP server (in this repo) on 3+ independent typed substrates of varied shape; have project owners mark which triggered findings correspond to actual structural problems vs. false positives. If false-positive rate is high or findings don't track owner intuition, the metrics are substrate-specific rather than substrate-general. Untested as of April 2026.
-
-### Conjecture 3 — schema discovery extends to non-program domains
-
-*Claim.* Compress+verify schema-discovery loops (DreamCoder/LILO descendants) can discover useful schemas for non-program domains — humor structures, dramatic arcs, behavioral mechanisms, AI-conversation patterns — not only for code or notation for code.
-
-*Falsifying experiment.* Run the `schemaforge` MCP server (in this repo) on a non-program corpus over multiple rounds; check that mean expansion ratio and roundtrip correctness behave like they do on program corpora — ER climbs while correctness stays above ~0.7. **Partial result (April 2026):** a 10-item naturalistic-prose corpus (memes serialized to prose with 11 latent fields) produced ER 15.9–45.6x at correctness 0.71–0.89 in round 1, depending on which notation philosophy the model picked. Over 3 rounds with a conservative evolve prompt, correctness drifted up modestly while notation stayed stable. Positive on this single corpus; replication on 2+ more independent non-program corpora is needed before declaring the conjecture supported. See `mcp_servers/schemaforge/README.md` for full pilot writeup, including the round-2 regression caused by the original evolve prompt.
-
-### Conjecture 4 — there is unmet demand for domain-applied substrate-as-vocabulary tooling outside engineering
-
-*Claim.* Users in non-engineering domains (coaching, teaching, parenting, advocacy, creative work) would benefit from typed-repertoire-with-restraint tools and don't currently have them.
-
-*Falsifying experiment.* Build one such tool (e.g. the teacher's intervention tracker or the coach's typed library from `skills/hybrid-loops/references/EXAMPLES.md`); ship to 5+ domain users; measure 30+ day retention. If retention is below baseline rates for similar consumer tools, the demand isn't there or the tool is wrong-shaped.
-
----
-
-These are the open ground after acknowledging the cited prior art. **The next material work is running these experiments, not making more architectural claims.** All three runnable primitives are shipped; the C-3 pilot is the first datapoint.
+The pattern can be cited by any of these names. See [`AGENT_FRAMEWORKS.md`](skills/hybrid-loops/references/AGENT_FRAMEWORKS.md) and [`PRIOR_ART.md`](skills/hybrid-loops/references/PRIOR_ART.md) for full positioning.
 
 ## Acknowledgments
 
-This writeup is meaningfully shaped by **Manuel Odendahl** ("wesen"), whose work in this design space at [github.com/go-go-golems](https://github.com/go-go-golems) and writing at [the.scapegoat.dev](https://the.scapegoat.dev) directly informed the pattern as documented here. The "generalization shaping" framing, the deliberate use of "diary" over "log," the term "substrate" for typed event-streaming layers, and the Blackboard-Systems architectural reading are all his. Any public presentation of hybrid loops should credit his contributions; a fuller account is in `skills/hybrid-loops/references/PRIOR_ART.md`.
+Wesen's shaping influence is credited where his projects are linked under "Runnable instances in the wild" above; full attribution is in [`PRIOR_ART.md`](skills/hybrid-loops/references/PRIOR_ART.md).
 
-Thanks also to the published work of [DreamCoder](https://github.com/ellisk42/ec) (Ellis et al., 2021), [LILO](https://github.com/gabegrand/lilo) (Grand et al., 2024), [Voyager](https://github.com/MineDojo/Voyager) (Wang et al., 2023), and the [Polis](https://pol.is/) and [Talk to the City](https://github.com/AIObjectives/talktothe.city) projects, all referenced throughout the skill. Devine Lu Linvega ([100r.co](https://100r.co)) and the Hundred Rabbits collective inform the small-tools aesthetic that the deterministic-shell half of the pattern aspires to. Christopher Alexander's *A Pattern Language* (1977) is the structural reference for what the pattern *is* as a unit of design.
+The word *fuzzy* in *fuzzy pattern mapper* inherits a 60-year tradition through Lotfi Zadeh's soft-computing umbrella (fuzzy logic, neural nets, GAs, Bayesian nets, HMMs).
+
+Thanks also to the published work of [DreamCoder](https://github.com/ellisk42/ec) (Ellis et al., 2021), [LILO](https://github.com/gabegrand/lilo) (Grand et al., 2024), [Voyager](https://github.com/MineDojo/Voyager) (Wang et al., 2023), [DSPy](https://arxiv.org/abs/2310.03714) (Khattab et al., 2023), [CoALA](https://arxiv.org/abs/2309.02427) (Sumers et al., NeurIPS 2024), [Anthropic's Building Effective Agents](https://www.anthropic.com/engineering/building-effective-agents) (2024), and [Compound AI Systems](https://bair.berkeley.edu/blog/2024/02/18/compound-ai-systems/) (Zaharia et al., BAIR 2024). Devine Lu Linvega ([100r.co](https://100r.co)) and the Hundred Rabbits collective inform the small-tools aesthetic the deterministic-shell half of the pattern aspires to. Christopher Alexander's *A Pattern Language* (1977) is the structural reference for what the pattern *is* as a unit of design.
 
 ## License
 

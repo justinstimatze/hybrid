@@ -1,12 +1,12 @@
 {
   "name": "hybrid-loops",
   "owner": "justinstimatze",
-  "description": "Hybrid loops — design pattern, Claude Code skill, and three working MCP servers (cal_log, metacog, schemaforge) for the typed-substrate places in LLM-judgment systems.",
+  "description": "Hybrid loops — a design pattern where LLM judgment and deterministic code form a mutually-generative cycle, not a pipeline. Each half produces the next half's working surface. Diagnostic-first skill + library of named graph-shapes.",
   "plugins": [
     {
       "name": "hybrid-loops",
-      "description": "Find and design hybrid-loop surfaces in any complex project. Diagnostic-first skill plus three MCP servers: cal_log (per-evaluator prediction logging with hit-rate aggregation), metacog (cognitive-bias auditor over typed substrates), schemaforge (compress+verify schema discovery loop).",
-      "version": "0.1.0",
+      "description": "Design surfaces where LLM judgment and deterministic code alternate as mutually-generative layers — each producing the working surface the other operates over. Lens → substrate → gate → reasoner → action, with calibration and metabolism closing the loop. Stacks at runtime and during development. Diagnostic-first skill plus a library of recognizable hybrid-loop block-graphs (RAG, ReAct, codegen-with-verification, multi-agent panels, dev-time critique loops, knowledge-base auditors, and more).",
+      "version": "0.2.0",
       "source": ".",
       "strict": true
     }

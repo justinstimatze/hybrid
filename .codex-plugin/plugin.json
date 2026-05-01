@@ -1,7 +1,7 @@
 {
   "name": "hybrid-loops",
   "version": "0.1.0",
-  "description": "A design pattern + skill + three working MCP servers for the specific places in any project where an LLM doing fuzzy semantic judgment needs typed structure for downstream decisions.",
+  "description": "Hybrid loops: a design pattern where LLM judgment and deterministic code alternate in a mutually-generative cycle — each half produces the next half's working surface. Diagnostic skill plus three MCP servers for the recurring primitives.",
   "author": {
     "name": "Justin Stimatze",
     "url": "https://github.com/justinstimatze"

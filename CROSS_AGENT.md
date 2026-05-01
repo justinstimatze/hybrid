@@ -1,6 +1,6 @@
 # Cross-agent portability
 
-This repository targets **Anthropic Claude Code** as the primary platform. The skill content (`skills/hybrid-loops/`) and the three MCP servers under `mcp_servers/` (cal_log, metacog, schemaforge) are themselves model-agnostic — what varies between agent ecosystems is the manifest format and discovery path.
+This repository targets **Anthropic Claude Code** as the primary platform. The pattern itself — alternating LLM and deterministic layers in a mutually-constraining cycle — is agent-agnostic; the skill content (`skills/hybrid-loops/`) is model-agnostic. What varies between agent ecosystems is the manifest format and discovery path.
 
 Stub manifests for other major coding agents are included as a friendly gesture; they are not actively tested and may need adjustment to match each agent's current plugin spec.
 
@@ -54,7 +54,6 @@ Single-file extension manifest at the repo root. Same caveat: stub. **PRs welcom
 
 - `skills/hybrid-loops/SKILL.md` — the skill body, agent-agnostic
 - `skills/hybrid-loops/references/*.md` — reference files, agent-agnostic
-- `mcp_servers/cal_log/` — standard MCP server (stdio JSON-RPC over the Anthropic-defined Model Context Protocol). Any agent supporting MCP can wire it up; the install path differs per agent.
 
 ## What's not (yet) portable
 
