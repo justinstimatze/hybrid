@@ -13,12 +13,21 @@ This is research-stage software. The pattern itself is the artifact; the primiti
 A `Makefile` at the repo root mirrors what CI does. Run before pushing:
 
 ```bash
-make check       # gofmt -l + go vet + go test -race across all three servers
+make check       # gofmt + vet + golangci-lint + go test -race across all servers
 make fmt         # auto-fix formatting (gofmt -w)
+make lint        # golangci-lint only
 make test        # tests without -race, faster for iteration
 ```
 
-`make check` matches CI exactly **except for the Go-version matrix** — CI runs against 1.21/1.22/1.23, local uses your installed Go. Single-version `check` catches the vast majority of issues.
+`make check` matches the CI workflow exactly. Both pin to the Go version declared in each module's `go.mod` (currently 1.25.5).
+
+`make lint` requires `golangci-lint` installed locally:
+
+```bash
+go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest
+```
+
+Lint configuration lives at `.golangci.yml` in the repo root. CI also runs **CodeQL** (security analysis, weekly cron) and **Dependabot** (weekly updates for Go modules and GitHub Actions).
 
 The schemaforge integration test (`pilot_test.go`) hits the Anthropic API and is build-tagged behind `-tags pilot`. It's skipped by default. To run it:
 

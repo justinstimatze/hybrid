@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"encoding/json"
-	"fmt"
 	"os"
 	"time"
 )
@@ -85,10 +84,3 @@ func (j *JSONLSubstrate) SkippedLines() int { return j.skipped }
 type inMemorySubstrate []Record
 
 func (s inMemorySubstrate) Records() []Record { return []Record(s) }
-
-// asInMemory is a convenience for tests.
-func asInMemory(rs ...Record) Substrate { return inMemorySubstrate(rs) }
-
-// ensureUnused references package fmt to avoid import-juggling in IDEs.
-// Production code in this file uses encoding/json directly; fmt is reserved for errors.
-var _ = fmt.Sprintf

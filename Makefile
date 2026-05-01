@@ -1,24 +1,23 @@
 SERVERS := cal_log metacog schemaforge
 
-.PHONY: check fmt vet test test-race ci-local clean help
+.PHONY: check fmt vet lint test test-race ci-local clean help
 
 # Default target.
 help:
 	@echo "Targets:"
-	@echo "  make check       — run the same gates CI runs (gofmt -l, vet, test -race) on all servers"
+	@echo "  make check       — run the same gates CI runs (gofmt, vet, lint, test -race) on all servers"
 	@echo "  make fmt         — auto-fix formatting (gofmt -w)"
 	@echo "  make vet         — go vet across all servers"
+	@echo "  make lint        — golangci-lint across all servers (uses .golangci.yml)"
 	@echo "  make test        — go test (no -race) across all servers, faster for iteration"
 	@echo "  make test-race   — go test -race across all servers (matches CI)"
 	@echo "  make ci-local    — alias for 'check', mirrors the CI workflow"
 	@echo
-	@echo "CI also runs against Go 1.21, 1.22, 1.23 — to replicate that matrix locally"
-	@echo "you need a multi-version setup (gvm, asdf, or containers). Single-version 'check'"
-	@echo "catches the vast majority of issues."
+	@echo "Lint requires golangci-lint installed locally. If absent, install with:"
+	@echo "  go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest"
 
-# 'check' is the gate to run before pushing. Matches CI exactly except for the
-# Go version matrix (which CI handles).
-check: gofmt-check vet test-race
+# 'check' is the gate to run before pushing. Matches CI exactly.
+check: gofmt-check vet lint test-race
 
 ci-local: check
 
@@ -41,6 +40,17 @@ vet:
 	@for s in $(SERVERS); do \
 		echo "==> go vet ./mcp_servers/$$s/..."; \
 		(cd mcp_servers/$$s && go vet ./...) || exit 1; \
+	done
+
+lint:
+	@command -v golangci-lint >/dev/null 2>&1 || { \
+		echo "golangci-lint not installed. Install with:"; \
+		echo "  go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest"; \
+		exit 1; \
+	}
+	@for s in $(SERVERS); do \
+		echo "==> golangci-lint run ./mcp_servers/$$s/..."; \
+		(cd mcp_servers/$$s && golangci-lint run --config $(CURDIR)/.golangci.yml ./...) || exit 1; \
 	done
 
 test:

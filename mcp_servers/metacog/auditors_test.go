@@ -6,23 +6,6 @@ import (
 	"time"
 )
 
-// helper to build a record quickly
-func rec(verdict string, summary string, prov []Provenance, edges []Edge, group, cluster string, complexity float64) Record {
-	return Record{
-		ID:      "r-" + verdict + "-" + summary[:min(len(summary), 4)],
-		Verdict: verdict, SummaryText: summary,
-		Provenance: prov, Edges: edges,
-		Group: group, Cluster: cluster, Complexity: complexity,
-	}
-}
-
-func min(a, b int) int {
-	if a < b {
-		return a
-	}
-	return b
-}
-
 // --- AuditConfirmationBias ---
 
 func TestConfirmationBias_TriggeredHighRate(t *testing.T) {

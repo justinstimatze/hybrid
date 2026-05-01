@@ -8,27 +8,23 @@ on:
 
 jobs:
   test:
-    name: ${{ matrix.server }} (Go ${{ matrix.go }})
+    name: ${{ matrix.server }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        go: ['1.21', '1.22', '1.23']
         server: [cal_log, metacog, schemaforge]
+    defaults:
+      run:
+        working-directory: mcp_servers/${{ matrix.server }}
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Go
-        uses: actions/setup-go@v5
+      - uses: actions/setup-go@v6
         with:
-          go-version: ${{ matrix.go }}
-
-      - name: Resolve module cache
-        working-directory: mcp_servers/${{ matrix.server }}
-        run: go mod download
+          go-version-file: mcp_servers/${{ matrix.server }}/go.mod
 
       - name: gofmt
-        working-directory: mcp_servers/${{ matrix.server }}
         run: |
           unformatted=$(gofmt -l .)
           if [ -n "$unformatted" ]; then
@@ -38,9 +34,13 @@ jobs:
           fi
 
       - name: go vet
-        working-directory: mcp_servers/${{ matrix.server }}
         run: go vet ./...
 
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v8
+        with:
+          working-directory: mcp_servers/${{ matrix.server }}
+          version: latest
+
       - name: Unit tests
-        working-directory: mcp_servers/${{ matrix.server }}
-        run: go test -race ./...
+        run: go test -race -count=1 -timeout 5m ./...
