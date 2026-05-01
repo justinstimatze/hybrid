@@ -2,7 +2,19 @@
 
 The recursive-composition trajectory: hybrid loops compose recursively until the system has so many layers of typed introspection between raw generation and final action that the action is overwhelmingly determined by structure rather than free generation. *"Back and forth forever until what's getting generated and run is on top of so many layers of meta guardrails it basically always does the right thing."*
 
+The reason stacking works at all is **mutual generation**: each layer doesn't just constrain the next, it *generates the working surface the next layer operates over*. The LLM writes typed records — and often writes the schema, notation, gate logic, or code those records live in. The deterministic layer aggregates and shapes those records into the next LLM call's input. Add a layer above and you get a critic-LLM reading transcripts of layer-N's behavior and writing patches that re-shape layers below. Each addition is another generative half of another loop.
+
 This file unpacks that claim — what it buys, what it costs, when it saturates, and the discipline required to make it work.
+
+## Two regimes: runtime and development-time
+
+Stacking shows up at two scales, and the discipline differs:
+
+**Runtime stacking** — multiple cycles fire per single user-facing decision. Latency-bound; token cost compounds multiplicatively in synchronous chains. Worth doing when the marginal layer's reliability gain exceeds the cost. Saturates fast.
+
+**Development-time stacking** — cycles wrap around the runtime, with humans (or LLMs) reading transcripts of runtime behavior and patching the deterministic layers below. *Not* latency-bound; cost is per-iteration not per-decision. The classic shape: a runtime engine + LLM player → transcript log (deterministic) → LLM-critic panel reads transcripts → structured findings (typed records) → patch plan (deterministic prioritization) → LLM writes code/schema/prompt changes → runtime picks up the change next turn. The development loop itself is a full hybrid loop wrapped around the runtime hybrid loop. **This is where most stacks live in practice** — the runtime stays one or two cycles deep while the development loop iterates across many runs.
+
+When someone says "we have a hybrid-loops architecture," they usually mean the runtime cycle. When the system actually works, it's often because there's a development loop above it that has been iterating for weeks or months.
 
 ## What stacking buys
 

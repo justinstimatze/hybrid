@@ -1,7 +1,7 @@
 {
   "name": "hybrid-loops",
   "version": "0.1.0",
-  "description": "Hybrid loops: a design pattern where LLM judgment and deterministic code alternate in a mutually-constraining cycle (lens → substrate → gate → reasoner → action, plus calibration and metabolism feedback). Diagnostic-first skill plus three MCP servers for the recurring primitives: cal_log (calibration logger), metacog (cognitive-bias auditor), schemaforge (compress+verify schema discovery).",
+  "description": "Hybrid loops: a design pattern where LLM judgment and deterministic code alternate in a cycle that's mutually generative as well as mutually constraining — each half produces the working surface the other operates over. Stacks at runtime AND during development (LLM-critic transcripts → patches → runtime). Diagnostic-first skill plus three MCP servers for the recurring primitives: cal_log, metacog, schemaforge.",
   "author": {
     "name": "Justin Stimatze",
     "url": "https://github.com/justinstimatze"

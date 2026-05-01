@@ -1,12 +1,14 @@
 # hybrid
 
-**A cycle, not a pipeline.** The *hybrid-loops* design pattern places fuzzy LLM judgment and deterministic code in **alternating, mutually-constraining layers** — each tightening the other. An LLM extracts → typed structure accumulates and constrains → deterministic gates do restraint, scoring, and ranking → another LLM reasons over the substrate → an action lands → calibration closes the loop on whether the evaluators actually worked → the substrate metabolizes as a whole.
+**A cycle, not a pipeline.** The *hybrid-loops* design pattern places LLM judgment and deterministic code in **alternating layers that mutually generate each other's working surface** — not just constraining each other, but *producing* the very inputs the other half operates over. The LLM generates typed records (and often the schema, notation, or code those records live in). The deterministic layer takes those records and generates filtered, scored, ranked context that becomes the next LLM call's input. Each half makes the other possible.
+
+The cycle: an LLM extracts → typed structure accumulates → deterministic gates filter, score, rank → another LLM reasons over the gated substrate → an action lands (often as new content the lens reads next turn) → calibration closes the loop on whether the evaluators actually worked → the substrate metabolizes as a whole.
 
 Most projects have **0-3 specific places** that warrant the full pattern. The skill in this repo helps find them and decline where it doesn't fit; the three MCP servers ship the primitives that recur once you do.
 
 ## What's in it for you
 
-If you're building anything where an LLM reads non-deterministic content (transcripts, dialogues, plans, documents, screenshots, behavior logs) and produces decisions or recommendations another part of the system acts on, you probably have one of those places. **Pure LLM** does fluent extraction but drifts and can't restrain itself. **Pure code** is unyielding but can't read the soft input. The shape that actually works is alternating layers: LLM where fluency matters, code where restraint matters, with **typed substrate** as the connective tissue between them. This repo helps you design what goes there:
+If you're building anything where an LLM reads non-deterministic content (transcripts, dialogues, plans, documents, screenshots, behavior logs) and produces decisions or recommendations another part of the system acts on, you probably have one of those places. **Pure LLM** does fluent extraction but drifts and can't restrain itself. **Pure code** is unyielding but can't read the soft input. **Pure pipeline** (LLM-then-code-then-done) misses the load-bearing trick: the LLM and the code keep generating new working surfaces for each other. This repo helps you design what goes at each surface:
 
 - **Typed schemas** that capture LLM judgments as structured records
 - **Deterministic gates** that handle restraint, scoring, ranking — what LLMs are bad at

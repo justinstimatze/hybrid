@@ -7,7 +7,9 @@ description: Find and design hybrid-loop surfaces in any project — places wher
 
 ## TL;DR (one screen)
 
-> A **cycle** of alternating LLM-and-code layers that mutually constrain each other. **LLMs bring fluency. Substrates bring discrimination. Code brings restraint.** The point isn't LLM-as-pipeline-stage. The point is *LLM-as-half-of-a-loop* — what one half can't do, the other carries.
+> A **cycle** of alternating LLM-and-code layers that **mutually generate each other's working surface** — not just constraining each other, but *producing the very inputs the other half operates over*. **LLMs bring fluency. Substrates bring discrimination. Code brings restraint.** The LLM writes typed records (often the schema/notation/code itself); the deterministic layer aggregates and shapes those records into the input the next LLM call sees. They don't just gate each other — they manufacture each other.
+>
+> The point isn't LLM-as-pipeline-stage. The point is *LLM-as-half-of-a-loop* — and at scale, *layered loops that wrap around each other.* Runtime: one cycle resolving one judgment. Development-time: a critique-patch loop wraps around the runtime, with an LLM-panel reading transcripts of runtime behavior and patching the deterministic layer (or the lens prompts, or the substrate schema) below. The system grows by stacking such loops.
 >
 > 5-phase diagnostic:
 > 1. Find candidate **surfaces** in the project (places where fuzzy judgment is happening or should be)
@@ -92,20 +94,77 @@ Implementation language follows the surrounding project. Deployment shape option
 
 ## Five roles, reference
 
-The roles **alternate between fluency (LLM) and discrimination (code)** so each constrains the other. Read the arrows below as a cycle, not a pipeline:
+The roles **alternate between fluency (LLM) and discrimination (code)**, with each role *generating the input the next role consumes*. The arrows below close a cycle:
 
-1. **LENS** *(LLM)* — produces typed records from soft input. Fixed schema, `notes` field for graceful failure.
-2. **SUBSTRATE** *(typed)* — accumulating record, carries `model_id` + `schema_version`. The substrate is what makes the loop *learn*: each turn's records constrain the next.
-3. **GATE** *(code)* — deterministic policy: filtering, scoring, cooldowns, ranking. Where opinionated policy lives. **Code restrains the LLM here so the LLM doesn't have to restrain itself.**
-4. **REASONER** *(LLM)* — consumes substrate, produces decisions or generated content. Reads what the lens accumulated and what the gate prioritized; reasons across them.
-5. **ACTION** *(code)* — deterministic effect. Often loops back as new content the lens reads next time. **This is what closes the cycle.**
+1. **LENS** *(LLM generates → typed records)* — produces typed records from soft input. Fixed schema, `notes` field for graceful failure. Often the LLM also generates the schema itself (one tier up in development time).
+2. **SUBSTRATE** *(typed → records accumulate)* — the accumulating record. Carries `model_id` + `schema_version`. **The substrate is what makes the loop *learn*: each turn's records become the constraint surface for the next.**
+3. **GATE** *(code generates → filtered context)* — deterministic policy: filtering, scoring, cooldowns, ranking. Code restrains the LLM here so the LLM doesn't have to restrain itself; equally important, **the gate manufactures the next LLM call's input** by deciding which records get through.
+4. **REASONER** *(LLM generates → decisions / new content)* — consumes the gate's output, produces decisions or generated content.
+5. **ACTION** *(code generates → state change, often new content)* — deterministic effect. Often produces new content the lens reads next turn. **This is what closes the cycle.**
 
 Plus two meta-layers that close *different* loops:
 
 - **CALIBRATION** — predict + verdict log per evaluator. Closes the loop on *whether the lens/reasoner is actually working* (rolling hit-rate). Without it, the architecture is theater.
 - **METABOLISM** — periodic substrate-wide phases (audit, prune, refactor). Closes the loop on *substrate quality over time*. Skip until v1+.
 
-The lens may be staged or parallel — treat lens as a *role*, not a single LLM call. Same for the reasoner. The cycle is the structural invariant; how many calls fill each role is project-specific.
+The lens may be staged or parallel — treat lens as a *role*, not a single LLM call. Same for the reasoner.
+
+**Stacked loops.** Many real systems have multiple cycles wrapping around each other. A common shape: a runtime cycle (engine + player + lens), wrapped by a development-time cycle (LLM-critic reads runtime transcripts, generates a patch plan, the patch plan modifies the lens prompts / substrate schema / gate policy / engine code, and the next runtime turn picks up the change). The development-time loop is itself a hybrid loop. See `references/STACKING.md`.
+
+## Building blocks — and how to snap them together
+
+The five roles are an **opinionated default arrangement** of more general lego-brick primitives. Once you see the underlying blocks, you can describe almost any multi-step hybrid-loop app as a connected graph: **blocks with typed I/O that snap together where the output type of one matches the input type of the next.**
+
+### Three things in play
+
+- **Data** is the universal currency. *Everything* flowing between blocks is data: typed records, soft text, prompts, decisions, schemas, notation, generated function bodies, traces, transcripts. **Code is just data the executor knows how to run** — there's no special "code" type that's different from data. The asymmetry isn't between data and code; the asymmetry is between *who's acting on the data*.
+- **LLMs** bring fuzzy in-distribution mapping: extracting from soft input, classifying, summarizing, generating new tokens that fit a schema, picking from options, reading messy human content, generating code-as-data that fits a description.
+- **Code** brings everything else — *all of computer science*: sorting, indexing, regex, joins, math, optimization, simulation, parsing, statistics, network I/O, file I/O, type checking, compilation, linting (yes, **code can check code** — a compiler is a block that consumes code-as-data and produces typed errors-as-data), schedulers, profilers. The huge existing library of algorithms is one of code's native strengths, not a separate concern.
+
+### One block
+
+Each block is one cell in this matrix:
+
+| | **actor: LLM** | **actor: code** |
+|---|---|---|
+| operations | generate, classify, summarize, score, extract, decide, explain, review | filter, query, score, aggregate, sort, slice, transform, compile, lint, run, persist, dispatch |
+| consumes | data (often soft / unstructured) | data (often typed / structured) |
+| produces | data (often typed: records, schema, notation, code, decisions) | data (often state changes, filtered subsets, derived records) |
+
+Both actors consume *and* produce data. They differ in which operations they're good at — and crucially, the LLM's products often include the *deterministic code* the next block runs (a schema, a notation, a generated regex, a written function), and the code's products often include the *exact context* the next LLM block sees (the gate's filtered subset, the aggregate's summary numbers, the transcript log).
+
+### Snapping blocks together
+
+A hybrid-loop app is a graph of blocks where each edge is a typed-data flow:
+
+```
+soft text  ──[LLM: extract]──▶  typed records  ──[code: append]──▶  growing substrate
+                                                                          │
+typed records  ◀──[code: filter+score+rank]── substrate ◀────────────────┘
+   │
+   └──▶  [LLM: reason]  ──▶  decision  ──[code: apply]──▶  state change
+                                                                │
+                                                                └──▶ (loops back as new soft text)
+```
+
+Vertical edges close the loop. The *runtime* version of the graph is one such cycle. The *development-time* version wraps another cycle around it — typically `[LLM: critique runtime transcript] → finding records → [code: prioritize] → patch plan → [LLM: write code/schema/prompt change] → applied to the runtime graph itself`. See `references/STACKING.md`.
+
+### Mapping the five roles onto blocks
+
+- **LENS** = `[LLM: extract]` — soft data → typed data
+- **SUBSTRATE** = `[code: append+index]` — typed data → growing typed store
+- **GATE** = `[code: filter+score+rank]` — typed data → curated typed data
+- **REASONER** = `[LLM: reason]` — typed data → decision (or new content)
+- **ACTION** = `[code: apply]` — decision → state change
+
+But **non-default arrangements are valid hybrid loops too** — you snap together different blocks for different jobs:
+
+- **LLM-as-architect** (`[LLM: design notation]` → notation-as-code → `[code: compress + expand]` deterministically). The `schemaforge` server in this repo is exactly this shape.
+- **code-as-perceiver** (`[code: parse AST]` → typed records → `[LLM: reason over the AST]`). No LLM lens at all; the deterministic parser is the perceptual layer.
+- **LLM-audits-code** (`[code: instrument runtime]` → traces → `[LLM: read traces]` → finding records → `[code: prioritize]` → patch plan → `[LLM: rewrite gate]`). A development-time loop targeting the runtime gate.
+- **LLM-generates-prompts-for-LLM** (`[LLM: write prompt]` → prompt-as-data → `[LLM: execute prompt]` → output → `[code: score]` → fed back as feedback to the prompt-writer). Prompts-as-data is just another block-output type.
+
+The cycle is the structural invariant; **which blocks fill it is project-specific**. The diagnostic in this skill defaults to the five-role shape because it covers most analytical and interventional cases. When your case wants something else, name the blocks you need and snap their I/O together.
 
 ## Activation surface
 
