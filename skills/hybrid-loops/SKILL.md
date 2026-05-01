@@ -166,6 +166,29 @@ But **non-default arrangements are valid hybrid loops too** — you snap togethe
 
 The cycle is the structural invariant; **which blocks fill it is project-specific**. The diagnostic in this skill defaults to the five-role shape because it covers most analytical and interventional cases. When your case wants something else, name the blocks you need and snap their I/O together.
 
+### The graph itself is data
+
+One level up: **the graph of blocks is also data**. The wiring of which blocks connect to which, in what order, with what schema at each edge — that's an artifact, not a hidden structure. Eventually the graph represents code (the blocks have to run), but the *graph as such* is something you can read, edit, generate, and reason over.
+
+What's true today:
+
+- **An LLM can generate or edit the graph.** Reading a project and proposing a hybrid-loop architecture, or reading an existing app and inferring what graph it already is, is a natural LLM task. The five-phase diagnostic in this skill (find surfaces → scope → shape → quick design → scaffold) is exactly this operation. The output is a graph, even when not expressed as a formal data structure.
+- **Code can't really operate on the graph yet.** There's no widely-adopted schema for hybrid-loop graphs that deterministic tools can validate, lint, simulate, or execute. This is open ground. A canonical typed schema + a deterministic executor + a code-side linter would be a real primitive — same shape as any block-level primitive, just one tier up.
+- **The skill itself is `[LLM: generate-graph-from-soft-input]`.** It's just another block. The recursion is principled — there's no special level outside the lego-brick algebra.
+
+The research opportunity hiding in the broader pattern is exactly this: standardize the graph schema, build the executor, watch what new compositions become available when code can operate on the architecture itself. `references/STACKING.md` and the sketched `metabolism` / `mcp_substrate` primitives in `references/PRIMITIVES.md` point this direction.
+
+### What this looks like in practice
+
+The dominant workflow for hybrid-loop projects isn't authoring a formal architecture document upfront and then implementing it. It's iterative and collaborative:
+
+1. **Brainstorm the graph with an LLM.** "I have this kind of input, this kind of decision needs to come out, what's between?" The LLM proposes blocks (some LLM, some code, some pure data shapes), draws connections, asks about restraint policies, suggests where calibration belongs. The graph emerges turn-by-turn, not all at once.
+2. **Glue the blocks together.** Sometimes statically (a fixed pipeline of MCP tools). Often **dynamically** — routing logic decides at runtime which subgraph fires for which input. A coordinator block dispatches to specialist blocks based on the input's typed metadata.
+3. **Subagents are nested hybrid loops.** A reasoner block sometimes decomposes into a smaller hybrid loop running inside it (its own lens / substrate / reasoner). Claude Code's subagent spawn is one common implementation; other agent runtimes have analogues. Recursion is the rule, not the exception.
+4. **The graph-as-data stays alive.** Edited as the system runs and surprises you. New block added when an audit shows a recurring failure. Block removed when calibration shows it never earned its keep. The architecture is a working artifact, not a frozen spec.
+
+When this skill fires, it's because the user is at step 1. The role of the skill is to help that brainstorming converge on a shape that's likely to work — naming the recurring blocks, flagging anti-patterns, suggesting where to put the calibration log so step 2 onward goes well.
+
 ## Activation surface
 
 How does the loop fire? Pick one:
