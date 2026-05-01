@@ -16,23 +16,29 @@ What's actually new isn't the graph algebra. It's that **the set of node types i
 
 Combine those three and you have a node that fits anywhere a human would otherwise have to author specialized code. **That's the alphabet expansion**, and it's why the same kinds of graph shapes keep showing up in different projects — different surfaces are exploiting the same three affordances in different proportions.
 
-## A compiler is a special case of an LLM
+## LLMs are fuzzy pattern mappers
 
-For an engineer who's spent twenty years writing compilers, transpilers, linters, query optimizers, codegen tools, and parser generators — they've been building pattern-mappers their whole career. **A compiler is a pattern-mapper**:
+The cleanest framing for what an LLM *is*, at the system-design level: an LLM is a **fuzzy pattern mapper** — it reads a structured input and produces a structured output, where the *fuzzy* qualifier marks that the mapping is non-deterministic and approximate. (Manuel Odendahl ("wesen") uses "mapping" and "interface-mapping" routinely in his writing — e.g. ["Tool use and notation as shaping LLM generalization"](https://the.scapegoat.dev/tool-use-and-notation-as-generalization-shaping/) — to describe LLM behavior at this level. The "fuzzy pattern mapper" framing here is built on that vocabulary.)
+
+The word **"transformer"** is deliberately avoided at this level of abstraction — it carries too much baggage from the Vaswani 2017 attention-architecture paper. **"Pattern mapper"** keeps the input-pattern → output-pattern meaning without the ML-jargon collision, and is closer to how compiler-veterans already think.
+
+A senior engineer who's spent twenty years writing compilers, transpilers, linters, query optimizers, codegen tools, and parser generators has been building pattern mappers the whole time. The species they're used to are **deterministic pattern mappers**:
 
 - Hand-coded
-- Narrow (one specific transformation per compiler)
-- Deterministic (same source, same binary)
+- Narrow (one specific mapping per tool)
+- Deterministic (same source → same output)
 - Errors are typed (failure mode is a structured diagnostic)
 
-An LLM is a pattern-mapper too — same shape, different parameters:
+LLMs are **fuzzy pattern mappers** — same family, different properties:
 
 - Learned (not hand-coded)
 - General (any input pattern → any output pattern, conditioned by prompt)
 - Probabilistic (same input → variable output)
 - Errors are emergent (no structured diagnostic; failure mode is "drifted from rules" or "made stuff up")
 
-So **an LLM is a generalization of the compiler/transformer family**, not a fundamentally different category of thing. The chatbot UI and agent hype framed LLMs as conversational partners or autonomous workers — categories that bury the "function from input pattern to output pattern" view. For someone whose mental model is "pattern-mappers connected by typed I/O," LLMs don't require a new mental model. **They require adding one box to the existing diagram, with three properties (general-domain, learned, probabilistic) and three associated disciplines.**
+**Neither generalizes the other** in the formal sense — compilers have correctness guarantees, bounded resource use, and verification properties LLMs lack; LLMs handle soft input and prose-as-config compilers can't touch. They're sibling species in the *family of pattern-mapping functions you've been composing your whole career*. The chatbot UI and agent hype framed LLMs as conversational partners or autonomous workers — categories that bury the pattern-mapper view that's actually closer to how an LLM slots into a system graph. **For someone whose mental model is already "pattern mappers connected by typed I/O," an LLM doesn't require a new mental model. It requires adding the *fuzzy* species to the existing diagram, with three properties (general-domain, learned, probabilistic) and three associated disciplines.**
+
+> *Note for ML readers: this framing is deliberately at the systems-design level, not the architecture level. The framework operates at the level of how systems compose typed actors; what's inside the actor (attention, state-space models, mixture-of-experts, whatever comes next) is unchanged by the systems-level claim. The word "mapper" is chosen specifically to avoid the Vaswani-2017 "transformer" collision.*
 
 ## Three new disciplines
 
