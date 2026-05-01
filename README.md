@@ -1,10 +1,12 @@
 # hybrid
 
-A design pattern + Claude Code plugin for the **specific places in any project** where an LLM doing fuzzy semantic judgment needs to feed structured decisions downstream. Ships a diagnostic skill, three working MCP servers (calibration logger, cognitive-bias auditor, schema-discovery loop), and stub manifests for other coding agents.
+**A cycle, not a pipeline.** The *hybrid-loops* design pattern places fuzzy LLM judgment and deterministic code in **alternating, mutually-constraining layers** — each tightening the other. An LLM extracts → typed structure accumulates and constrains → deterministic gates do restraint, scoring, and ranking → another LLM reasons over the substrate → an action lands → calibration closes the loop on whether the evaluators actually worked → the substrate metabolizes as a whole.
+
+Most projects have **0-3 specific places** that warrant the full pattern. The skill in this repo helps find them and decline where it doesn't fit; the three MCP servers ship the primitives that recur once you do.
 
 ## What's in it for you
 
-If you're building anything where an LLM reads non-deterministic content (transcripts, dialogues, plans, documents, screenshots, behavior logs) and produces decisions or recommendations another part of the system acts on, you probably have **0-3 specific places** where the architecture matters. This repo helps you find those places and design what goes there:
+If you're building anything where an LLM reads non-deterministic content (transcripts, dialogues, plans, documents, screenshots, behavior logs) and produces decisions or recommendations another part of the system acts on, you probably have one of those places. **Pure LLM** does fluent extraction but drifts and can't restrain itself. **Pure code** is unyielding but can't read the soft input. The shape that actually works is alternating layers: LLM where fluency matters, code where restraint matters, with **typed substrate** as the connective tissue between them. This repo helps you design what goes there:
 
 - **Typed schemas** that capture LLM judgments as structured records
 - **Deterministic gates** that handle restraint, scoring, ranking — what LLMs are bad at

@@ -1,7 +1,7 @@
 {
   "name": "hybrid-loops",
   "version": "0.1.0",
-  "description": "A design pattern + skill + three working MCP servers for the specific places in any project where an LLM doing fuzzy semantic judgment needs typed structure for downstream decisions. Diagnostic-first; domain-agnostic. Ships cal_log (calibration logger), metacog (cognitive-bias auditor), and schemaforge (compress+verify schema discovery) primitives.",
+  "description": "Hybrid loops: a design pattern where LLM judgment and deterministic code alternate in a mutually-constraining cycle (lens → substrate → gate → reasoner → action, plus calibration and metabolism feedback). Diagnostic-first skill plus three MCP servers for the recurring primitives: cal_log (calibration logger), metacog (cognitive-bias auditor), schemaforge (compress+verify schema discovery).",
   "author": {
     "name": "Justin Stimatze",
     "url": "https://github.com/justinstimatze"

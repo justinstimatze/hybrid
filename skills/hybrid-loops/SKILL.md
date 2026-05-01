@@ -7,7 +7,7 @@ description: Find and design hybrid-loop surfaces in any project — places wher
 
 ## TL;DR (one screen)
 
-> A design pattern for the **specific places** in a project where a fuzzy semantic judgment benefits from typed structure. **LLMs bring fluency. Substrates bring discrimination. Code brings restraint.**
+> A **cycle** of alternating LLM-and-code layers that mutually constrain each other. **LLMs bring fluency. Substrates bring discrimination. Code brings restraint.** The point isn't LLM-as-pipeline-stage. The point is *LLM-as-half-of-a-loop* — what one half can't do, the other carries.
 >
 > 5-phase diagnostic:
 > 1. Find candidate **surfaces** in the project (places where fuzzy judgment is happening or should be)
@@ -16,7 +16,7 @@ description: Find and design hybrid-loop surfaces in any project — places wher
 > 4. **Quick design** in 3 questions (input, schema, action) with sane defaults for the rest
 > 5. **Scaffold** to the surface, not the project. Always include a calibration log and an ablation test.
 >
-> Five roles: **lens** (LLM extracts) → **substrate** (typed records) → **gate** (deterministic policy) → **reasoner** (LLM consumes substrate) → **action** (deterministic effect). Plus **calibration** (predict + verdict log) and **metabolism** (substrate-wide audit, v1+).
+> Five roles in a cycle: **lens** (LLM extracts) → **substrate** (typed records accumulate) → **gate** (deterministic policy filters/scores/ranks) → **reasoner** (LLM consumes substrate) → **action** (deterministic effect; often loops back as new content). Plus two meta-layers that close the loop: **calibration** (predict + verdict log — does the lens actually work?) and **metabolism** (substrate-wide audit — is the accumulated record drifting?).
 >
 > Decline when: one-shot transform, chatbot, pure UI, no fuzziness in input, output discarded once, or a deployment shape that imposes a substrate on workers who can't edit it.
 
@@ -92,15 +92,20 @@ Implementation language follows the surrounding project. Deployment shape option
 
 ## Five roles, reference
 
-1. **LENS** — LLM call producing typed records. Fixed schema, `notes` field for graceful failure.
-2. **SUBSTRATE** — storage. Records carry `model_id` + `schema_version`.
-3. **GATE** — deterministic policy: filtering, scoring, cooldowns, ranking. Where opinionated policy lives.
-4. **REASONER** — LLM call consuming substrate, producing decisions or generated content.
-5. **ACTION** — deterministic effect. Sometimes loops back as new content.
+The roles **alternate between fluency (LLM) and discrimination (code)** so each constrains the other. Read the arrows below as a cycle, not a pipeline:
 
-Plus: **CALIBRATION** (predictions + verdicts logged) and **METABOLISM** (periodic phases auditing substrate as a whole; skip until v1+).
+1. **LENS** *(LLM)* — produces typed records from soft input. Fixed schema, `notes` field for graceful failure.
+2. **SUBSTRATE** *(typed)* — accumulating record, carries `model_id` + `schema_version`. The substrate is what makes the loop *learn*: each turn's records constrain the next.
+3. **GATE** *(code)* — deterministic policy: filtering, scoring, cooldowns, ranking. Where opinionated policy lives. **Code restrains the LLM here so the LLM doesn't have to restrain itself.**
+4. **REASONER** *(LLM)* — consumes substrate, produces decisions or generated content. Reads what the lens accumulated and what the gate prioritized; reasons across them.
+5. **ACTION** *(code)* — deterministic effect. Often loops back as new content the lens reads next time. **This is what closes the cycle.**
 
-The lens may be staged or parallel — treat lens as a *role*, not a single LLM call.
+Plus two meta-layers that close *different* loops:
+
+- **CALIBRATION** — predict + verdict log per evaluator. Closes the loop on *whether the lens/reasoner is actually working* (rolling hit-rate). Without it, the architecture is theater.
+- **METABOLISM** — periodic substrate-wide phases (audit, prune, refactor). Closes the loop on *substrate quality over time*. Skip until v1+.
+
+The lens may be staged or parallel — treat lens as a *role*, not a single LLM call. Same for the reasoner. The cycle is the structural invariant; how many calls fill each role is project-specific.
 
 ## Activation surface
 
