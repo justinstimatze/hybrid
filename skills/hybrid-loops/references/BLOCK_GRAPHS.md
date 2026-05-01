@@ -122,7 +122,7 @@ flowchart TB
 
 **Modern absorption.** In 2023 codegen-with-verification was often standalone — give an LLM a function signature, get back a function with tests, run the tests, iterate. By 2026 the pattern usually lives inside a [ReAct](#react--reason--act-with-tool-calls) loop where the test runner is one tool among many. The diagram above is the conceptually-clean version; in practice you'll see ReAct with a test-runner tool. The shape still matters as a teaching diagram — it makes the syntactic-vs-semantic distinction visible, and it shows the deterministic verifier is what makes the LLM's authoring trustworthy enough to ship.
 
-**In the wild**: Aider's auto-test mode, Cursor's debug-with-tests workflow, the SWE-bench harness setup (agent + test suite per task), Claude Code with test-runner subagents. The TypeScript/Python type-checker tightens the loop in IDE coding-assist generally.
+**In the wild**: Aider's auto-test mode, Cursor's debug-with-tests workflow, the SWE-bench harness setup (agent + test suite per task), Claude Code with test-runner subagents. The TypeScript/Python type-checker tightens the loop in IDE coding-assist generally. [plancheck](https://github.com/justinstimatze/plancheck) applies the same shape pre-execution: deterministic compiler over an `ExecutionPlan` JSON checks orphan files, cascade risk, reference graph consistency; LLM revises the plan against findings until a score threshold clears.
 
 ### Multi-agent conversation
 

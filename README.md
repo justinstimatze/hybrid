@@ -91,6 +91,7 @@ Then reach for the entry in [`BLOCK_GRAPHS.md`](skills/hybrid-loops/references/B
 The shape characterizations below are this writeup's reading of the maintainer's own work:
 
 - **[winze](https://github.com/justinstimatze/winze)** — *knowledge-base-auditor + calibration*. A KB that maintains its own model of reality, audits itself for cognitive biases, predicts where it's wrong, tracks whether it's right. The most direct on-pattern instance.
+- **[hindcast](https://github.com/justinstimatze/hindcast)** — *calibration substrate over the agent itself*. Per-project BM25-kNN over the maintainer's own past turn durations, surfaced as a calibrated wall-clock prior in Claude Code's context. The substrate is the agent's own behavior; the loop closes when the next turn's actual duration becomes a new training example. Cleanest calibration-discipline instance in the stack.
 - **[defn](https://github.com/justinstimatze/defn)** — *knowledge-base-auditor* applied to Go code. Round-trips between Go AST and SQL view; deterministic AST audits flag structural issues; LLM proposes edits to source.
 - **[slimemold](https://github.com/justinstimatze/slimemold)** — *conversation-topology hook*. Claude Code hook that extracts claims per turn, runs a graph topology audit, injects a suggested response into the next turn's context.
 - **[effigy](https://github.com/justinstimatze/effigy)** — *dense-notation NPC*. LLM authors character notation once at dev-time; deterministic context assembly per runtime turn; LLM consumes the assembled context to generate output.
@@ -99,9 +100,11 @@ The shape characterizations below are this writeup's reading of the maintainer's
 - **[drivermap](https://github.com/justinstimatze/drivermap)** — *substrate-as-vocabulary* in pure form. Behavioral-mechanisms KB; agents consume the typed library to predict and verbalize human behavior.
 - **[score](https://github.com/justinstimatze/score)** — *coach's typed-move-library* applied to immersive-experience design. 356-play library + structural linter + participant planner + Miro sidebar app.
 - **[adit-code](https://github.com/justinstimatze/adit-code)** — *structural-analysis substrate*. Deterministic metrics on AI-edited codebases identify high-friction files; LLM-readable findings tell you what to refactor.
+- **[plancheck](https://github.com/justinstimatze/plancheck)** — *codegen-with-verification*. Deterministic compiler over an ExecutionPlan JSON checks file existence, orphan detection, cascade risk; LLM revises plan against structured findings; iterates until score threshold clears. Deterministic side has structural authority over the LLM side.
 - **[lucida](https://github.com/justinstimatze/lucida)** — *ambient lens*. Passive Claude Code observer; LLM extracts viz-worthy structures from conversation; deterministic renderer mints Vega/Mermaid/SVG outputs.
 - **[gastown](https://github.com/justinstimatze/gastown)** — *multi-agent orchestration*. Workspace manager for coordinating 20–30 agents with persistent state and a three-tier watchdog (also cited in `references/PRIOR_ART.md` Tier 2).
 - **[buddy](https://github.com/justinstimatze/buddy)** — coding companion (tamagotchi-style: 21 species, persistent personality, MCP-client-agnostic). The maintainer's contribution is essentially a port of slimemold's hook architecture into the companion shell.
+- **[groupchat](https://github.com/justinstimatze/groupchat)** — *substrate-as-vocabulary, playful register*. 66-entry typed meme library with `deploy_when` / `too_much_if` / `mechanism` / cooldown metadata; LLM picks against the substrate, deterministic cooldown gates, action drops to terminal. Demonstrates that the substrate-as-vocabulary discipline scales beyond serious-work surfaces.
 
 ### Adjacent practitioner work — Manuel Odendahl ("wesen")
 
