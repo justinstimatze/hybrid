@@ -1,0 +1,14 @@
+{
+  "name": "hybrid-loops",
+  "owner": "justinstimatze",
+  "description": "Hybrid loops — design pattern, Claude Code skill, and three working MCP servers (cal_log, metacog, schemaforge) for the typed-substrate places in LLM-judgment systems.",
+  "plugins": [
+    {
+      "name": "hybrid-loops",
+      "description": "Find and design hybrid-loop surfaces in any complex project. Diagnostic-first skill plus three MCP servers: cal_log (per-evaluator prediction logging with hit-rate aggregation), metacog (cognitive-bias auditor over typed substrates), schemaforge (compress+verify schema discovery loop).",
+      "version": "0.1.0",
+      "source": ".",
+      "strict": true
+    }
+  ]
+}
