@@ -302,6 +302,7 @@ The main file is enough for project planning and most design conversations. Load
 - `references/DESIGN_INTERVIEW.md` — when Phase 4's quick design isn't sufficient
 - `references/BUILDING_BLOCKS.md` — when the user wants to think about the lower-level algebra (eight primitive block-shapes, pairs, triples, why neither half collapses to the other)
 - `references/THE_CASE.md` — when the user is skeptical that hybrid loops are anything more than 1945 von Neumann; the algebra-vs-alphabet-vs-disciplines argument lives here
+- `references/AGENT_FRAMEWORKS.md` — when the user thinks this is just DSPy / LangGraph / AutoGen / CrewAI / pydantic with a coat of theory; positions hybrid loops as the unifying vocabulary the ecosystem lacks
 - `references/PRIOR_ART.md` — when defending novelty or citing lineage
 - `references/STACKING.md` — only when project is past v0 and explicitly stacks
 - `references/PRIMITIVES.md` — when scaffolding and looking for what's already packaged
