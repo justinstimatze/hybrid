@@ -1,5 +1,6 @@
 # hybrid
 
+[![SafeSkill 50/100](https://img.shields.io/badge/SafeSkill-50%2F100_Use%20with%20Caution-orange)](https://safeskill.dev/scan/justinstimatze-hybrid)
 **A cycle, not a pipeline.** The *hybrid-loops* design pattern places LLM judgment and deterministic code in **alternating layers that mutually generate each other's working surface** — not just constraining each other, but *producing* the very inputs the other half operates over. The LLM generates typed records (and often the schema, notation, or code those records live in). The deterministic layer takes those records and generates filtered, scored, ranked context that becomes the next LLM call's input. Each half makes the other possible.
 
 ```mermaid
