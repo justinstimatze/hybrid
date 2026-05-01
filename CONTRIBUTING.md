@@ -10,18 +10,15 @@ This is research-stage software. The pattern itself is the artifact; the primiti
 
 ## Working on the code
 
+A `Makefile` at the repo root mirrors what CI does. Run before pushing:
+
 ```bash
-# Three Go modules, one per server. Run tests per module:
-cd mcp_servers/cal_log     && go test ./...
-cd mcp_servers/metacog     && go test ./...
-cd mcp_servers/schemaforge && go test ./...
-
-# Format before committing:
-gofmt -w mcp_servers/
-
-# Vet:
-for d in mcp_servers/cal_log mcp_servers/metacog mcp_servers/schemaforge; do (cd $d && go vet ./...); done
+make check       # gofmt -l + go vet + go test -race across all three servers
+make fmt         # auto-fix formatting (gofmt -w)
+make test        # tests without -race, faster for iteration
 ```
+
+`make check` matches CI exactly **except for the Go-version matrix** — CI runs against 1.21/1.22/1.23, local uses your installed Go. Single-version `check` catches the vast majority of issues.
 
 The schemaforge integration test (`pilot_test.go`) hits the Anthropic API and is build-tagged behind `-tags pilot`. It's skipped by default. To run it:
 
