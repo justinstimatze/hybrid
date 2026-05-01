@@ -1,14 +1,14 @@
 # metacog — cognitive-bias auditor MCP server
 
-Runs nine cognitive-bias signature checks against any typed substrate. Lifted from the auditor pattern in [winze](https://github.com/justinstimatze/winze)'s `cmd/metabolism/dreamaudit.go` (1,778 lines of Go-AST traversal abstracted away behind the `Substrate` interface).
+Runs nine cognitive-bias signature checks against any typed substrate. Lifted from a knowledge-base auditor that did the same job over a single Go-AST substrate (~1,778 lines of substrate-specific traversal); the auditors here are abstracted behind a `Substrate` interface so the metrics are substrate-agnostic.
 
-This is the **shippable primitive for Conjecture 2** of the hybrid-loops repo: the claim that cognitive-bias self-audit on substrate structure generalizes beyond a single substrate. Until this is run on at least three independent substrates, that's a conjecture, not a confirmed contribution.
+This is the **shippable primitive for Conjecture 2** of the hybrid-loops repo: the claim that cognitive-bias self-audit on substrate structure generalizes beyond the substrate the metrics were prototyped on. Until this is run on at least three independent substrates, that's a conjecture, not a confirmed contribution.
 
-Written in Go using [`mark3labs/mcp-go`](https://github.com/mark3labs/mcp-go) — same SDK as cal_log and the rest of the Go MCP servers in this author's stack.
+Written in Go using [`mark3labs/mcp-go`](https://github.com/mark3labs/mcp-go), the same SDK as `cal_log` and `schemaforge` in this repo.
 
 ## What it audits
 
-Each auditor checks one cognitive-bias signature against the *structure* of the substrate (not its content). Metrics are general; thresholds were calibrated against winze's KB and may need re-tuning on substrates of very different shape or scale.
+Each auditor checks one cognitive-bias signature against the *structure* of the substrate (not its content). Metrics are general; thresholds were calibrated against the substrate the auditors were prototyped on and may need re-tuning on substrates of very different shape or scale.
 
 | auditor | metric | threshold | needs |
 |---|---|---|---|
@@ -92,9 +92,9 @@ The Claim is that the nine bias-detection metrics work on *any* typed substrate.
 
 ## Future work
 
-- **Winze parity reader.** Direct AST + `.metabolism-log.json` reader that produces Records from winze's native format without JSONL conversion. Half a day of work; would let us run a head-to-head parity check against winze's own audit numbers (e.g. `AvailabilityHeuristic` triggered at HHI=0.479, `SurvivorshipBias` triggered at ratio 95.5 in winze's current state).
-- **Threshold re-calibration.** Current thresholds are winze-derived. Substrates an order of magnitude smaller or larger may need different cutoffs.
-- **Per-substrate baselines.** Conjecture-2 testing should compare audit results against random-shuffle baselines per substrate.
+- **Native-format substrate readers.** The current input format is JSONL. Substrates living in other shapes (Go AST + sidecar logs, SQLite KBs, RDF triples) would benefit from direct readers that produce `Record`s without conversion. Useful for parity checks against the source substrate's own audit numbers.
+- **Threshold re-calibration.** Current thresholds were derived from one substrate. Substrates an order of magnitude smaller or larger may need different cutoffs.
+- **Per-substrate baselines.** Conjecture-2 testing should compare audit results against random-shuffle baselines per substrate, not just absolute thresholds.
 
 ## Module path
 

@@ -1,68 +1,45 @@
 # Primitives for hybrid loops
 
-Sketches of extractable primitives that recur across hybrid-loop projects. Most don't yet exist as packages. When scaffolding a new project, write a local version of the primitive *and* leave a TODO referencing this file. Once the same primitive is written twice across projects, lift it into a real package.
+Extractable primitives that recur across hybrid-loop projects. Three are now shipped as working MCP servers in this repo (`mcp_servers/`); the other two remain sketches. When scaffolding a new project: reach for the shipped servers where they apply, write a local version of the still-sketched primitives where they don't.
 
-## cal_log — calibration logger (~50 lines)
+## cal_log — calibration logger (shipped)
 
-Append-only JSONL of predictions and verdicts. The simplest and highest-leverage primitive.
+Append-only JSONL of predictions and verdicts. The simplest and highest-leverage primitive — every typed evaluator should have one of these from day one.
 
-API sketch:
-```python
-log = CalLog("calibration.jsonl")
-log.predict(loop="my_project",
-            input_hash=hash(text),
-            prediction={"flagged_pattern": "X"},
-            model_id="claude-sonnet-4-6",
-            verdict_due_in_days=7)
-# later:
-log.resolve(prediction_id, verdict="confirmed", verdict_source="user_pushback")
-log.hit_rate(loop="my_project", window_days=30)
-```
+Implementation: see `mcp_servers/cal_log/`. Stdio MCP server with tools `predict`, `resolve`, `hit_rate`, `list_pending`, `list_recent`, `stats`. Default storage at `$CAL_LOG_PATH` (default `~/.cal_log/calibration.jsonl`).
 
-Implementation: file append + a small reader for hit-rate. Don't over-engineer. Per-record fields: `ts`, `loop`, `lens_or_reasoner`, `input_hash`, `prediction`, `model_id`, `schema_version`, `verdict_due_by`, `verdict`, `verdict_source`, `verdict_ts`.
+When in a Claude Code session with the plugin installed, call as `mcp__cal_log__predict(...)` and `mcp__cal_log__resolve(...)` from the lens or reasoner code. When building outside Claude Code, append-events directly to the JSONL using the documented schema is sufficient.
 
-## metacog — cognitive-bias auditor
+Per Conjecture 1 in the README, this primitive's value claim — that it changes development decisions when run at scale — is conjectured but untested.
+
+## metacog — cognitive-bias auditor (shipped)
 
 Run cognitive-bias signature checks against any typed substrate. The metrics check the *structure* of the substrate, not its content.
 
 Auditors:
 - **confirmation_bias** — corroboration rate among resolved cycles
-- **anchoring** — Spearman(file_age, claim_density) (or analogous shape-vs-time correlation)
-- **clustering_illusion** — file-grouping vs topology-cluster Jaccard
+- **anchoring** — Spearman(record_age, density) correlation
+- **clustering_illusion** — group vs cluster Jaccard
 - **availability_heuristic** — provenance HHI (concentration index over source domains)
-- **survivorship_bias** — irrelevant:challenged signal ratio (or analog over the substrate's verdict types)
+- **survivorship_bias** — irrelevant:challenged signal ratio
 - **framing_effect** — evaluative-adjective regex frequency in summary fields
-- **dunning_kruger** — low-complexity entity centrality vs high-complexity centrality
+- **dunning_kruger** — low-complexity zero-edge rate
 - **base_rate_neglect** — predicate distribution entropy
 - **premature_closure** — thought-terminating cliché detection
 
-API sketch:
-```python
-audit = Metacog(substrate=load_jsonl("substrate.jsonl"))
-results = audit.run_all()
-for finding in results.triggered():
-    print(finding.bias_name, finding.value, finding.threshold)
-```
+Implementation: see `mcp_servers/metacog/`. Substrate format is JSONL with documented schema; auditors gracefully skip when their required fields are absent. Per Conjecture 2 in the README, the metrics' substrate-generality is untested across 3+ independent substrates.
 
-Generalize the input shape (records with provenance + edges) so it works on any typed substrate. **Per Conjecture 2 in the README, this is the most extractable substrate-level primitive but its substrate-generality is untested.**
+## schemaforge — DreamCoder-style schema discovery (shipped)
 
-## schemaforge — DreamCoder-style schema discovery
+Given a corpus, discover a dense notation that compresses items while preserving roundtrip fidelity. Compress + verify loop over multiple rounds with conservative evolution.
 
-Given a corpus and an initial draft schema, refine via compress+verify loop.
+Tools: `design_notation`, `compress`, `expand`, `evaluate_roundtrip`, `score_round`, `run_round` (convenience). Fine-grained per-LLM-call tools mean a Claude session can drive the loop directly and react to per-round metrics; `run_round` is the one-call-per-round convenience. Cite DreamCoder (Ellis et al., 2021) and LILO (Grand et al., 2024) as direct lineage.
 
-API sketch:
-```python
-forge = Schemaforge(corpus, draft_schema)
-result = forge.discover(rounds=4, model="sonnet")
-print(result.schema)        # refined schema
-print(result.history)       # per-round metrics
-```
+Implementation: see `mcp_servers/schemaforge/`. Per Conjecture 3 in the README, generalization to non-program corpora is partially supported by a 10-item pilot; replication on 2+ more corpora is needed.
 
-Implementation: a wake-phase compressor (LLM encodes spec into notation), an adversarial verifier (separate LLM scores fidelity), and a refinement step that proposes notation changes based on compressor failures. Output should include a grammar-size term to guard against bloat. Cite DreamCoder (Ellis et al., 2021) and LILO (Grand et al., 2024) as direct lineage.
+## metabolism — phase scheduler (sketch only)
 
-## metabolism — phase scheduler
-
-Periodic execution of dream/trip/audit/evolve phases with phase-gate dependencies on a typed substrate.
+Periodic execution of dream / trip / audit / evolve phases with phase-gate dependencies on a typed substrate.
 
 API sketch:
 ```python
@@ -77,16 +54,20 @@ metabolism = Metabolism(
 metabolism.run_cycle()
 ```
 
-Generalize so phases are pluggable. Phase outputs themselves get logged via `cal_log` so phase predictions can be calibrated alongside lens/reasoner predictions.
+Generalize so phases are pluggable. Phase outputs themselves should log via `cal_log` so phase predictions can be calibrated alongside lens/reasoner predictions.
 
-## mcp_substrate — MCP server template
+Not yet shipped as a standalone server. Most projects past v1 want this; if you build the third one by hand, package it.
+
+## mcp_substrate — MCP server template (sketch only)
 
 Wrap a typed substrate as an MCP server with read tools (search, get, stats, query). One template generator that takes a substrate schema + sample queries and emits a working MCP server. Most hybrid-loop projects that grow past v0 want this; once a developer has built two of them by hand, packaging is worth it.
+
+Not yet shipped as a standalone server.
 
 ## When to package vs. inline
 
 - v0 prototype: inline a simplified version of `cal_log` directly. Skip the others.
-- v1 with > 1 month of expected life: lift `cal_log` into the project as a small file (reuse code, not the package abstraction).
-- Once the same primitive is written for the third project: package it. Don't package speculatively; let the third use case define the API.
+- v1 with > 1 month of expected life: install the shipped servers and use them; they are bounded and don't pull in heavy framework code.
+- Once the same primitive is written twice across projects, lift it into a real package.
 
 The bottleneck for most builders isn't "missing packages." It's "Claude doesn't reach for the pattern by default." This skill addresses that. Packaging is downstream.

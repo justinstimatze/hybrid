@@ -1,6 +1,6 @@
 # hybrid
 
-A design pattern + Claude Code plugin for the **specific places in any project** where an LLM doing fuzzy semantic judgment needs to feed structured decisions downstream. Ships a diagnostic skill, a working calibration MCP server, and stub manifests for other coding agents.
+A design pattern + Claude Code plugin for the **specific places in any project** where an LLM doing fuzzy semantic judgment needs to feed structured decisions downstream. Ships a diagnostic skill, three working MCP servers (calibration logger, cognitive-bias auditor, schema-discovery loop), and stub manifests for other coding agents.
 
 ## What's in it for you
 
@@ -9,6 +9,8 @@ If you're building anything where an LLM reads non-deterministic content (transc
 - **Typed schemas** that capture LLM judgments as structured records
 - **Deterministic gates** that handle restraint, scoring, ranking — what LLMs are bad at
 - **Calibration logs** that track whether your evaluators actually work (the `cal_log` MCP server, included)
+- **Cognitive-bias self-audit** on substrate structure (the `metacog` MCP server, included)
+- **Schema discovery** for finding dense notations over a corpus via compress+verify (the `schemaforge` MCP server, included)
 - **Anti-pattern detection** so you don't over-apply the architecture where it doesn't fit
 
 The skill is **diagnostic-first** — most of any project isn't this pattern, and identifying which part is (and which isn't) is half the value.
@@ -27,7 +29,7 @@ The skill is **diagnostic-first** — most of any project isn't this pattern, an
 /plugin install hybrid-loops@hybrid-loops
 ```
 
-Plugin installs the skill (`hybrid-loops`) plus the `cal_log` MCP server (auto-registered). Skill auto-triggers on relevant prompts; cal_log tools are callable as `mcp__cal_log__{predict,resolve,hit_rate,list_pending,list_recent,stats}`.
+Plugin installs the skill (`hybrid-loops`) plus three MCP servers (auto-registered): `cal_log`, `metacog`, and `schemaforge`. Skill auto-triggers on relevant prompts; tools are callable as `mcp__cal_log__*`, `mcp__metacog__*`, `mcp__schemaforge__*`.
 
 If you prefer just the skill without the plugin scaffolding: symlink `skills/hybrid-loops/` into `~/.claude/skills/hybrid-loops/`.
 
@@ -45,7 +47,9 @@ hybrid/
 │       ├── SKILL.md           the skill (one-screen TL;DR + 5-phase diagnostic)
 │       └── references/        loaded on demand
 ├── mcp_servers/
-│   └── cal_log/            calibration logger MCP server (working, tested)
+│   ├── cal_log/            calibration logger (Go, 8 tests passing)
+│   ├── metacog/            cognitive-bias auditor (Go, 20 tests passing)
+│   └── schemaforge/        schema-discovery (compress+verify) loop (Go, 18 tests passing, pilot run)
 ├── .codex-plugin/          Codex stub
 ├── .cursor-plugin/         Cursor stub
 ├── gemini-extension.json   Gemini stub
@@ -53,23 +57,19 @@ hybrid/
 └── README.md               (this file)
 ```
 
-## What `cal_log` does
+## What's in the primitives
 
-`cal_log` is the calibration primitive every hybrid-loop project should have but most don't ship. It's a stdio MCP server with five tools:
+Three stdio MCP servers, one per shippable conjecture-falsifier:
 
-- `predict(loop, input_hash, prediction, model_id, ...)` → log a typed evaluator's prediction
-- `resolve(prediction_id, verdict, verdict_source)` → mark the verdict later
-- `hit_rate(loop, window_days=30)` → aggregated hit-rate over the window
-- `list_pending(loop?, limit)` → unresolved predictions ordered by due date
-- `list_recent(loop?, limit)` / `stats()` → introspection
-
-Append-only JSONL events at `$CAL_LOG_PATH` (default: `~/.cal_log/calibration.jsonl`). 8/8 unit tests passing. See `mcp_servers/cal_log/README.md`.
+- **`cal_log`** — calibration logger. Append-only JSONL at `$CAL_LOG_PATH` (default `~/.cal_log/calibration.jsonl`). Tools: `predict`, `resolve`, `hit_rate`, `list_pending`, `list_recent`, `stats`. 8/8 unit tests. See `mcp_servers/cal_log/README.md`.
+- **`metacog`** — cognitive-bias auditor. Nine bias-signature checks against any typed substrate (provenance HHI as availability-heuristic proxy, predicate entropy as base-rate-neglect proxy, etc.). Tools: `audit`, `audit_one`, `list_auditors`. 20/20 unit tests. See `mcp_servers/metacog/README.md`.
+- **`schemaforge`** — schema-discovery (compress+verify) loop. Designs dense notation for a corpus, translates items into it, expands back, scores roundtrip, evolves across rounds. Tools: `design_notation`, `compress`, `expand`, `evaluate_roundtrip`, `score_round`, `run_round`. 18/18 unit tests, pilot run on a 10-item non-program corpus (3 rounds, results in `mcp_servers/schemaforge/README.md`). Requires `ANTHROPIC_API_KEY`.
 
 ## Status
 
-**Research output, not a product.** Documents a design pattern, ships a working skill + a working MCP server. Nothing is sold and nothing is trying to be a SaaS. The pattern itself doesn't sell; specific tools built with it might.
+**Research output, not a product.** Documents a design pattern, ships a working skill + three working MCP servers. Nothing is sold and nothing is trying to be a SaaS. The pattern itself doesn't sell; specific tools built with it might.
 
-The four claims about what's plausibly new are framed as **conjectures with named falsifying experiments** — see "Conjectures" below. `cal_log` is the runnable primitive that makes Conjecture 1 testable; running it on real projects for 30+ days is the experiment.
+The four claims about what's plausibly new are framed as **conjectures with named falsifying experiments** — see "Conjectures" below. Each of `cal_log`, `metacog`, `schemaforge` is the runnable primitive for one conjecture; running them at scale on real projects is the experiment. As of April 2026, only Conjecture 3 has been partially exercised — see `mcp_servers/schemaforge/README.md` for the pilot results.
 
 ## Naming
 
@@ -85,7 +85,7 @@ A separate term used here: **"third mind"** — a *deployment context* where the
 
 ## Conjectures
 
-Four conjectures about what this work might contribute beyond the cited prior art. **Each is testable; none has been tested.**
+Four conjectures about what this work might contribute beyond the cited prior art. **Each is testable; only Conjecture 3 has been partially exercised so far.**
 
 ### Conjecture 1 — per-evaluator calibration is undershipped
 
@@ -97,13 +97,13 @@ Four conjectures about what this work might contribute beyond the cited prior ar
 
 *Claim.* Cognitive-bias signature checks (provenance HHI as availability-heuristic proxy, irrelevant:challenged ratio as survivorship-bias proxy, predicate entropy as base-rate-neglect proxy, etc.) work on any typed substrate, not only the substrate they were prototyped on.
 
-*Falsifying experiment.* Lift the audit primitive (`metacog`, sketched in `skills/hybrid-loops/references/PRIMITIVES.md`) into a standalone library; run it on 3+ independent typed substrates; have project owners mark which triggered findings correspond to actual structural problems vs. false positives. If false-positive rate is high or findings don't track owner intuition, the metrics are substrate-specific rather than substrate-general.
+*Falsifying experiment.* Run the `metacog` MCP server (in this repo) on 3+ independent typed substrates of varied shape; have project owners mark which triggered findings correspond to actual structural problems vs. false positives. If false-positive rate is high or findings don't track owner intuition, the metrics are substrate-specific rather than substrate-general. Untested as of April 2026.
 
 ### Conjecture 3 — schema discovery extends to non-program domains
 
 *Claim.* Compress+verify schema-discovery loops (DreamCoder/LILO descendants) can discover useful schemas for non-program domains — humor structures, dramatic arcs, behavioral mechanisms, AI-conversation patterns — not only for code or notation for code.
 
-*Falsifying experiment.* Run a compress+verify loop on a corpus of 100+ examples in one non-program domain; compare the discovered schema against a hand-authored one on downstream extraction quality, with a domain expert as the evaluator. If hand-authored beats discovered, the loop doesn't generalize past program-shaped domains.
+*Falsifying experiment.* Run the `schemaforge` MCP server (in this repo) on a non-program corpus over multiple rounds; check that mean expansion ratio and roundtrip correctness behave like they do on program corpora — ER climbs while correctness stays above ~0.7. **Partial result (April 2026):** a 10-item naturalistic-prose corpus (memes serialized to prose with 11 latent fields) produced ER 15.9–45.6x at correctness 0.71–0.89 in round 1, depending on which notation philosophy the model picked. Over 3 rounds with a conservative evolve prompt, correctness drifted up modestly while notation stayed stable. Positive on this single corpus; replication on 2+ more independent non-program corpora is needed before declaring the conjecture supported. See `mcp_servers/schemaforge/README.md` for full pilot writeup, including the round-2 regression caused by the original evolve prompt.
 
 ### Conjecture 4 — there is unmet demand for domain-applied substrate-as-vocabulary tooling outside engineering
 
@@ -113,7 +113,7 @@ Four conjectures about what this work might contribute beyond the cited prior ar
 
 ---
 
-These are the open ground after acknowledging the cited prior art. **The next material work is running these experiments, not making more architectural claims.** `cal_log` is the first runnable piece.
+These are the open ground after acknowledging the cited prior art. **The next material work is running these experiments, not making more architectural claims.** All three runnable primitives are shipped; the C-3 pilot is the first datapoint.
 
 ## Acknowledgments
 

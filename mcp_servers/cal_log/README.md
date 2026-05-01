@@ -4,7 +4,7 @@ Per-evaluator prediction logging with rolling-window hit-rate aggregation. Appen
 
 This is the **shippable primitive for Conjecture 1** of the hybrid-loops repo: a standalone calibration logger that any hybrid-loop project can drop in to track whether its typed LLM evaluators are actually working over time.
 
-Written in Go using [`mark3labs/mcp-go`](https://github.com/mark3labs/mcp-go) — same SDK as the rest of this author's Go MCP servers (slimemold, winze, plancheck) and the broader go-go-golems ecosystem.
+Written in Go using [`mark3labs/mcp-go`](https://github.com/mark3labs/mcp-go), the community Go MCP SDK widely used in the practitioner ecosystem.
 
 ## Why
 

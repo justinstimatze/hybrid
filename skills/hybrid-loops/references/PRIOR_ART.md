@@ -57,7 +57,7 @@ Wesen has cited Devine Lu Linvega ([100r.co](https://100r.co), Hundred Rabbits) 
 
 Cite Devine when defending design choices around: small tool size, single-purpose primitives, typed I/O between tools, permacomputing / locality (substrate stays on the user's machine and isn't a cloud service), and the deliberate rejection of platform-scale frameworks in favor of assemblies of focused tools.
 
-The Hundred Rabbits collective (Devine + Rek Bell), the uxn ecosystem, and the Merveilles network more broadly are the canonical references for the aesthetic of *a personal collection of typed tools the user actually owns*. Hybrid-loop projects in non-engineering domains tend to feel right when they share this aesthetic — drivermap, effigy, score, and the personal/parent/writer examples in `EXAMPLES.md` are closer to Devine's register than slimemold or winze are.
+The Hundred Rabbits collective (Devine + Rek Bell), the uxn ecosystem, and the Merveilles network more broadly are the canonical references for the aesthetic of *a personal collection of typed tools the user actually owns*. Hybrid-loop projects in non-engineering domains (the personal/parent/writer/coach/teacher examples in `EXAMPLES.md`) tend to feel right when they share this aesthetic; the engineering-side projects (knowledge-base auditors, conversation-topology hooks) sit further from Devine's register and that's a deliberate scope choice, not a mistake.
 
 ## Pattern languages — Christopher Alexander
 
@@ -129,13 +129,13 @@ This repository uses "hybrid loops" as the working name for the pattern. The bro
 
 Burroughs and Gysin. *The Third Mind*. 1978.
 
-Cite when discussing the social/team version of hybrid loops. The third mind was the emergent entity from two minds collaborating; a team-shared substrate with metabolism (winze-style) becomes that emergent entity in the AI era. The agency criterion is the load-bearing distinguisher between "passive store" (not a third mind) and "third mind proper."
+Cite when discussing the social/team version of hybrid loops. The third mind was the emergent entity from two minds collaborating; a team-shared substrate with periodic metabolism phases becomes that emergent entity in the AI era. The agency criterion is the load-bearing distinguisher between "passive store" (not a third mind) and "third mind proper."
 
 ## Engelbart: Augmenting Human Intellect
 
 Engelbart, Douglas. *Augmenting Human Intellect: A Conceptual Framework*. 1962.
 
-Cite when discussing collective IQ / shared external substrate. Engelbart's vision of structured shared artifacts as collective-intelligence amplifier never fully shipped because the substrate was too expensive to build and maintain. LLMs as the substrate-authoring layer change that cost structure. Gemot's MAGI framing is closer to Engelbart's vision than to Burroughs's.
+Cite when discussing collective IQ / shared external substrate. Engelbart's vision of structured shared artifacts as collective-intelligence amplifier never fully shipped because the substrate was too expensive to build and maintain. LLMs as the substrate-authoring layer change that cost structure. Team-shared collective-IQ deployments are closer to Engelbart's vision than to Burroughs's.
 
 ## Active inference / predictive coding (Friston et al.)
 
@@ -149,9 +149,9 @@ Honest accounting. The architecture itself is recovered from blackboards, frames
 
 What is *conjectured* beyond all of that — testable claims that have not been tested — is enumerated in detail in `../../README.md` under "Conjectures." Briefly:
 
-1. **Per-evaluator calibration discipline as a shippable primitive** — gestured at by minitrace, "diary," and several gestures in the user's portfolio, but not assembled into a standalone tool that materially changes development decisions.
-2. **Cognitive-bias self-audit on substrate structure generalizes beyond winze** — the nine bias-detection metrics may be substrate-general or winze-specific; untested cross-substrate.
-3. **Schema discovery extends to non-program domains** — dense's compress+verify works on program-adjacent corpora; whether it generalizes to humor, mechanisms, dramatic arcs, etc. is untested.
-4. **Domain-applied substrate-as-vocabulary tooling has unmet demand outside engineering** — engineering-side infrastructure exists (wesen, this portfolio's engineering tools); applied-side adoption in non-engineering domains is untested.
+1. **Per-evaluator calibration discipline as a shippable primitive** — gestured at by minitrace, the "diary" framing, and other practitioner work, but not assembled into a standalone tool that materially changes development decisions. The `cal_log` MCP server in this repo is the runnable claim.
+2. **Cognitive-bias self-audit on substrate structure generalizes** — the nine bias-detection metrics in `metacog` were lifted from a single Go-AST knowledge-base auditor (1,778 lines, abstracted behind a `Substrate` interface) and may be substrate-general or substrate-specific to that origin; untested cross-substrate.
+3. **Schema discovery extends to non-program domains** — compress+verify works on program-adjacent corpora; whether it generalizes to humor, mechanisms, dramatic arcs, etc. The `schemaforge` MCP server in this repo is the runnable claim, and a 10-item pilot on a non-program corpus is the first datapoint (positive shape; replication needed).
+4. **Domain-applied substrate-as-vocabulary tooling has unmet demand outside engineering** — engineering-side infrastructure exists (wesen's stack, etc.); applied-side adoption in non-engineering domains is untested.
 
 Each conjecture has a named falsifying experiment in the README. Until those experiments have data, *these are conjectures, not asserted contributions*. Everything else in this repo is recovered prior art with a coat of LLMs on top.

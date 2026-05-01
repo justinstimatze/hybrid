@@ -128,7 +128,7 @@ Power-neutral deployments: single user owns and executes; team shares ownership 
 
 Concerning: platform owns substrate, gig-worker or low-status executor must apply the imposed taxonomy without editing. This is a deskilling architecture and a misapplication of the pattern. Recommend redesign — give the executor edit authority, or refuse the project shape.
 
-publicrecord-style deployments (substrate-for-agents) avoid this. Platform-owned interventional libraries imposed on workers do not.
+Substrate-for-agents deployments (where the typed library is consumed by automated agents rather than imposed on human workers) avoid this. Platform-owned interventional libraries imposed on workers do not.
 
 ## Ablation discipline
 
