@@ -2,6 +2,29 @@
 
 **A cycle, not a pipeline.** The *hybrid-loops* design pattern places LLM judgment and deterministic code in **alternating layers that mutually generate each other's working surface** — not just constraining each other, but *producing* the very inputs the other half operates over. The LLM generates typed records (and often the schema, notation, or code those records live in). The deterministic layer takes those records and generates filtered, scored, ranked context that becomes the next LLM call's input. Each half makes the other possible.
 
+```mermaid
+flowchart LR
+    classDef llm fill:#fff4d6,stroke:#b8860b,color:#000
+    classDef code fill:#d6e9ff,stroke:#1e6ab8,color:#000
+    classDef data fill:#e8e8e8,stroke:#666,color:#000
+
+    soft[(soft input<br/>transcript / doc / event)]:::data
+    lens["LENS<br/>LLM extracts"]:::llm
+    sub[(SUBSTRATE<br/>typed records)]:::data
+    gate["GATE<br/>code: filter / score / rank"]:::code
+    reason["REASONER<br/>LLM consumes substrate"]:::llm
+    action["ACTION<br/>code: apply / dispatch"]:::code
+
+    soft --> lens
+    lens --> sub
+    sub --> gate
+    gate --> reason
+    reason --> action
+    action -. new content .-> soft
+```
+
+Yellow = LLM acts. Blue = code acts. Grey = data flowing between. Two meta-layers close additional loops: **calibration** (predict + verdict log per evaluator — does the lens actually work?) and **metabolism** (substrate-wide audit — is the accumulated record drifting?). See `skills/hybrid-loops/SKILL.md` for the full diagnostic.
+
 The cycle: an LLM extracts → typed structure accumulates → deterministic gates filter, score, rank → another LLM reasons over the gated substrate → an action lands (often as new content the lens reads next turn) → calibration closes the loop on whether the evaluators actually worked → the substrate metabolizes as a whole.
 
 Most projects have **0-3 specific places** that warrant the full pattern. The skill in this repo helps find them and decline where it doesn't fit; the three MCP servers ship the primitives that recur once you do.
