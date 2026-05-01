@@ -22,6 +22,20 @@ description: Find and design hybrid-loop surfaces in any project — places wher
 >
 > Decline when: one-shot transform, chatbot, pure UI, no fuzziness in input, output discarded once, or a deployment shape that imposes a substrate on workers who can't edit it.
 
+## Why this skill exists
+
+Most working programmers carry three mental primitives:
+
+- **Code operates on data** (the classical view; what school teaches)
+- **An LLM operates on data** (recent; chatbots, evaluators, copilots)
+- **An LLM writes code** (newer still; codegen, autonomous agents)
+
+These are three cells in a much larger combinatorial space. Every mix of `{LLM | code}` as actor × `{data | code}` as input × `{data | code}` as output is a valid block, and most useful systems built today are *graphs that span many cells* rather than pipelines that occupy one. **Almost nobody was trained for the combinatorial space.** Schooling and working experience produce strong intuitions for the three classical cases and almost none for the multi-block dynamic-graph cases.
+
+**The LLM that's actually building the system is in roughly the same position as the programmer asking for it.** Without explicit guidance, the LLM also defaults to pipeline thinking — extract once, decide once, return. This skill exists to **push back on that default**: to put the broader space in front of the LLM as a working option, and to scaffold the multi-layered dynamic graph of code/LLM/data blocks the project actually wants. *What blocks does this surface need? What should they generate for each other? Where does the cycle close? What wraps around it?*
+
+Systems that come out of this kind of design tend to feel a little **organic** — they grow rather than getting authored top-down, they adapt as they run and surprise you, they have metabolic phases (audit, prune, evolve) that aren't part of any single decision but keep the substrate fit over time. That gestalt is real, not poetic. It comes from the cycles being mutually generative: each layer keeps remaking the surface the others act on, and the system as a whole behaves more like an ecology than an engineered artifact.
+
 ## Full skill
 
 A design pattern for the **specific places** in a project where a fuzzy semantic judgment benefits from typed structure. Most projects have 0-3 such places. The skill helps Claude identify them, decide whether each warrants the full pattern, and design what's there. Domain-agnostic — applies in health, education, ops, creative, social, business, engineering.
