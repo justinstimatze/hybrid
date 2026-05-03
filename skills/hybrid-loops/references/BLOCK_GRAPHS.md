@@ -2,10 +2,10 @@
 
 A reference catalog of recognizable hybrid-loop systems, expressed as block graphs. Use this when scaffolding by analogy — find the entry closest to your project's surface, start from that arrangement, then adjust.
 
-**Catalog (twelve shapes, four groups):**
+**Catalog, in four groups:**
 
 - *Well-known patterns the field already names*: RAG, ReAct, Codegen-with-verification, Multi-agent conversation
-- *Canonical hybrid-loop shapes*: 5-role canonical loop, Compress-and-verify schema discovery, Adversarial panel review, Dev-time critique loop wrapping a runtime
+- *Canonical hybrid-loop shapes*: 5-role canonical loop, Compress-and-verify schema discovery, Adversarial panel review, Dev-time critique loop wrapping a runtime, Ambient meta-loop
 - *Specific shapes worth recognizing*: Knowledge-base auditor, Dense-notation NPC, Conversation-topology hook
 - *Cross-domain metaphors* (non-engineering surfaces used to make the shape vocabulary land — illustrative, not deployed): Teacher's intervention tracker, Coach's typed move-library
 
@@ -284,6 +284,49 @@ The runtime stays small (one or two cycles per user-facing decision); the dev lo
 
 **In the wild**: [Compound engineering](https://every.to/guides/compound-engineering) (Klaassen et al., Every.to). [Structured Prompt-Driven Development](https://martinfowler.com/articles/structured-prompt-driven/) (Patel/Sharif/Fowler, martinfowler.com). Game-AI playtesting → critique → patch → re-playtest pipelines. Post-incident-review loops in SRE generally (the SLI/SLO/error-budget framework is a calibration-shaped variant). Stope-style adversarial-panel-review pipelines.
 
+### Ambient meta-loop
+
+Most of this catalog assumes the *discoverable-tool* invocation model: an LLM in the primary loop notices that a situation calls for a capability, decides to invoke it, reads back the result. Tool calls work that way; MCP servers expose capabilities that way; most of the field's vocabulary is shaped around it. The cost is real — the primary LLM holds both the gate-of-noticing (when to invoke) and the reasoner (what to do with the result), and every additional capability competes for attention budget against the user's actual task.
+
+The *ambient* alternative inverts that load. A deterministic hook fires on a trigger the primary doesn't have to notice. A secondary evaluator — typically an LLM with its own separate context window, sometimes a purely deterministic computation — runs against the trigger's context. A deterministic condenser decides whether the result clears a threshold worth surfacing, and only the condensed output reaches the primary, often as a single paragraph injected at a specific seam (turn-start, file-write, post-response).
+
+```mermaid
+flowchart TB
+    classDef llm fill:#fff4d6,stroke:#b8860b,color:#000
+    classDef code fill:#d6e9ff,stroke:#1e6ab8,color:#000
+    classDef data fill:#e8e8e8,stroke:#666,color:#000
+
+    subgraph primary["PRIMARY LOOP (any shape)"]
+        plens["LLM: primary work"]:::llm
+        paction["code: action"]:::code
+        plens --> paction
+    end
+
+    hook["code: hook<br/>(deterministic trigger)"]:::code
+    eval["LLM: parallel evaluator<br/>(separate context)"]:::llm
+    cond["code: condense + threshold"]:::code
+    inject["code: inject at seam<br/>(context-as-code)"]:::code
+    drop[(no-op)]:::data
+
+    primary -. trigger event .-> hook
+    hook --> eval --> cond
+    cond -. above threshold .-> inject
+    cond -. below threshold .-> drop
+    inject -. shapes next turn .-> plens
+```
+
+The axis the diagram makes visible: *who holds the gate of noticing*. In ReAct and tool-use generally, the primary LLM holds it and pays for it in attention. In an ambient meta-loop, deterministic code holds the gate-of-noticing, the secondary evaluator holds the evaluation, and a deterministic condenser holds the relevance-gate before anything reaches the primary again. It's the framework's recursive rhythm — determinism forcing windows for non-determinism forcing determinism again — applied across loop *boundaries* rather than within a single loop's stages. Several specific shapes in this catalog ([Conversation-topology hook](#conversation-topology-hook) most directly; the calibration meta-layer footnoted under the [5-role canonical loop](#the-5-role-canonical-hybrid-loop) when implemented as a runtime monitor) are particular instances of this general arrangement.
+
+Multiple ambient meta-loops can run alongside the same primary without competing for attention budget — each is gated by its own deterministic trigger and condenser, so composition stacks rather than crowds. That's the property the discipline buys: a feedback layer dense enough to be useful (per-block calibration, claim-graph topology, viz-worthy structure detection, situational meme-fit, all running concurrently) without saturating the primary's working surface.
+
+Failure modes match the structure: a noisy condenser produces interruptions worse than the attention-cost it was meant to save; latency on the trigger-path can stall the primary if the meta-loop isn't truly parallel; the secondary evaluator's view of the trigger context may be too narrow (LLM eval) or too rigid (deterministic eval) to evaluate well, and in the LLM-eval form over-feeding it to compensate erodes the cost case. Worth using when the *signal of interest* is recurring, structural, and the gate-of-noticing is well-typed enough to be a deterministic predicate.
+
+**In the wild**: the components are familiar even where the composition is undertheorized as a pattern. SRE error-budget alerts (ambient signal → threshold gate → page on-call) and browser content scripts (ad blockers, password managers — hook fires on page load → deterministic filter → DOM injection) implement the trigger + condenser + injection plumbing without any LLM. *Blocking* is the degenerate action; the richer move is *mediation* — same plumbing, the action swapped from allow-or-block to rewrite-or-augment, ideally serving both the primary's task and the meta-loop's purpose at once rather than only the latter. [lucidlens](https://github.com/AIObjectives/lucidlens) (AIObjectives, 2023; archived September 2025) is a small clever instance — surely not the canonical first, given the LLM-browser-extension space and the longer Greasemonkey-era tradition of deterministic page-rewriters — but the shape is legible: a Chrome extension that rewrote news headlines on page load and marked them with ✨, i.e. adblocker plumbing with an LLM in the filter slot and rewrite as the action. The fully realized vision is recurrent in sci-fi; Vinge's *Rainbows End* (2006) is a clean single-book treatment, with its *wearing* interface and belief-circle overlays each rendering reality differently for their adherents.
+
+Conspicuously *absent* from the current AI-browser wave (Atlas, Comet, Dia — all 2025, two years after lucidlens demonstrated the shape; Edge/Copilot earlier, same mode): ambient mediation. What's shipped instead — and dominates — is *chat interfaces to AIs that browse and read on the user's behalf*: agentic delegation that replaces the human in the browsing loop rather than augmenting what they're already doing. Discoverable-tool invocation and agentic delegation are both well-developed substrates by now; the ambient-mediation seam isn't. The novel composition in the ambient meta-loop pulls the *gate-of-noticing* out of the primary LLM's attention budget; the eval slot can be filled by an LLM (slimemold or lucidlens) or by deterministic computation (hindcast). Claude Code's hook system plus MCP-server architecture together provide the substrate to compose ambient meta-loops without the primary loop having to know they exist.
+
+*Maintainer's experiments at a much smaller scope*: [hindcast](https://github.com/justinstimatze/hindcast) (UserPromptSubmit hook → BM25-kNN over the maintainer's own past turn durations → calibrated wall-clock prior injected into the next turn), [slimemold](https://github.com/justinstimatze/slimemold) (turn-end hook → claim-graph topology audit → suggested response injected), [lucida](https://github.com/justinstimatze/lucida) (passive Claude Code observer → viz-worthy structure detection → render-spec emitted alongside the conversation). [groupchat](https://github.com/justinstimatze/groupchat) sits between modes — the underlying meme tools are MCP-discoverable, but a hook-shaped scan-on-every-response convention pushes the gate-of-noticing out of attention competition without spending a separate LLM call to do it.
+
 ---
 
 ## Specific shapes worth recognizing
@@ -371,7 +414,7 @@ flowchart TB
     nxt -. shapes next extract .-> turn
 ```
 
-The injected suggested response is *context-as-code* — text in markdown that the next LLM call interprets as instructions. The topology audit is a pure-graph computation; the LLM doesn't need to assess its own reasoning, the deterministic gate does. Slimemold-shape.
+The injected suggested response is *context-as-code* — text in markdown that the next LLM call interprets as instructions. The topology audit is a pure-graph computation; the LLM doesn't need to assess its own reasoning, the deterministic gate does. Slimemold-shape; one specific instance of the general [Ambient meta-loop](#ambient-meta-loop) pattern (claim-graph as the typed signal, turn-end as the trigger, next-turn context as the seam).
 
 **In the wild**: argumentation frameworks (Dung 1995, [On the Acceptability of Arguments](https://www.sciencedirect.com/science/article/pii/000437029400041X)) provide the typed claim-with-attack-edges substrate. Less directly: claim-mapping tools (Kialo, Argunet) approximate the typed substrate without the LLM-extraction layer.
 
