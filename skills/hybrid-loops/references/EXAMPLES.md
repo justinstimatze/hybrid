@@ -75,6 +75,18 @@ This project has *three* surfaces, illustrating Phase 2 scope decisions:
 
 The "project" is one tool; the surfaces are three with different shapes. Realistic case for most non-toy projects.
 
+## The recruiter fit-scoring surface, with the procedural overlay (substantive + procedural, hiring)
+
+Takes Surface 2 above (fit-scoring, Bucket C) and shows what the five protocols in `references/PROCEDURE.md` add in production — substrate and lens unchanged. Hiring earns the demo because it's where "procedurally clean" and "actually fair" come apart. (Caveat: *limited remedies* here is just scope discipline relabeled; the other four earn their legal names.)
+
+- **Stratified standards of proof** *(action)* — tier by reversibility: *surface for review* < *filter below the line* < *auto-reject*. Refuse a higher tier on lower-tier confidence. Automated rejection is also a regulated activity (NYC Local Law 144; the EU AI Act high-risk class; a shifting US state patchwork — Colorado's 2024 AI Act was repealed before it took effect), so that tier may be legally gated regardless of confidence.
+- **Standing** *(gate, pre-lens)* — is the input real (blank/exact-dupe = deterministic, near-dupe/spam = a cheap classifier, not free), is the reasoner the right address (a hard credential is a deterministic filter, not a fuzzy call), is there an open req to route to. Any "no" returns before the lens.
+- **Precedent retrieval** *(substrate)* — score consistently with *human-verified* outcomes (interview/pass — never the model's own prior scores), keyed on job-relevant fields only, never protected-attribute proxies. Per PROCEDURE.md §3 this guards disparate *treatment*, not disparate *impact*, and stays inert until ~20 verified outcomes accrue (which, since interviews take weeks, is a long cold-start here).
+- **Limited remedies** *(action)* — scores fit and nothing else; adjacent observations ("this req's seniority band looks off") are recorded for the next cycle, not enacted.
+- **Recusal** *(cross-layer)* — separate flags from judgments: a hiring-manager referral is a metadata flag and the outreach drafter never grades its own fit, but "unusual resume" needs a classifier — so it's a judgment, not a flag, and its human path must be equal-or-better review, not a slower reject queue.
+
+Each protocol's triggers become verdict classes in the calibration log — the overlay's ablation test. The adverse-action decision stays human-final: the disparate-impact determination and the candidate's recourse are obligations the loop cannot own (the framework's own power-balance check scopes accountability and recourse *outside* itself; see PROCEDURE.md's closing caveat). The five protocols make a *human-owned* hiring loop more disciplined; they do not make an *autonomous* adverse-action loop legitimate.
+
 ---
 
 ## Picking a template by shape
@@ -97,5 +109,6 @@ The "project" is one tool; the surfaces are three with different shapes. Realist
 - Recruiter / triage / customer-service routing → multi-surface (recruiter) template
 - Multi-agent or multi-party deliberation → typed-deliberation template (positions, votes, cruxes, cluster discovery)
 - Substrate provider for downstream agents → typed-corpus-as-MCP template
+- High-stakes / fairness-sensitive / production deployment → start from the closest example above, then apply the procedural overlay (see the recruiter fit-scoring overlay and `references/PROCEDURE.md`)
 
 Resist inventing a new architecture. Pick the closest existing example, name what's different, design the difference.
