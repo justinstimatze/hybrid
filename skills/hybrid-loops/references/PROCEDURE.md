@@ -6,7 +6,7 @@ The distinction is borrowed from legal systems, which have accumulated procedura
 
 The lineage drawn on here is specifically Anglo-American common law procedure. Civil-law systems (most of continental Europe, Latin America, Japan, and beyond) handle several of these problems with different infrastructure — *stare decisis* is barely a doctrine in civil-law tradition; standing works differently under inquisitorial procedure; recusal mechanisms vary substantially; the codified case-or-controversy requirement is parochially American. The engineering content of the protocols below transfers across traditions, but the vocabulary and citations are tradition-specific. Treat them as one well-developed lineage of procedural-infrastructure design, not as the only one.
 
-This doc adds five protocols. Two extend layers that already exist in the main skill; three are genuinely new. None of them is a substantive pattern — they are constraints on how the substantive patterns compose.
+This doc adds five protocols. Two extend layers that already exist in the main skill; three are genuinely new. None of them is a substantive pattern — they are constraints on how the substantive patterns compose. Most loops need none of these — reach for this doc only when a loop is high-stakes, runs at scale, or has started failing in ways the substantive layers don't explain. Below that bar, the procedural overhead doesn't pay back.
 
 > *Vocabulary note: legal procedure has accumulated specialized terms (standing, recusal, stare decisis, limited remedies) over centuries. This doc uses them where they fit cleanly and aliases them where they don't. The main skill's vocabulary (lens, substrate, gate, reasoner, action, calibration, metabolism) stays primary; legal terms are pointers to a lineage, not replacements.*
 
@@ -66,7 +66,7 @@ Two constraints keep this from backfiring. Precedent must bind to *verified* out
 
 **Anti-diagnostic:** for genuinely novel problems where past decisions are uninformative, precedent retrieval is noise. Also skip in loops where the substrate is too small (~<20 records) for precedent to mean anything.
 
-## 4. Limited remedies (extension to action)
+## 4. Bounded action (limited remedies)
 
 *The action layer is bounded by what was requested.* Courts can only grant the relief asked for, within their jurisdiction. They cannot impose remedies the parties didn't request. The principle: action is constrained by input, not by what the reasoner thinks would also be good.
 
@@ -80,7 +80,7 @@ Adjacent improvements still get visibility — they're recorded in the substrate
 
 **Diagnostic:** if the action's output set is larger than the input's request set, scope is drifting. Tighten the action gate, don't make the reasoner smarter.
 
-**Anti-diagnostic:** exploratory loops where unbounded scope is the point (research agents, brainstorming surfaces) lose value with strict limited-remedies. Use advisory mode there at most.
+**Anti-diagnostic:** exploratory loops where unbounded scope is the point (research agents, brainstorming surfaces) lose value with a strict bounded-action rule. Use advisory mode there at most.
 
 ## 5. Recusal protocol (cross-layer constraint)
 
@@ -122,6 +122,8 @@ The five protocols above interact with the two meta-layers already in the main s
 The legal-procedural analogy is generative but not exact. Judges have real-world consequences for their decisions — career, impeachment, reputation — and that backpressure shapes the whole system's incentives. Reasoner instances do not face that backpressure, and neither half of the courtroom's accountability transfers: the subject of an automated adverse action, unlike a litigant, has no motion to file. The five protocols above port what's portable; they do not claim to reproduce the accountability infrastructure that makes legal procedure work. A perfectly-procedured but unaccountable loop — procedure outrunning accountability — is precisely the object this caveat warns the analogy cannot produce; the more consequential the action, the more the irreversible tier belongs with a human.
 
 The protocols also don't replace substantive design. A well-procedured loop with a bad substrate is still a bad loop. Procedure is necessary scaffolding around competent substance, not a substitute for it. *Substrate brings discrimination, code brings restraint, procedure brings discipline.* All three are required at scale.
+
+And like the rest of the skill, these protocols are reasoned conjecture, not ablation-validated: by the skill's own standard, a procedural overlay earns its keep only when a loop that has it measurably beats one that doesn't. Treat them as a hypothesis to test, not a result.
 
 ## Citations
 
