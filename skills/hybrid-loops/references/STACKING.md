@@ -16,6 +16,12 @@ Stacking shows up at two scales, and the discipline differs:
 
 When someone says "we have a hybrid-loops architecture," they usually mean the runtime cycle. When the system actually works, it's often because there's a development loop above it that has been iterating for weeks or months.
 
+### A third regime: recursive harness authoring (tier-stacking)
+
+Both regimes above keep the *authoring* outside the loop — a human or critic-LLM patches a system someone else built. A stronger recursion is **vertical**: a more capable tier authors the *entire* harness a cheaper tier runs inside — its prompts, schema, gate, verifier — and re-authors it as signals propagate up, rather than just patching a prompt. The repeated unit is the whole loop, not a critic.
+
+Two demands it adds: the guardrail set is itself tier-authored and must be re-authored as failure modes mutate (a static verifier silently loses coverage); and the up-channel a human silently provided in ordinary dev-time loops now has to be carried by the structure. *If you can't articulate what carries the up-signal once the human is gone, you don't have a tier-stack — you have a dev-time loop with the human elided and the failures about to go silent.* Single-hop versions of this are already shipping; what's open is stacking it across depth.
+
 ## What stacking buys
 
 Each additional typed constraint layer can:
@@ -46,6 +52,14 @@ Plausible hypothesis: reliability increases monotonically with N up to some poin
 
 The user's working hypothesis is testable: stack increasing N on a fixed task, measure final-output error rate vs. N. The shape of that curve is the answer. *Nobody has run that experiment at small scale*; it's the empirical research project hidden inside this work.
 
+### Saturation is a quality question. Convergence is a structural one — and it bites first.
+
+The reliability-vs-N curve above asks "does each added layer still buy accuracy?" But there's a prior, harder constraint with nothing to do with model quality: in a stack with feedback flowing *up* (drift signals, escalations, calibration verdicts), can the supervising layer still perceive the error it is responsible for correcting? If each upward hop loses fidelity — a prose summary degrades at every boundary — the top sees an attenuated signal and stalls at a floor it can't see below. Past some depth the loop goes *blind* before quality ever saturates.
+
+Two consequences, both diagnostic-first:
+1. **Test the structural condition before the quality curve.** You can model the feedback topology — depth, per-hop signal loss, the thresholds that trigger correction — without live model calls, and find where the loop goes blind. The expensive N-sweep is only worth running inside that ceiling.
+2. **Attack the up-signal's fidelity, not the layer count** (see #7, Lossless up-signal). Any max-safe-depth this yields is a *band* contingent on your thresholds, not a single number — the robust claim is directional: rising per-hop loss collapses safe depth.
+
 ## Composition discipline
 
 When stacking is the goal, the architecture needs explicit composition discipline:
@@ -75,6 +89,10 @@ Every record carries `schema_version`. Layer-N schema bumps don't break Layer-N+
 ### 6. Sanitization at boundaries
 
 Each typed record passing between layers should be treated as potentially adversarial input to the next layer's prompts. Wrap content in untrusted-source delimiters; strip prompt-injection patterns; never let upstream-generated text directly construct downstream prompts without sanitation.
+
+### 7. Lossless up-signal between layers
+
+The signal a layer sends *up* comes in two channels, and they don't age the same. A prose summary ("the layer below seems to be drifting") loses fidelity at every hop. A deterministic verifier's output — a typed divergence record (`{id, reason, similarity}`) — is lossless at any depth for whatever it covers. So the design move is: route the largest checkable fraction of your inter-layer signal through a deterministic comparator rather than a model's prose summary. The honest limit is that the checkable fraction is capped by what you can write a check for, and the un-checkable residual tends to be exactly the high-value drift; holding coverage steady as failure modes mutate means re-authoring guardrails, not just writing them once. Closely tied to #3 (the comparator is also where calibration lives) and #6 (a typed record is easier to sanitize than free prose).
 
 ## Open questions
 
