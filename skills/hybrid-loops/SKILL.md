@@ -247,3 +247,4 @@ The main file is enough for project planning and most design conversations. Load
 - `references/PRIOR_ART.md` — when defending novelty or citing lineage
 - `references/STACKING.md` — only when project is past v0 and explicitly stacks
 - `references/PROCEDURE.md` — when designing the scaffolding around the substantive layers (standards of proof, standing checks, precedent retrieval, bounded action, recusal); legal-procedural lineage applied to hybrid loops
+- `references/ORCHESTRATION_SHAPES.md` — when scaffolding around multi-agent or parallel-session orchestration patterns in 2026 practice (Conductor-style multiplexing, Gas-Town/Gas-City-style engineered-resilience autonomy, Wasteland-style federated validation); four-shape map with citation discipline and source-tiering; vocabulary + research notes, not adoption guide

@@ -79,6 +79,7 @@ The reference docs each have a different reader in mind:
 | think this is just DSPy / LangGraph / AutoGen / pydantic with extra theory | [`AGENT_FRAMEWORKS.md`](skills/hybrid-loops/references/AGENT_FRAMEWORKS.md) (per-tool comparison + adjacent ecosystems) |
 | are doing a lit review | [`PRIOR_ART.md`](skills/hybrid-loops/references/PRIOR_ART.md) (4-tier citation index) |
 | want to think about composition past v0 | [`STACKING.md`](skills/hybrid-loops/references/STACKING.md) (runtime vs dev-time stacking) |
+| are evaluating or designing multi-agent orchestration in 2026 (Conductor / Gas Town / Wasteland) | [`ORCHESTRATION_SHAPES.md`](skills/hybrid-loops/references/ORCHESTRATION_SHAPES.md) (four-shape map; vocabulary + research notes, not adoption guide) |
 
 ## Runnable instances in the wild
 

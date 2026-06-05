@@ -93,7 +93,7 @@ Massive integration libraries (thousands of services) make these the practical c
 
 ### Compound engineering (Every.to / Kieran Klaassen)
 
-A practitioner methodology for AI-assisted software development. Core loop: Plan → Work → Review → Compound → Repeat. The fourth step embeds learnings into searchable artifacts (CLAUDE.md updates, YAML-metadata repos) so subsequent work is "easier, not harder." Recommends 80% time on planning + review, 20% on implementation; multi-agent parallel review; "teach the system, don't do the work yourself."
+A practitioner methodology for AI-assisted software development; see the guide at https://every.to/guides/compound-engineering (Jan 17, 2026; updated May 2026). The current articulation is a seven-step loop: **Ideate → Brainstorm → Plan → Work → Review → Polish → Compound**. The final step embeds learnings into searchable artifacts (CLAUDE.md updates, YAML-metadata repos) so subsequent work is "easier, not harder." Distinctive moves: multi-agent parallel review with explicit severity tiering ("findings marked P1 (must fix), P2 (should fix), or P3 (nice to fix)"), CLAUDE.md as living substrate (*"when something goes wrong, add a note so the agent learns"*), and the Compound step as substrate-with-retrieval-aware-schema. Heavy planning + review weight, lighter implementation weight; "teach the system, don't do the work yourself."
 
 The "compound" step is structurally the **dev-time hybrid loop wrapping the runtime** — feedback from runtime behavior reshapes the layers below. "Teach the system" maps onto *context-as-code as load-bearing infrastructure*. Multi-agent parallel review maps onto the *adversarial-panel-process* shape.
 
