@@ -2,10 +2,13 @@
 
 The hybrid-loops pattern applies across many domains. These are illustrative examples — fictional or generic — for someone scaffolding a project. When designing your own, pick whichever is closest in *shape*; domain doesn't matter, structure does.
 
+Every example below uses the five-role default arrangement (lens → substrate → gate → reasoner → action) as its skeleton. Where it directly instantiates a more specific named shape from [`BLOCK_GRAPHS.md`](BLOCK_GRAPHS.md), a *Shape:* line appears at the top of the entry. The [three disciplines from `THE_CASE.md`](THE_CASE.md#three-new-disciplines) — per-block calibration, context-as-code as load-bearing infrastructure, the dev-time hybrid loop wrapping the runtime — apply across all of them; this file focuses on the per-example surface details (schema sketches, gate policies, calibration paths).
+
 ---
 
 ## A teacher tracking which interventions work for which kinds of students (substrate-as-record, education)
 
+- *Shape:* [Teacher's intervention tracker](BLOCK_GRAPHS.md#teachers-intervention-tracker) (cross-domain metaphor in the BLOCK_GRAPHS.md catalog).
 - **Surface scope** — only the post-interaction reflection. The rest of the teacher's day (lesson planning, grading, classroom management) is not a hybrid loop.
 - **Lens** — LLM extracts typed records from the teacher's brief notes after each student interaction: `{student_id, situation_type, intervention_used, response_pattern, notes, schema_version, model_id}`
 - **Substrate** — sqlite; per-student-per-week records; schema versioned because `intervention_used` taxonomy will evolve as the teacher learns
@@ -43,6 +46,7 @@ Substrate is record AND vocabulary (the issue taxonomy is the vocabulary the sys
 
 ## A coach with a typed intervention library (substrate-as-vocabulary, professional/coaching)
 
+- *Shape:* [Coach's typed move-library](BLOCK_GRAPHS.md#coachs-typed-move-library) (cross-domain metaphor in the BLOCK_GRAPHS.md catalog).
 - **Surface scope** — the intervention-selection moment during a session. Session notes, scheduling, billing are not hybrid loops.
 - **Lens** — at the session moment, an LLM classifies the conversation's current state: `{client_emotional_register, conversation_topic, stuckness_signal, recent_breakthrough}`
 - **Substrate** — a *curated* repertoire of typed intervention questions: `[{question_text, deploy_when, contraindications, mechanism, depth_level}]` — maybe 30-100 entries, hand-authored or distilled from training
@@ -71,7 +75,7 @@ This project has *three* surfaces, illustrating Phase 2 scope decisions:
 
 - **Surface 1 — resume parsing** (Bucket B, *not* hybrid loop): extracting `{name, education, experience_entries[]}` is mostly deterministic if resume format is consistent. Use a parser library, not an LLM, unless the formats vary wildly.
 - **Surface 2 — fit-scoring** (Bucket C, hybrid loop, analytical): lens extracts candidate-criteria-fit `{years_in_role, domain_match, level, signal_strength}`; substrate over all candidates; gate filters below threshold; reasoner ranks for human review; calibration via "did we interview, did they pass."
-- **Surface 3 — outreach composition** (Bucket C, hybrid loop, interventional): typed library of message templates `[{template, deploy_when, tone, length}]`; reasoner picks given candidate context; gate restrains template reuse within same-day; action drafts message.
+- **Surface 3 — outreach composition** (Bucket C, hybrid loop, interventional): typed library of message templates `[{template, deploy_when, tone, length}]`; reasoner picks given candidate context; gate restrains template reuse within same-day; action drafts message. *Same shape as* [Coach's typed move-library](BLOCK_GRAPHS.md#coachs-typed-move-library) — typed repertoire + deploy_when criteria + per-use restraint policy — on a different surface.
 
 The "project" is one tool; the surfaces are three with different shapes. Realistic case for most non-toy projects.
 

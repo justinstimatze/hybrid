@@ -4,6 +4,8 @@ Use when SKILL.md's Phase 4 quick-design (3 questions + auto-defaults) isn't suf
 
 Default to quick-design for v0 projects. This file is loaded on demand.
 
+The interview assumes the **five-role default arrangement** (lens / substrate / gate / reasoner / action) from SKILL.md. That covers most analytical and interventional surfaces. For surfaces that depart from the default — `LLM-as-architect`, `code-as-perceiver`, `LLM-audits-code`, `LLM-generates-prompts-for-LLM`, and the rest of the [eight primitives](BUILDING_BLOCKS.md#eight-primitive-blocks) — first identify the relevant blocks from `BUILDING_BLOCKS.md`, then run the question set against *those* blocks instead of (or in addition to) the five-role ones.
+
 ## For analytical surfaces (substrate-as-record)
 
 1. **What is the non-deterministic input?** Transcripts, dialogue turns, screenshots, plans, behavior logs, observations, sensor readings, journal entries.
