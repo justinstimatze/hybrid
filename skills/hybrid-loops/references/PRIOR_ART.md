@@ -155,6 +155,7 @@ Adjacent active work covering pieces of the same broader pattern. None of these 
 ### Methodologies
 
 - **Compound engineering (Every.to / Kieran Klaassen)** — practitioner methodology for AI-assisted dev with a Plan→Work→Review→**Compound**→Repeat loop. The compound step is structurally the dev-time hybrid loop. See `AGENT_FRAMEWORKS.md` for honest overlap-and-gap treatment; eight-beliefs / five-stages framing reads as consultancy packaging the framework declines to adopt.
+- **Harness engineering (OpenAI / Ryan Lopopolo, 2026)** — substrate-provider's engineering-practice writeup for building production systems with agents-as-engineers. Thesis: *"design environments, specify intent, and build feedback loops."* AGENTS.md as table of contents + recurring "garbage collection" by cleanup agents are the two distinctive disciplines. See `AGENT_FRAMEWORKS.md` for full mapping; convergent vocabulary from a non-Anthropic source, partially offsets the Anthropic-Karpathy substrate-provider consolidation noted in `ORCHESTRATION_SHAPES.md` source-tiering.
 
 ### LLM observability and calibration platforms
 
@@ -172,7 +173,19 @@ These tools are calibration-first; they also cover dataset management, regressio
 
 ### Multi-agent orchestration projects
 
-- **Gas Town** ([github.com/gastownhall/gastown](https://github.com/gastownhall/gastown)) — multi-agent coordination workspace with persistent state, git-backed worktrees ("Hooks"), three-tier watchdog system (Witness/Deacon/Dogs), targets coordinating 20-30 agents. Solves "agents lose context on restart" with durable state — same problem Temporal/Conductor solve at workflow scale, with agent-specific abstractions and a "town" metaphor (Mayor / Rigs / Crews / Polecats / Convoys / Beads).
+The exemplars below are the practitioner projects the four shapes in `ORCHESTRATION_SHAPES.md` were named from; arriving at the framework from inside any of them, a reader should recognize the same architectural disciplines under different vocabulary.
+
+- **Conductor** (Charlie, co-founder; YC S24; macOS desktop app for orchestrating coding agents; practitioner walkthrough at https://www.youtube.com/watch?v=fQmlML9Lay4) — canonical exemplar of *shape 2 — human-orchestrated parallel multiplexer*. The human keeps planning and approval; agents run in parallel git worktrees on sliced-up tasks. Charlie's load-bearing folk rule *"don't let the AI be your architect"* rhymes with the substantive/procedural split (mapping is suggestive, not rigorous). "Slot free zones" / "do not touch if you are an AI" comments are a cousin to bounded action (`PROCEDURE.md` §4) — both constrain by exclusion, different protocols. *Distinct from Netflix Conductor*, the workflow orchestrator listed under "Adjacent ecosystems" below.
+
+- **Gas Town** ([github.com/gastownhall/gastown](https://github.com/gastownhall/gastown), Steve Yegge, Go, v1.0 April 2026) — multi-agent coordination workspace with persistent state, git-backed worktrees ("Hooks"), three-tier watchdog system (Witness/Deacon/Dogs), targets coordinating 20-30 agents. Solves "agents lose context on restart" with durable state — same problem Temporal / Netflix Conductor solve at workflow scale, with agent-specific abstractions and a "town" metaphor (Mayor / Rigs / Crews / Polecats / Convoys / Beads). Earliest deployed exemplar of *shape 3 — engineered-resilience autonomous, with per-pack adversarial verification*.
+
+- **Gas City** (Yegge; SDK v1.0 April 24, 2026; primary implementor Julian Knutsen) — Gas Town's successor framework for building custom agent packs. Introduces MEOW (Molecular Expression of Work) with Formulas (reusable templates) and Molecules (instances), version-controlled in Dolt and forkable across an org. Codifies the *two-or-three agents per pack* deployment rule (adversarial verification as deployment policy, not guideline). Yegge: *"Reliability, friends, is a dial. You choose where to set it. More rounds of review, more backstops, more guardrails, more judges..."* See `ORCHESTRATION_SHAPES.md` shape 3 for the per-protocol mapping.
+
+- **Wasteland** (Yegge et al.; *Welcome to the Wasteland: A Thousand Gas Towns*, March 2026; built by Julian Knutsen + Matt Beane + others with Yegge's vision) — federated network of Gas Towns sharing a Wanted Board and trust-graded validation atop Dolt (Git-versioned SQL). Stamps as multi-dimensional verdicts on an append-only ledger; trust levels gate what new rigs can do; the *"yearbook rule"* forbids self-stamping. Earliest documented exemplar of *shape 4 — socially-validated federation*. The protocol-overlap with `PROCEDURE.md` (standing, recusal, substrate-as-record) is suggestive — three of five protocols rhyme — but the mapping rests on Yegge's essay and has not been validated by independent inspection of the running system.
+
+- **Software Survival 3.0** (Yegge, Jan 2026) — the theoretical framing under the Yegge stack. The Survival Ratio `Survival(T) ∝ (Savings × Usage × H) / (Awareness_cost + Friction_cost)` and its six levers (Insight Compression, Substrate Efficiency, Broad Utility, Publicity, Friction Minimization, Human Coefficient) give a different organizing principle from hybrid-loops' discipline-pattern decomposition but reach overlapping conclusions about tool-block fitness. Lever 1 (Insight Compression) ≈ substrate-as-crystallized-knowledge; Lever 2 (Substrate Efficiency) ≈ the gate. Cited from `BUILDING_BLOCKS.md` as non-self-referential evidence the *discipline of tools for agents* has economic stakes.
+
+- **Maggie Appleton — *Gas Town's Agent Patterns, Design Bottlenecks, and Vibecoding at Scale*** ([maggieappleton.com/gastown](https://maggieappleton.com/gastown), Jan 2026) — the most useful adversarial vantage on Yegge's claims. Frames Gas Town as *"speculative design fiction"* rather than a present-day shippable tool. The tempering reading is what keeps shape 3's framework treatment honest: the most-elaborated articulation of what engineered-resilience autonomy *could* look like, not ablation-validated infrastructure that's currently easy to adopt. Also names *"design becomes the limiting factor"* once execution gets cheap — the framework's discipline is what makes design-as-bottleneck tractable.
 
 ### Personal AI / local-first
 
@@ -197,7 +210,7 @@ Useful for tone/onboarding context; not framework-shaping but in the conversatio
 ### Adjacent ecosystems (deeper comparisons in `AGENT_FRAMEWORKS.md`)
 
 - *Agent frameworks*: DSPy (also Tier 1 academically), LangGraph, AutoGen, CrewAI
-- *Workflow orchestration*: Temporal, Conductor, AWS Step Functions, Airflow
+- *Workflow orchestration*: Temporal, Netflix Conductor, AWS Step Functions, Airflow
 - *Visual LLM-app builders*: Dify, LangFlow, Flowise
 - *Low-code / SaaS-integration automation*: n8n, Zapier, Make
 - *Structured-output / typed I/O tools*: pydantic, instructor, Anthropic tool use, OpenAI structured outputs

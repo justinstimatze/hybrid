@@ -106,6 +106,56 @@ The "compound" step is structurally the **dev-time hybrid loop wrapping the runt
 
 Cite as a contemporaneous practitioner instance of the dev-time-loop discipline; don't adopt the methodology vocabulary.
 
+### Harness engineering (OpenAI / Ryan Lopopolo)
+
+OpenAI's case study of building a production system over five months on a team of three to seven engineers, on the explicit constraint of **no manually-written code**. ~1M lines, ~1500 PRs, internal users. URL: https://openai.com/index/harness-engineering/ (Ryan Lopopolo, 2026).
+
+The thesis is the most direct restatement of hybrid-loops' design-disciplines posture from a non-Anthropic substrate provider: *"design environments, specify intent, and build feedback loops that allow Codex agents to do reliable work."* The operational moves map onto the framework's roles:
+
+- **AGENTS.md as table of contents, `docs/` as system of record** — *"give Codex a map, not a 1,000-page instruction manual."* Maps onto **context-as-code as load-bearing infrastructure**, and answers the "what's the right shape for the agent's standing context" question with progressive-disclosure (short stable entry point, mechanical link-checking).
+- **Enforce invariants, not implementations** — *"enforcing invariants, not micromanaging implementations"*; *"enforce boundaries centrally, allow autonomy locally."* Mechanical enforcement via linters + structural tests + "taste invariants" (e.g. statically enforce structured logging, naming conventions). Reads as **gate discipline at the repository-boundary altitude** — ship-blocking deterministic checks that enforce shape, distinct from §81's per-output deterministic-re-derivation but in the same spirit (don't ask the LLM to be trustworthy; constrain the surface it can affect).
+- **Recurring cleanup ("garbage collection")** — *"golden principles"* encoded into the repo, plus a recurring "doc-gardening" agent and background Codex tasks that scan for drift, update quality grades, and open targeted refactoring PRs. Maps onto **metabolism** — substrate-drift audit, expressed as scheduled agent work that pays down technical-debt continuously rather than in painful bursts.
+- **Cross-reference: Ralph Wiggum Loop.** OpenAI's standard PR-driving pattern is named in the article as *"effectively this is a Ralph Wiggum Loop"* — the runnable-tonight plugin pattern below has crossed into OpenAI's working vocabulary.
+
+**Where it differs:** engineering-only framing; no explicit per-block-hit-rate calibration (invariant enforcement is the closest analog); non-LLM actors (linters, doc-gardening agents) are implicit rather than first-class.
+
+**Verdict:** the closest practitioner-instance of hybrid-loops' discipline-orthogonal-to-capability posture from a non-Anthropic source. The recurring-cleanup-as-garbage-collection pattern is worth borrowing into any substrate-as-record deployment.
+
+### Agent-native architectures (Every / Dan Shipper + Claude)
+
+A technical guide for building applications where agents are first-class citizens. URL: https://every.to/guides/agent-native (Dan Shipper coauthored with Claude per the document's own coauthorship note; Jan 17, 2026; modified Apr 7, 2026).
+
+Five named principles:
+
+1. **Parity** — *"Whatever the user can do through the UI, the agent should be able to achieve through tools."*
+2. **Granularity** — *"Tools should be atomic primitives. Features are outcomes achieved by an agent operating in a loop."*
+3. **Composability** — *"With atomic tools and parity, you can create new features just by writing new prompts."*
+4. **Emergent capability** — *"The agent can accomplish things you didn't explicitly design for."*
+5. **Improvement over time** — *"Agent-native applications get better through accumulated context and prompt refinement."*
+
+The granularity principle is the load-bearing reframing of "feature": not predetermined code paths, but *outcomes-achieved-by-an-agent-in-a-loop*. Maps onto the framework's runtime cycle shape at the product-feature altitude — a feature IS a hybrid loop. The improvement-over-time principle restates the framework's metabolism layer at the application altitude (context accumulation + prompt refinement replace shipping code as the improvement vector).
+
+**Where it differs:**
+- Application-design framing; hybrid loops is a design pattern one altitude up (the loop is the unit of design, regardless of whether it's a "feature" or not).
+- No calibration discipline; Improvement Over Time is the closest analog but doesn't track per-block hit-rate.
+- The substrate is implicit (files + context window) rather than typed-records-as-first-class-substrate.
+
+**Verdict:** the closest product-design-altitude statement of "feature = outcome achieved by an agent in a loop." Useful vocabulary for explaining the framework to product/design audiences; same altitude as Compound Engineering (companion Every guide on the engineering side).
+
+### Ralph Wiggum Loop (Anthropic Claude Code plugin)
+
+A Claude Code plugin shipped under [anthropics/claude-code](https://github.com/anthropics/claude-code/blob/main/plugins/ralph-wiggum/README.md). The plugin's own framing: *"Ralph is a Bash loop"* — a `while true` that repeatedly feeds an AI agent a prompt file, letting it iteratively improve its work until completion. Core principle: *"Iteration > Perfection"* — *"Don't aim for perfect on first try. Let the loop refine the work."* Practical safety net: `--max-iterations` cap to prevent runaway loops on impossible tasks.
+
+The smallest deployable instance of the framework's runtime cycle shape: one LLM block, one substrate (filesystem + git history the agent reads on each pass), one stop condition. Where DSPy is the academic cousin and Compound Engineering is the methodology cousin, Ralph Wiggum is the *runnable-tonight* cousin.
+
+**Where it differs:**
+- Implementation pattern, not a methodology or framework: it's an Anthropic-shipped Claude Code plugin you can install, not a discipline you adopt.
+- No explicit calibration discipline; the loop runs to a stop condition rather than tracking per-iteration hit-rate.
+- Substrate is implicit (whatever the agent leaves on disk and in git); not typed.
+- No graph: single-LLM, single-loop. Hybrid loops generalizes to graphs of typed blocks with multiple actors.
+
+**Verdict:** the bash-loop reduction is useful as the *minimum viable* instance of a runtime hybrid loop. If you're new to the pattern, run Ralph against a small project for a day before reaching for any of the heavier frameworks above — the deployable-tonight version makes the runtime-cycle / dev-time-loop distinction concrete in a way no methodology document can.
+
 ### Discipline-coverage across the ecosystem
 
 The disciplines named in `THE_CASE.md` (calibration, context-as-code, dev-time loop) plus the framework's additions (substrate-as-record, substrate-as-vocabulary, decline-when), tabulated against what each tool addresses:
@@ -121,6 +171,9 @@ The disciplines named in `THE_CASE.md` (calibration, context-as-code, dev-time l
 | **Dify / LangFlow / Flowise** | no | partial | no | partial (canvas state) | no | no |
 | **n8n / Zapier / Make** | no | partial | no | partial | no | no |
 | **Compound engineering (Every.to)** | no | yes | yes | partial | no | no |
+| **Harness engineering (OpenAI)** | partial (invariant enforcement) | yes (AGENTS.md + docs/) | yes (no manual code) | yes (repo as system of record) | no | no |
+| **Agent-native architectures (Every)** | no | yes (system prompts + tool surfaces) | partial (Improvement Over Time) | partial (context files) | no | no |
+| **Ralph Wiggum (Claude Code plugin)** | no | partial (prompt file) | yes (IS the loop) | partial (disk + git) | no | no |
 | **SPDD (Fowler)** | no | yes (REASONS canvas) | yes | no | no | no |
 | **hybrid-loops** | yes (ship-blocking) | yes | yes | yes | yes | yes |
 

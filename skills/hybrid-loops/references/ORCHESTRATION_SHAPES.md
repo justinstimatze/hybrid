@@ -111,7 +111,7 @@ Adversarial verification per pack as a deployment rule, not a guideline. The fra
 - **Two-or-three-agents-per-pack** ≈ verification primitives embodied as a deployment rule
 - **MEOW (Molecular Expression of Work) / Formulas → Molecules** ≈ substrate-as-vocabulary at organizational scale (Formula = template; Molecule = instance; version-controlled in Dolt, forkable). Maps onto the coach-with-typed-intervention-library example in `EXAMPLES.md`, scaled from one professional's repertoire to one organization's process inventory.
 - **Watchdog tier** ≈ calibration discipline expressed as infrastructure rather than convention
-- **"Reliability is a dial. You choose where to set it. More rounds of review, more backstops, more guardrails, more judges."** (*Welcome to Gas City*) = the framework's calibration claim in different vocabulary, with concrete knobs
+- **"Reliability, friends, is a dial. You choose where to set it. More rounds of review, more backstops, more guardrails, more judges..."** (*Welcome to Gas City*) = the framework's calibration claim in different vocabulary, with concrete knobs
 
 **Yegge's invariance claim worth noting:**
 
@@ -173,7 +173,7 @@ Shape 1 is the null where the attester is missing or the actor itself — the "j
 
 Six patterns the framework currently lacks vocabulary for, tiered by evidentiary weight:
 
-- **Strong** (multiple independent practitioners, convergent moves): §1 Agent UX (3 sources, related sub-disciplines), §4 markdown-as-org-substrate (3 sources), §5 compute-as-binding-constraint (3 sources of different kinds).
+- **Strong** (multiple independent practitioners, convergent moves): §1 Agent UX (4 sources across 3 related sub-disciplines; §1a alone has 2), §4 markdown-as-org-substrate (3 sources), §5 compute-as-binding-constraint (3 sources of different kinds).
 - **Medium** (single well-grounded source with clean operational claim): §2 autonomy slider (Karpathy), §3 generation-verification loop velocity (Karpathy), §7 organizational-level feedback loops (Charity).
 
 Two adjacent framings (§6 Yegge's Survival Ratio, §8 Karpathy's Iron Man suit metaphor) are noted below as useful vocabulary the framework can borrow, not as newly surfaced disciplines.
@@ -182,10 +182,11 @@ Each item below is documented practice with a stated method, not theory.
 
 ### 1. Agent UX / designing-for-the-LLM-end-user
 
-The strongest convergence finding in the lit review — but worth disaggregating, because the four practitioners I'd been bundling together are addressing three distinct sub-disciplines, not one. They share an orientation (LLMs are the end-user; design accordingly) but the moves are different:
+The strongest convergence finding in the lit review — but worth disaggregating, because the five practitioner citations bundled here are addressing three distinct sub-disciplines, not one. They share an orientation (LLMs are the end-user; design accordingly) but the moves are different:
 
 **1a. Substrate-side friction minimization** (the agent's interface to your data/state):
 - **Yegge (*Software Survival 3.0*, Jan 2026):** *"What I did was make their hallucinations real, over and over, by implementing whatever I saw the agents trying to do with Beads, until nearly every guess by an agent is now correct. I've driven the friction cost term about as low as it can go."* He calls this *Desire Paths* design.
+- **Kieran Klaassen (*The Folder Is the Agent*, Every, April 13 2026; https://every.to/source-code/the-folder-is-the-agent):** the substrate IS what individuates one agent from another. *"A project folder with a CLAUDE.md/AGENT.md...that's an agent."* / *"Just by pointing the model at this folder, which contains some of my personality, knowledge, and taste, the model can be a specialist."* / *"Just by changing the folder and not the model, I have a different agent."* The throughput claim that makes substrate-side friction load-bearing: *"I'm running 44 AI agents across multiple projects. Each one is just a model pointed at a folder."* When the folder is the agent, the design move is configuring the folder, not configuring the model — same orientation as Yegge's Desire Paths, stated at the individual-agent altitude rather than the substrate-build altitude.
 
 **1b. Tool/protocol-side friction minimization** (the agent's interface to the broader world):
 - **Karpathy (YC, July 2025):** explicit "build for agents" — `lm.txt` files alongside `robots.txt`, markdown docs over HTML, replacing "click X" with "curl this endpoint", MCP as the canonical protocol.
