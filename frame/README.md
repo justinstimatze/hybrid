@@ -25,14 +25,28 @@ guaranteed to behave. `frame` deliberately targets the class one rung below: a
 - the **LLM is a fenced oracle** whose output can never move the machine into an
   unverified state.
 
+A `Cell` is a **formal oracle** (Russell's sense): an LLM whose output is
+confined to a formal language and checked for safe actions before it can
+influence anything. Its contract is two decidable stages, both mandatory:
+
+- **Grammar** — formal-language membership: parse raw output into a well-formed
+  term, or reject it as outside the language `L`.
+- **Safety** — over a well-formed term, decide whether the action it denotes is
+  safe.
+
+A term reaches control flow only if it is `WellFormed && Safe`; otherwise the
+machine takes its fail-safe path. (Generation-time confinement — constrained
+decoding so the model *can only* emit `L` — is the runtime's job; the Grammar is
+the parse-time backstop. See *What's stubbed*.)
+
 The load-bearing invariant: *an LLM output may never gate a transition without a
-deterministic validator between it and the transition.* `frame` makes the unsafe
+deterministic check between it and the transition.* `frame` makes the unsafe
 shapes **inexpressible**:
 
 | Unsafe shape | How it is made impossible |
 |---|---|
-| An oracle with no validator | `spec.NewCell` requires a validator; the field is unexported, so a `Cell` literal without one won't compile elsewhere |
-| A guard branching on raw oracle output | `check` rejects any guard reading `cells.X.raw` (only `.validated`/`.valid`) — code `E-ORACLE` |
+| An oracle that emits unconstrained or unchecked output | `spec.NewCell` requires both a grammar and a safety check; the fields are unexported, so a `Cell` literal without them won't compile elsewhere |
+| A guard branching on raw oracle output | `check` rejects any guard reading `cells.X.raw` (only `.term`/`.wellformed`/`.safe`) — code `E-ORACLE` |
 | Injecting on a trigger that can't inject | `E-INJECT` (e.g. `Inject` on `PreToolUse`) |
 | Blocking on a trigger that can't block | `E-BLOCK` (e.g. `Block` on `PostToolUse`) |
 | A loop that can never end | `E-HALT` (no reachable terminal) + a mandatory `Fuel` bound (totality) |
@@ -91,19 +105,20 @@ scenario "converges"
 ```go
 assess := spec.NewCell("assess", "claude-sonnet-4-6",
     "Output exactly 'complete' or 'incomplete'.",
-    func(raw string) (string, bool) {        // the mandatory validator
+    func(raw string) (string, bool) {        // Grammar: membership in L
         v := strings.ToLower(strings.TrimSpace(raw))
         return v, v == "complete" || v == "incomplete"
-    })
+    },
+    func(string) bool { return true })       // Safety: a classification is safe
 
 loop := spec.State{Name: "loop", On: []spec.Transition{
     {On: spec.Stop, To: "done",
-        Guard: &spec.Guard{Reads: []string{"cells.assess.validated"},   // validated only
-            When: func(c *spec.Context) bool { return c.Cell("assess").Validated == "complete" }},
+        Guard: &spec.Guard{Reads: []string{"cells.assess.term"},   // formal output only
+            When: func(c *spec.Context) bool { return c.Cell("assess").WellFormed && c.Cell("assess").Term == "complete" }},
         Do: []spec.Effect{spec.Inject{Text: spec.S("Verified complete.")}}},
     {On: spec.Stop, To: "loop",
-        Guard: &spec.Guard{Reads: []string{"cells.assess.validated"},
-            When: func(c *spec.Context) bool { return c.Cell("assess").Validated == "incomplete" }},
+        Guard: &spec.Guard{Reads: []string{"cells.assess.term"},
+            When: func(c *spec.Context) bool { return c.Cell("assess").WellFormed && c.Cell("assess").Term == "incomplete" }},
         Do: []spec.Effect{spec.Block{Reason: spec.S("Not done — continue.")}}},
 }}
 
@@ -117,9 +132,12 @@ Register it in `registry`, then `check` / `compile` / `sim` / `run` it.
 
 ## What's stubbed
 
-- `runtime.Oracle` — the model call. Wire it to a Claude client. Until then,
-  `frame run` uses a nil-returning stub, so cells fail validation and machines
-  take their fail-safe path (rather than guessing).
+- `runtime.Oracle` — the model call, and with it **generation-time confinement**:
+  a real binding should constrain decoding (grammar / structured output / tool
+  schema) so the model *can only* emit the cell's language `L`, making the
+  Grammar stage a backstop rather than the sole guarantee. Until wired, `frame
+  run` uses a nil-returning stub, so cells fall outside `L` and machines take
+  their fail-safe path (rather than guessing).
 - `Emit` records bus messages but does not yet write inbox files — drop in the
   mcp-dispatch relay here.
 - No calibration tap yet — the hindcast-style predict/verdict log per cell.

@@ -62,8 +62,8 @@ func runCell(c spec.Cell, ctx *spec.Context, oracle Oracle) *spec.CellResult {
 		return r
 	}
 	raw := oracle(c, ctx)
-	validated, ok := c.Validate(raw)
-	r := &spec.CellResult{Raw: raw, Validated: validated, Valid: ok, Ran: true}
+	res := c.Check(raw) // formal-language membership, then safety
+	r := &res
 	if ctx.Cells == nil {
 		ctx.Cells = map[string]*spec.CellResult{}
 	}

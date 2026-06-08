@@ -1,9 +1,9 @@
-// Package reviewloop is a worked machine: a Stop-loop that asks a fenced oracle
+// Package reviewloop is a worked machine: a Stop-loop that asks a formal oracle
 // whether the user's task is complete and, until it is, refuses the stop and
 // tells Claude to continue. It exercises every load-bearing feature — a lazily
-// run cell, validator-gated branching, Block-on-Stop as the "keep going"
-// primitive, a fail-safe when the oracle output is invalid, and the fuel bound
-// that guarantees the loop ends.
+// run formal-oracle cell, term-gated branching, Block-on-Stop as the "keep
+// going" primitive, a fail-safe when output falls outside the language, and the
+// fuel bound that guarantees the loop ends.
 package reviewloop
 
 import (
@@ -13,21 +13,21 @@ import (
 	"github.com/justinstimatze/frame/spec"
 )
 
-// assess is the one stochastic edge. Its validator only accepts "complete" or
-// "incomplete"; anything else is rejected (Valid == false) and the machine
-// releases rather than trapping the user.
+// assess is the formal oracle. Its language L = {"complete", "incomplete"} — the
+// grammar accepts only those two words; anything else is outside L and the
+// machine releases rather than guessing. Safety is trivial here because the term
+// is a pure classification, not an action; the safety stage earns its keep when
+// a cell's term denotes something the machine will *do*.
 var assess = spec.NewCell(
 	"assess",
 	"claude-sonnet-4-6",
 	"Read the transcript. Output exactly one word — 'complete' if the user's "+
 		"stated task is fully done, otherwise 'incomplete'.",
-	func(raw string) (string, bool) {
+	func(raw string) (string, bool) { // Grammar: membership in L
 		v := strings.ToLower(strings.TrimSpace(raw))
-		if v == "complete" || v == "incomplete" {
-			return v, true
-		}
-		return "", false
+		return v, v == "complete" || v == "incomplete"
 	},
+	func(string) bool { return true }, // Safety: a classification is always safe
 )
 
 // Machine builds the review-loop statechart.
@@ -38,26 +38,26 @@ func Machine() spec.Machine {
 			{ // verified complete -> halt
 				On: spec.Stop, To: "done",
 				Guard: &spec.Guard{
-					Reads: []string{"cells.assess.validated"},
-					When:  func(c *spec.Context) bool { return c.Cell("assess").Valid && c.Cell("assess").Validated == "complete" },
+					Reads: []string{"cells.assess.term"},
+					When:  func(c *spec.Context) bool { return c.Cell("assess").WellFormed && c.Cell("assess").Term == "complete" },
 				},
 				Do: []spec.Effect{spec.Inject{Text: spec.S("Verified: the task is complete.")}},
 			},
 			{ // not complete -> refuse the stop, keep going
 				On: spec.Stop, To: "loop",
 				Guard: &spec.Guard{
-					Reads: []string{"cells.assess.validated"},
+					Reads: []string{"cells.assess.term"},
 					When: func(c *spec.Context) bool {
-						return c.Cell("assess").Valid && c.Cell("assess").Validated == "incomplete"
+						return c.Cell("assess").WellFormed && c.Cell("assess").Term == "incomplete"
 					},
 				},
 				Do: []spec.Effect{spec.Block{Reason: spec.S("Task not yet complete — continue with the next concrete step.")}},
 			},
-			{ // oracle output failed validation -> fail safe, release
+			{ // output fell outside the language -> fail safe, release
 				On: spec.Stop, To: "done",
 				Guard: &spec.Guard{
-					Reads: []string{"cells.assess.valid"},
-					When:  func(c *spec.Context) bool { return !c.Cell("assess").Valid },
+					Reads: []string{"cells.assess.wellformed"},
+					When:  func(c *spec.Context) bool { return !c.Cell("assess").WellFormed },
 				},
 				Do: []spec.Effect{spec.Inject{Text: spec.S("(self-check inconclusive; releasing.)")}},
 			},
@@ -93,7 +93,7 @@ func Scenarios() []sim.Scenario {
 			Oracle: map[string][]string{"assess": {"incomplete", "incomplete", "complete"}},
 		},
 		{
-			Name:   "fail-safe (invalid oracle output)",
+			Name:   "fail-safe (output outside the language)",
 			Events: stop(1),
 			Oracle: map[string][]string{"assess": {"i think it's basically done?"}},
 		},

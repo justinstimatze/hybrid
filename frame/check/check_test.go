@@ -27,14 +27,16 @@ func TestExampleIsSound(t *testing.T) {
 func TestUngatedOracleIsInexpressible(t *testing.T) {
 	defer func() {
 		if recover() == nil {
-			t.Fatal("NewCell with a nil validator should panic")
+			t.Fatal("NewCell with a nil grammar/safety should panic")
 		}
 	}()
-	_ = spec.NewCell("x", "m", "i", nil)
+	_ = spec.NewCell("x", "m", "i", nil, nil)
 }
 
 func TestGuardOnRawOutputRejected(t *testing.T) {
-	c := spec.NewCell("c", "m", "i", func(r string) (string, bool) { return r, true })
+	c := spec.NewCell("c", "m", "i",
+		func(r string) (string, bool) { return r, true },
+		func(string) bool { return true })
 	m := spec.Machine{
 		Name: "bad", Fuel: 2, Initial: "a", Cells: []spec.Cell{c},
 		States: []spec.State{

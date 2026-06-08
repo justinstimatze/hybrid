@@ -40,29 +40,49 @@ var gating = map[Trigger]bool{PreToolUse: true, UserPromptSubmit: true, Stop: tr
 func Injecting(t Trigger) bool { return injecting[t] }
 func Gating(t Trigger) bool    { return gating[t] }
 
-// Validator maps a raw model completion to a validated value, reporting whether
-// it was acceptable. ok==false means the oracle output is rejected.
-type Validator func(raw string) (validated string, ok bool)
+// A Cell is a formal oracle: an LLM whose output is confined to a formal
+// language and checked for safe actions before it can influence anything.
+// Its contract has two decidable stages, both mandatory:
+//
+//	Grammar  formal-language membership — parse raw output into a well-formed
+//	         term, reporting whether it is in the language L at all.
+//	Safety   over a well-formed term, decide whether the action it denotes is safe.
+//
+// A term reaches control flow only if it is WellFormed AND Safe. Generation-time
+// confinement (constrained decoding / structured output so the model *can only*
+// emit L) is the runtime's job; Grammar is the parse-time backstop.
+type Grammar func(raw string) (term string, wellFormed bool)
 
-// Cell is a single LLM call. The validator is mandatory and unexported.
+// Safety decides whether a well-formed term denotes a safe action.
+type Safety func(term string) bool
+
+// Cell is a single formal-oracle call. Grammar and Safety are mandatory and
+// unexported: a Cell whose output could reach a guard unchecked is inexpressible.
 type Cell struct {
 	Name         string
 	Model        string
 	Instructions string
-	validate     Validator
+	grammar      Grammar
+	safe         Safety
 }
 
-// NewCell builds a Cell. It panics on a nil validator: there is no valid Cell
-// whose output could reach a guard unchecked.
-func NewCell(name, model, instructions string, v Validator) Cell {
-	if v == nil {
-		panic("frame/spec: Cell requires a validator (an ungated oracle is inexpressible)")
+// NewCell builds a formal-oracle Cell. It panics if either stage is missing:
+// there is no valid Cell that emits unconstrained or unsafety-checked output.
+func NewCell(name, model, instructions string, g Grammar, s Safety) Cell {
+	if g == nil || s == nil {
+		panic("frame/spec: a formal-oracle Cell requires both a grammar (formal language) and a safety check")
 	}
-	return Cell{Name: name, Model: model, Instructions: instructions, validate: v}
+	return Cell{Name: name, Model: model, Instructions: instructions, grammar: g, safe: s}
 }
 
-// Validate runs the cell's validator over a raw completion.
-func (c Cell) Validate(raw string) (string, bool) { return c.validate(raw) }
+// Check runs the formal pipeline over a raw completion: membership, then safety.
+func (c Cell) Check(raw string) CellResult {
+	term, ok := c.grammar(raw)
+	if !ok {
+		return CellResult{Raw: raw, Ran: true} // not in the language
+	}
+	return CellResult{Raw: raw, Term: term, WellFormed: true, Safe: c.safe(term), Ran: true}
+}
 
 // Text is a string field that may depend on the live context. Use S for a
 // constant.
@@ -135,11 +155,14 @@ type Machine struct {
 
 // --- runtime context (carried across steps, persisted between hook fires) ---
 
+// CellResult is the outcome of a formal-oracle Check. A term influences control
+// flow only when WellFormed && Safe; otherwise the machine takes its fail-safe.
 type CellResult struct {
-	Raw       string `json:"raw"`
-	Validated string `json:"validated"`
-	Valid     bool   `json:"valid"`
-	Ran       bool   `json:"ran"`
+	Raw        string // the model's raw completion
+	Term       string // the parsed, well-formed term (empty if not in the language)
+	WellFormed bool   // raw output is a member of the formal language
+	Safe       bool   // the term denotes a safe action
+	Ran        bool
 }
 
 type Context struct {

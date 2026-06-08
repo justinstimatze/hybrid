@@ -124,8 +124,10 @@ func Check(m spec.Machine) []string {
 					if !cellNames[cr.Cell] {
 						errs = append(errs, fmt.Sprintf("E-CELL: %s guard reads unknown cell %q (not in machine.Cells)", s.Name, cr.Cell))
 					}
-					if cr.Field != "validated" && cr.Field != "valid" {
-						errs = append(errs, fmt.Sprintf("E-ORACLE: %s guard reads cells.%s.%s — control flow may only depend on a cell's validated/valid output", s.Name, cr.Cell, cr.Field))
+					switch cr.Field {
+					case "term", "wellformed", "safe":
+					default:
+						errs = append(errs, fmt.Sprintf("E-ORACLE: %s guard reads cells.%s.%s — control flow may only depend on a cell's formal-language output (term/wellformed/safe), never its raw output", s.Name, cr.Cell, cr.Field))
 					}
 				}
 			}
