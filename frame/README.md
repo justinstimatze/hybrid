@@ -150,3 +150,10 @@ fuel bound), and the safety property *no transition is gated on unvalidated
 oracle output*. What is **not** guaranteed — and cannot be — is the correctness
 of an individual cell's output. That is the irreducible stochastic part; the
 frame's job is to contain it, not eliminate it.
+
+## Design notes
+
+See [docs/DESIGN.md](docs/DESIGN.md) for the formal-oracle model, the
+total-statechart-vs-Turing-completeness argument, the Russell / reflective-oracle
+readings, and the planned `lexicon` dual (lexicon as the formal language `L`, its
+surfacing function as the injection-compliance primitive).
