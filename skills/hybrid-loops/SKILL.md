@@ -149,7 +149,7 @@ How does the loop fire? Pick one:
 
 - **In-process call** — the surrounding project invokes the lens/reasoner directly. Default for embedded surfaces.
 - **MCP tool** — callable on demand by Claude or other agents. Use when the substrate should be queryable from outside.
-- **Hooks** (Claude Code lifecycle, request handlers, browser events) — fire automatically. Use for ambient injection.
+- **Hooks** (Claude Code lifecycle, request handlers, browser events) — fire automatically. Use for ambient injection. For Claude Code hooks specifically, [stull](https://github.com/justinstimatze/stull) gives you a typed guarded-statechart runtime — fenced LLM cells behind deterministic guards, a static checker, a fail-open dispatcher — instead of hand-rolling the shape per project.
 - **CLI / cron** — scheduled batch. Use only for genuine background processes.
 - **Stream watcher** — polls a transcript or stream. Avoid unless polling is unavoidable.
 
