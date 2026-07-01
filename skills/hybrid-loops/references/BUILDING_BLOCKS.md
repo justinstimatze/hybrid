@@ -237,6 +237,8 @@ The above are named patterns because someone already named them. Every other use
 
 Branching, joining, dynamic dispatch, recursion (a block calling a sub-loop), parallel fan-out / fan-in — these are higher-order composition operators on the same primitive set. They don't change the primitive vocabulary; they change the topology of how primitives connect.
 
+Claude Code's dynamic workflows (Anthropic, Jun 2026 — see `PRIOR_ART.md`) ship a named vocabulary for exactly these operators at the tooling layer rather than the design-vocabulary layer: *classify-and-act* is `LLM-classify + code-dispatch`; *fan-out-and-synthesize* is parallel fan-out/fan-in with the join as an explicit barrier; *tournament* and *generate-and-filter* are dynamic dispatch over LLM-generated candidates. Convergent naming from a shipped tool, not evidence the algebra is complete — but a sign the topology-vs-vocabulary split drawn above is legible enough that a runtime independently arrived at the same joints.
+
 The disciplines that keep composition from collapsing:
 
 1. *Schema versioning at every typed edge.* When the upstream block's output schema changes, every downstream block sees it.

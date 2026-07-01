@@ -156,6 +156,24 @@ The smallest deployable instance of the framework's runtime cycle shape: one LLM
 
 **Verdict:** the bash-loop reduction is useful as the *minimum viable* instance of a runtime hybrid loop. If you're new to the pattern, run Ralph against a small project for a day before reaching for any of the heavier frameworks above — the deployable-tonight version makes the runtime-cycle / dev-time-loop distinction concrete in a way no methodology document can.
 
+### Claude Code dynamic workflows (Anthropic)
+
+A Claude Code capability rather than a plugin (Shihipar & Bidasaria, *"A harness for every task: dynamic workflows in Claude Code,"* blog, Jun 2 2026; see `PRIOR_ART.md` for the fuller citation and verification note). The orchestrating model authors a JavaScript orchestration script per task — `agent()` / `parallel()` / `pipeline()` / `phase()` primitives — that a deterministic runtime then executes, spawning and coordinating a subagent fleet.
+
+Where Ralph Wiggum is the framework's minimum-viable single-loop instance, dynamic workflows sits near the opposite pole: LLM-authored graphs of typed blocks at roughly the scale `BUILDING_BLOCKS.md` describes as "5–15 blocks arranged in 1–3 cycles" — except Claude decides the block count and topology per task rather than a human designing the graph once at build time. That's the load-bearing difference from every other tool in this file: DSPy / LangGraph / AutoGen / CrewAI all have a human author the graph once (compile-time or design-time); dynamic workflows moves graph-authoring itself into the runtime, decided fresh per task.
+
+Two convergences worth flagging on their own:
+
+- **Decline-when, in the substrate provider's own words.** The blog's "When not to use dynamic workflows" section — *"does it really need more compute? For example, most traditional coding tasks do not need a panel of 5 reviewers"* — is an independent convergence on this framework's diagnostic-first posture (`SKILL.md`'s opening line: *"most projects don't need this pattern, and the skill tells Claude when not to use it"*). Of every tool tabulated below, this is the only one besides hybrid-loops itself with an explicit decline-when discipline stated by its own authors.
+- **Context-as-code as the authored artifact, not just the constraint.** Every other row in this file uses context-as-code to mean *constraining* an LLM call (schemas, system prompts, AGENTS.md). Dynamic workflows' authored JS file is a level up: the LLM writes the deterministic layer itself — `BUILDING_BLOCKS.md`'s `LLM-design-notation + code-compress` primitive, applied to the orchestration graph rather than to a data notation. `STACKING.md`'s "recursive harness authoring" section named this shape before the feature shipped.
+
+**Where it differs:**
+- No persistent per-block calibration log. Adversarial-verify / judge-panel / loop-until-dry are per-instance quality gates inside one run, not a rolling hit-rate tracked across runs the way `THE_CASE.md` §81 asks for.
+- No explicit substrate-as-vocabulary. The closest analog — a saved workflow script reused as a template — is closer to substrate-as-record (a reusable artifact) than a curated taxonomy.
+- No described critique-and-patch loop over past runs. Workflows can be saved and reused, but nothing in the public description has a critic-LLM read transcripts of prior workflow runs and rewrite the script — the move that would make it a true dev-time loop per `STACKING.md`'s definition, rather than a runtime-resume mechanism.
+
+**Verdict:** the most direct existing instance of `LLM-design-notation + code-compress` applied to orchestration itself, and the clearest embodiment yet of the "graph-as-data stays alive... routing logic decides at runtime which subgraph fires" language already in `SKILL.md`'s "What this looks like in practice" section. The missing calibration and dev-time-loop discipline is exactly the gap this framework would flag if asked to harden the pattern for repeated production use rather than one-off tasks.
+
 ### Discipline-coverage across the ecosystem
 
 The disciplines named in `THE_CASE.md` (calibration, context-as-code, dev-time loop) plus the framework's additions (substrate-as-record, substrate-as-vocabulary, decline-when), tabulated against what each tool addresses:
@@ -175,6 +193,7 @@ The disciplines named in `THE_CASE.md` (calibration, context-as-code, dev-time l
 | **Agent-native architectures (Every)** | no | yes (system prompts + tool surfaces) | partial (Improvement Over Time) | partial (context files) | no | no |
 | **Ralph Wiggum (Claude Code plugin)** | no | partial (prompt file) | yes (IS the loop) | partial (disk + git) | no | no |
 | **SPDD (Fowler)** | no | yes (REASONS canvas) | yes | no | no | no |
+| **Claude Code dynamic workflows** | no (per-run quorums, not persistent hit-rate) | yes (the authored script itself) | partial (resumable/saved, no described critique-and-patch loop) | partial (journaled/cached run state) | no | yes ("when not to use" in the blog itself) |
 | **hybrid-loops** | yes (ship-blocking) | yes | yes | yes | yes | yes |
 
 A note on the calibration column. DSPy's compile step optimizes against a user-provided metric, which is calibration in the engineering sense — the table marks it "yes (optimization-shaped)." Hybrid loops marks calibration as ship-blocking rather than as one optimization signal among many; the framework's distinctive move is treating per-block hit-rate as a separate gate, not a knob inside an optimizer. Different shape, same family. The frameworks each cover one or two pieces well; none name the same set as ship-blocking together.
