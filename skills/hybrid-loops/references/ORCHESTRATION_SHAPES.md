@@ -55,6 +55,8 @@ The judgment is required at the *decomposition* step, before any subagent can be
 
 **Framework verdict (revised, with appropriate hedging):** shape 1 without one of the scaffolding strategies the other three shapes embody tends to hit the article's gap. The evidence we have is mostly negative — practitioner reports of earlier-vintage attempts not panning out — and a single positive existence proof in Karpathy's daily setup, which is closer to shape 2 than shape 1 (the human is still the decomposer; agents do tasks the human assigns). The honest position is: shape 1 alone is hard, and the reliable responses we know of are either *human-as-decomposer* (shape 2, with Karpathy at the operator-skill ceiling) or *engineered-resilience infrastructure* (shape 3, Gas Town class). Whether a third path opens as model capability advances is an open question; today we don't have a worked example.
 
+**Update, 2026 — a partial candidate for the "third path."** Anthropic's Claude Code dynamic workflows (Shihipar & Bidasaria, *"A harness for every task: dynamic workflows in Claude Code,"* blog, Jun 2 2026) have Claude itself author the decomposition script before any execution happens — the orchestrator being the LLM, which is exactly shape 1's structural definition — but the authored script then runs under shape-3-style engineered-resilience conventions (adversarial-verification quorums, tournament judging, hard isolation via separate subagent context windows) that the harness's own documentation steers the authoring model toward by default, and names as the antidote to three concrete failure modes (*agentic laziness*, *self-preferential bias*, *goal drift*) rather than as generic best practice. Whether this counts as the third path, or is better read as shape 1 with shape 3's disciplines re-authored per-task instead of built once into standing infrastructure, is exactly the open question this section flagged before the feature existed. There is no independent ablation showing it closes the "judgment in choosing goals" gap the Anthropic RSI article names above; the evidence (the substrate provider's own blog, plus one high-profile user's reported migration) sits at the same self-report evidentiary tier as that RSI citation. Filed as *suggestive*, not resolved — see `PRIOR_ART.md` and `STACKING.md` §"recursive harness authoring" for the fuller citation.
+
 ---
 
 ## Shape 2: Human-orchestrated parallel multiplexer
@@ -345,6 +347,7 @@ A useful epistemic practice for anyone applying this doc: when one of its claims
 | Charity Majors (Jun 2026) | Independent observer | Distinct |
 | Maggie Appleton (Gas Town essay, Jan 2026) | Independent design-anthropology critic of Yegge's claims | Distinct |
 | Simon Willison (synthesis posts, May–Jun 2026) | Synthesis observer; second-hand cites for Uber caps, trust-account framing | Distinct (but synthesist) |
+| Anthropic — Shihipar & Bidasaria, *A harness for every task: dynamic workflows in Claude Code* (blog, Jun 2 2026) | Substrate provider's own product announcement, cited above under Shape 1's "third path" update | Same org as #1 |
 
 **Two consolidations the doc carries, not one.**
 
@@ -363,6 +366,7 @@ That's effectively **four independent sources + the substrate provider's framing
 - Yegge essays: read in full from local Downloads archive copies of HTML originals. Live URLs at https://steve-yegge.medium.com/.
 - Conductor walkthrough: transcript pasted by user; not independently verified against video.
 - Charity Majors: WebFetched 2026-06-04 from https://charity.wtf/; key quotes confirmed.
+- Anthropic dynamic-workflows blog: direct WebFetch returned HTTP 403 on 2026-07-01; full article text confirmed same day via user-supplied copy.
 - Simon Willison: WebFetched 2026-06-04 from https://simonwillison.net/; secondary cites (Uber, Anthropic sandboxing) noted but not fetched at primary source. Anthropic sandboxing post URL is unverified — 404 on first guess.
 - Maggie Appleton: WebFetched 2026-06-04 from https://maggieappleton.com/gastown via summary report. Two short phrases ("design fiction", "design becomes the limiting factor") were explicitly identified as direct quotes; the longer "We should take Yegge's creation seriously..." blockquote and the "you don't fully consider what you're building" phrase were rendered as quotes by the summary but have not been independently verified against the essay's original wording. Date approximated to Jan 2026 from in-text social-media references in the essay (not from a header date), per the WebFetch summary; the main narrative says "January 2026" with that caveat.
 - *Karpathy moved to Anthropic as of May 2026 per user.*
