@@ -39,7 +39,7 @@ In the limit, stacking approaches *correctness by construction*: the final gener
 ## What stacking costs
 
 - **Token cost compounds.** N layers ≈ N LLM calls per action. Synchronous chains compound multiplicatively in latency; async chains compound additively in dollars.
-- **Schema brittleness.** Layer N+1 only works if layer N's schema is stable. Schema versioning becomes load-bearing.
+- **Schema brittleness.** Layer N+1 only works if layer N's schema is stable. Schema versioning becomes critical.
 - **Diagnosis becomes harder.** When the final action is wrong, which layer dropped the ball? Without per-layer calibration, the answer is "all of them."
 - **Cross-layer prompt-injection surfaces.** Each typed record passing between layers is a potential injection vector if the LLM that produced it was prompted by untrusted input. Defending requires sanitization at every boundary.
 
@@ -60,7 +60,7 @@ The reliability-vs-N curve above asks "does each added layer still buy accuracy?
 
 Two consequences, both diagnostic-first:
 1. **Test the structural condition before the quality curve.** You can model the feedback topology — depth, per-hop signal loss, the thresholds that trigger correction — without live model calls, and find where the loop goes blind. The expensive N-sweep is only worth running inside that ceiling.
-2. **Attack the up-signal's fidelity, not the layer count** (see #7, Lossless up-signal). Any max-safe-depth this yields is a *band* contingent on your thresholds, not a single number — the robust claim is directional: rising per-hop loss collapses safe depth.
+2. **Attack the up-signal's fidelity, not the layer count** (see #7, Lossless up-signal). Any max-safe-depth this yields is a *band* contingent on your thresholds, not a single number — the defensible claim is directional: rising per-hop loss collapses safe depth.
 
 ## Composition discipline
 

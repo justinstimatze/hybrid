@@ -71,7 +71,7 @@ These tools are how you implement *one* of the framework's disciplines — const
 
 ## Other adjacent ecosystems
 
-The agent-framework comparison above is the most-load-bearing because that's where engineers most-often flatten "this is just X." Three more ecosystems sit nearby with different emphases.
+The agent-framework comparison above is the most consequential because that's where engineers most-often flatten "this is just X." Three more ecosystems sit nearby with different emphases.
 
 ### Workflow orchestration: Temporal, Conductor, AWS Step Functions, Airflow
 
@@ -95,7 +95,7 @@ Massive integration libraries (thousands of services) make these the practical c
 
 A practitioner methodology for AI-assisted software development; see the guide at https://every.to/guides/compound-engineering (Jan 17, 2026; updated May 2026). The current articulation is a seven-step loop: **Ideate → Brainstorm → Plan → Work → Review → Polish → Compound**. The final step embeds learnings into searchable artifacts (CLAUDE.md updates, YAML-metadata repos) so subsequent work is "easier, not harder." Distinctive moves: multi-agent parallel review with explicit severity tiering ("findings marked P1 (must fix), P2 (should fix), or P3 (nice to fix)"), CLAUDE.md as living substrate (*"when something goes wrong, add a note so the agent learns"*), and the Compound step as substrate-with-retrieval-aware-schema. Heavy planning + review weight, lighter implementation weight; "teach the system, don't do the work yourself."
 
-The "compound" step is structurally the **dev-time hybrid loop wrapping the runtime** — feedback from runtime behavior reshapes the layers below. "Teach the system" maps onto *context-as-code as load-bearing infrastructure*. Multi-agent parallel review maps onto the *adversarial-panel-process* shape.
+The "compound" step is structurally the **dev-time hybrid loop wrapping the runtime** — feedback from runtime behavior reshapes the layers below. "Teach the system" maps onto *context-as-code as core infrastructure*. Multi-agent parallel review maps onto the *adversarial-panel-process* shape.
 
 **Where it differs**:
 
@@ -110,9 +110,9 @@ Cite as a contemporaneous practitioner instance of the dev-time-loop discipline;
 
 OpenAI's case study of building a production system over five months on a team of three to seven engineers, on the explicit constraint of **no manually-written code**. ~1M lines, ~1500 PRs, internal users. URL: https://openai.com/index/harness-engineering/ (Ryan Lopopolo, 2026).
 
-The thesis is the most direct restatement of hybrid-loops' design-disciplines posture from a non-Anthropic substrate provider: *"design environments, specify intent, and build feedback loops that allow Codex agents to do reliable work."* The operational moves map onto the framework's roles:
+The thesis is the most direct restatement of hybrid-loops' design-disciplines posture from a non-Anthropic platform vendor: *"design environments, specify intent, and build feedback loops that allow Codex agents to do reliable work."* The operational moves map onto the framework's roles:
 
-- **AGENTS.md as table of contents, `docs/` as system of record** — *"give Codex a map, not a 1,000-page instruction manual."* Maps onto **context-as-code as load-bearing infrastructure**, and answers the "what's the right shape for the agent's standing context" question with progressive-disclosure (short stable entry point, mechanical link-checking).
+- **AGENTS.md as table of contents, `docs/` as system of record** — *"give Codex a map, not a 1,000-page instruction manual."* Maps onto **context-as-code as core infrastructure**, and answers the "what's the right shape for the agent's standing context" question with progressive-disclosure (short stable entry point, mechanical link-checking).
 - **Enforce invariants, not implementations** — *"enforcing invariants, not micromanaging implementations"*; *"enforce boundaries centrally, allow autonomy locally."* Mechanical enforcement via linters + structural tests + "taste invariants" (e.g. statically enforce structured logging, naming conventions). Reads as **gate discipline at the repository-boundary altitude** — ship-blocking deterministic checks that enforce shape, distinct from §81's per-output deterministic-re-derivation but in the same spirit (don't ask the LLM to be trustworthy; constrain the surface it can affect).
 - **Recurring cleanup ("garbage collection")** — *"golden principles"* encoded into the repo, plus a recurring "doc-gardening" agent and background Codex tasks that scan for drift, update quality grades, and open targeted refactoring PRs. Maps onto **metabolism** — substrate-drift audit, expressed as scheduled agent work that pays down technical-debt continuously rather than in painful bursts.
 - **Cross-reference: Ralph Wiggum Loop.** OpenAI's standard PR-driving pattern is named in the article as *"effectively this is a Ralph Wiggum Loop"* — the runnable-tonight plugin pattern below has crossed into OpenAI's working vocabulary.
@@ -133,7 +133,7 @@ Five named principles:
 4. **Emergent capability** — *"The agent can accomplish things you didn't explicitly design for."*
 5. **Improvement over time** — *"Agent-native applications get better through accumulated context and prompt refinement."*
 
-The granularity principle is the load-bearing reframing of "feature": not predetermined code paths, but *outcomes-achieved-by-an-agent-in-a-loop*. Maps onto the framework's runtime cycle shape at the product-feature altitude — a feature IS a hybrid loop. The improvement-over-time principle restates the framework's metabolism layer at the application altitude (context accumulation + prompt refinement replace shipping code as the improvement vector).
+The granularity principle is the central reframing of "feature": not predetermined code paths, but *outcomes-achieved-by-an-agent-in-a-loop*. Maps onto the framework's runtime cycle shape at the product-feature altitude — a feature IS a hybrid loop. The improvement-over-time principle restates the framework's metabolism layer at the application altitude (context accumulation + prompt refinement replace shipping code as the improvement vector).
 
 **Where it differs:**
 - Application-design framing; hybrid loops is a design pattern one altitude up (the loop is the unit of design, regardless of whether it's a "feature" or not).
@@ -160,11 +160,11 @@ The smallest deployable instance of the framework's runtime cycle shape: one LLM
 
 A Claude Code capability rather than a plugin (Shihipar & Bidasaria, *"A harness for every task: dynamic workflows in Claude Code,"* blog, Jun 2 2026; see `PRIOR_ART.md` for the fuller citation and verification note). The orchestrating model authors a JavaScript orchestration script per task — `agent()` / `parallel()` / `pipeline()` / `phase()` primitives — that a deterministic runtime then executes, spawning and coordinating a subagent fleet.
 
-Where Ralph Wiggum is the framework's minimum-viable single-loop instance, dynamic workflows sits near the opposite pole: LLM-authored graphs of typed blocks at roughly the scale `BUILDING_BLOCKS.md` describes as "5–15 blocks arranged in 1–3 cycles" — except Claude decides the block count and topology per task rather than a human designing the graph once at build time. That's the load-bearing difference from every other tool in this file: DSPy / LangGraph / AutoGen / CrewAI all have a human author the graph once (compile-time or design-time); dynamic workflows moves graph-authoring itself into the runtime, decided fresh per task.
+Where Ralph Wiggum is the framework's minimum-viable single-loop instance, dynamic workflows sits near the opposite pole: LLM-authored graphs of typed blocks at roughly the scale `BUILDING_BLOCKS.md` describes as "5–15 blocks arranged in 1–3 cycles" — except Claude decides the block count and topology per task rather than a human designing the graph once at build time. That's the defining difference from every other tool in this file: DSPy / LangGraph / AutoGen / CrewAI all have a human author the graph once (compile-time or design-time); dynamic workflows moves graph-authoring itself into the runtime, decided fresh per task.
 
 Two convergences worth flagging on their own:
 
-- **Decline-when, in the substrate provider's own words.** The blog's "When not to use dynamic workflows" section — *"does it really need more compute? For example, most traditional coding tasks do not need a panel of 5 reviewers"* — is an independent convergence on this framework's diagnostic-first posture (`SKILL.md`'s opening line: *"most projects don't need this pattern, and the skill tells Claude when not to use it"*). Of every tool tabulated below, this is the only one besides hybrid-loops itself with an explicit decline-when discipline stated by its own authors.
+- **Decline-when, in the platform vendor's own words.** The blog's "When not to use dynamic workflows" section — *"does it really need more compute? For example, most traditional coding tasks do not need a panel of 5 reviewers"* — is an independent convergence on this framework's diagnostic-first posture (`SKILL.md`'s opening line: *"most projects don't need this pattern, and the skill tells Claude when not to use it"*). Of every tool tabulated below, this is the only one besides hybrid-loops itself with an explicit decline-when discipline stated by its own authors.
 - **Context-as-code as the authored artifact, not just the constraint.** Every other row in this file uses context-as-code to mean *constraining* an LLM call (schemas, system prompts, AGENTS.md). Dynamic workflows' authored JS file is a level up: the LLM writes the deterministic layer itself — `BUILDING_BLOCKS.md`'s `LLM-design-notation + code-compress` primitive, applied to the orchestration graph rather than to a data notation. `STACKING.md`'s "recursive harness authoring" section named this shape before the feature shipped.
 
 **Where it differs:**

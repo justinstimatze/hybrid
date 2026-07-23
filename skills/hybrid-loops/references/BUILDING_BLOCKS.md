@@ -124,7 +124,7 @@ Replace `code-filter-by-predicate` with `LLM-filter-by-predicate-described-in-pr
 - The rule depends on a definition you didn't think to spell out; the LLM substitutes a related-but-different one
 - The LLM is following the rule, but what *you* meant by it turns out to be ambiguous, and the LLM disambiguated against you
 
-Code follows directions perfectly because *directions are the code* — no translation step between rule and execution. With an LLM, there's an approximate translation from your stated rule into whatever the model's distribution actually does. For load-bearing rules, that's a no-go.
+Code follows directions perfectly because *directions are the code* — no translation step between rule and execution. With an LLM, there's an approximate translation from your stated rule into whatever the model's distribution actually does. For critical rules, that's a no-go.
 
 ### Fallacy 2 — "Have the LLM write the code, then run it deterministically"
 
@@ -143,7 +143,7 @@ Hybrid loops don't collapse the algebra. They make the deterministic half explic
 
 ## Pairs: where primitives snap together
 
-A pair is two primitives chained where the first's output type matches the second's input. The connection is the load-bearing claim — *"data → data" connects to anything; "data → code" requires the next block to be a code-runner; "code → data" follows naturally from any code-on-code analyzer.*
+A pair is two primitives chained where the first's output type matches the second's input. The connection is the central claim — *"data → data" connects to anything; "data → code" requires the next block to be a code-runner; "code → data" follows naturally from any code-on-code analyzer.*
 
 ### Pairs starting from "code → data"
 
@@ -242,7 +242,7 @@ Claude Code's dynamic workflows (Anthropic, Jun 2026 — see `PRIOR_ART.md`) shi
 The disciplines that keep composition from collapsing:
 
 1. *Schema versioning at every typed edge.* When the upstream block's output schema changes, every downstream block sees it.
-2. *Calibration at every load-bearing LLM block.* Without it, you can't tell which block is dropping the ball when a chain misbehaves.
+2. *Calibration at every consequential LLM block.* Without it, you can't tell which block is dropping the ball when a chain misbehaves.
 3. *Restraint where the LLM block isn't naturally restrained.* The deterministic block immediately downstream of an LLM block is where most projects' opinionated policy lives — filtering, thresholding, normalizing, ranking.
 4. *Loop-closure visibility.* Which arrows feed back, when, on what cadence? In a real system there might be three different feedback paths. Diagram them.
 

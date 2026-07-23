@@ -182,7 +182,7 @@ def test_ablation_substrate_helps():
     assert typed_score > raw_score, "Substrate is not earning its keep"
 ```
 
-Define "performance" per project. For a recruiter-triage tool: rate at which top-5 recommended candidates pass screen vs. random-5 baseline. For a writer's voice-checker: rate at which annotations are accepted by the writer. For an ambient finding-injection hook: whether downstream model turns produce meaningfully different reasoning when given vs. not given the findings.
+Define "performance" per project. For a recruiter-triage tool: rate at which top-5 recommended candidates pass screen vs. random-5 baseline. For a writer's voice-checker: rate at which annotations are accepted by the writer. For an ambient finding-injection hook: whether downstream model turns produce substantively different reasoning when given vs. not given the findings.
 
 Add the test from day one. Without it, the architecture is theater.
 

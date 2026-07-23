@@ -2,7 +2,7 @@
 
 The hybrid-loops pattern applies across many domains. These are illustrative examples — fictional or generic — for someone scaffolding a project. When designing your own, pick whichever is closest in *shape*; domain doesn't matter, structure does.
 
-Every example below uses the five-role default arrangement (lens → substrate → gate → reasoner → action) as its skeleton. Where it directly instantiates a more specific named shape from [`BLOCK_GRAPHS.md`](BLOCK_GRAPHS.md), a *Shape:* line appears at the top of the entry. The [three disciplines from `THE_CASE.md`](THE_CASE.md#three-new-disciplines) — per-block calibration, context-as-code as load-bearing infrastructure, the dev-time hybrid loop wrapping the runtime — apply across all of them; this file focuses on the per-example surface details (schema sketches, gate policies, calibration paths).
+Every example below uses the five-role default arrangement (lens → substrate → gate → reasoner → action) as its skeleton. Where it directly instantiates a more specific named shape from [`BLOCK_GRAPHS.md`](BLOCK_GRAPHS.md), a *Shape:* line appears at the top of the entry. The [three disciplines from `THE_CASE.md`](THE_CASE.md#three-new-disciplines) — per-block calibration, context-as-code as core infrastructure, the dev-time hybrid loop wrapping the runtime — apply across all of them; this file focuses on the per-example surface details (schema sketches, gate policies, calibration paths).
 
 ---
 
@@ -29,7 +29,7 @@ The canonical "single-domain-expert wants to learn from their own past" shape. T
 - **Action** — written reflection in a journal note; never auto-intervention — the user invokes
 - **Calibration** — verdict signal is weak; use self-reported "looking back" verdict, manually entered
 
-Privacy note: data stays local; never sent beyond the LLM call. Schema includes a `consent_recorded` field per interaction if other family members are described. The deployment shape (local-only, no cloud) is load-bearing.
+Privacy note: data stays local; never sent beyond the LLM call. Schema includes a `consent_recorded` field per interaction if other family members are described. The deployment shape (local-only, no cloud) is central.
 
 ## A small advocacy group tracking legislators on an issue (substrate-as-record + metabolism, civic)
 
@@ -55,7 +55,7 @@ Substrate is record AND vocabulary (the issue taxonomy is the vocabulary the sys
 - **Action** — surfaces the suggestion to the coach (not to the client) as a card during the session
 - **Calibration** — verdict signal is whether the coach used the suggestion; success rate is whether the session unstuck after
 
-Substrate-as-vocabulary projects almost always have human authorship of the repertoire as a load-bearing step. The coach designs the library; the system picks from it. Partnership, not automation.
+Substrate-as-vocabulary projects almost always have human authorship of the repertoire as a required step. The coach designs the library; the system picks from it. Partnership, not automation.
 
 ## A writer maintaining voice consistency across drafts (substrate-as-record, creative)
 
@@ -81,7 +81,7 @@ The "project" is one tool; the surfaces are three with different shapes. Realist
 
 ## The recruiter fit-scoring surface, with the procedural overlay (substantive + procedural, hiring)
 
-Takes Surface 2 above (fit-scoring, Bucket C) and shows what the five protocols in `references/PROCEDURE.md` add in production — substrate and lens unchanged. Hiring earns the demo because it's where "procedurally clean" and "actually fair" come apart. (Caveat: *bounded action* — PROCEDURE.md's *limited remedies* — is just scope discipline here; the other four earn their legal names.)
+Takes Surface 2 above (fit-scoring, Bucket C) and shows what the five protocols in `references/PROCEDURE.md` add in production — substrate and lens unchanged. Hiring earns the demo because it's where "procedurally clean" and "actually fair" come apart. (Exception: *bounded action* — PROCEDURE.md's *limited remedies* — is just scope discipline here; the other four earn their legal names.)
 
 - **Stratified standards of proof** *(action)* — tier by reversibility: *surface for review* < *filter below the line* < *auto-reject*. Refuse a higher tier on lower-tier confidence. Automated rejection is also a regulated activity (NYC Local Law 144; the EU AI Act high-risk class; a shifting US state patchwork — Colorado's 2024 AI Act was repealed before it took effect), so that tier may be legally gated regardless of confidence.
 - **Standing** *(gate, pre-lens)* — is the input real (blank/exact-dupe = deterministic, near-dupe/spam = a cheap classifier, not free), is the reasoner the right address (a hard credential is a deterministic filter, not a fuzzy call), is there an open req to route to. Any "no" returns before the lens.
@@ -89,7 +89,7 @@ Takes Surface 2 above (fit-scoring, Bucket C) and shows what the five protocols 
 - **Bounded action** *(a.k.a. limited remedies)* — scores fit and nothing else; adjacent observations ("this req's seniority band looks off") are recorded for the next cycle, not enacted.
 - **Recusal** *(cross-layer)* — separate flags from judgments: a hiring-manager referral is a metadata flag and the outreach drafter never grades its own fit, but "unusual resume" needs a classifier — so it's a judgment, not a flag, and its human path must be equal-or-better review, not a slower reject queue.
 
-Each protocol's triggers become verdict classes in the calibration log — the overlay's ablation test. The adverse-action decision stays human-final: the disparate-impact determination and the candidate's recourse are obligations the loop cannot own (the framework's own power-balance check scopes accountability and recourse *outside* itself; see PROCEDURE.md's closing caveat). The five protocols make a *human-owned* hiring loop more disciplined; they do not make an *autonomous* adverse-action loop legitimate.
+Each protocol's triggers become verdict classes in the calibration log — the overlay's ablation test. The adverse-action decision stays human-final: the disparate-impact determination and the candidate's recourse are obligations the loop cannot own (the framework's own power-balance check scopes accountability and recourse *outside* itself; see PROCEDURE.md's closing note). The five protocols make a *human-owned* hiring loop more disciplined; they do not make an *autonomous* adverse-action loop legitimate.
 
 ---
 

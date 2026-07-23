@@ -33,7 +33,7 @@ What you get from reading this repo: a vocabulary for naming recurring shapes in
 
 The skill is diagnostic-first — most projects don't need this pattern, and the skill tells Claude when not to use it. When a project does need it, the skill points at a library of recognizable shapes (RAG, ReAct, codegen-with-verification, multi-agent panels, the canonical 5-role hybrid loop, dev-time critique loops, knowledge-base auditors, plus a couple of cross-domain metaphors for the shape) so the design conversation has somewhere to start.
 
-The framework's actual content is the *disciplines* the new block type (LLMs as fuzzy pattern mappers) requires beyond the conventional von-Neumann graph algebra: per-block calibration, context-as-code as load-bearing infrastructure, and the dev-time hybrid loop wrapping the runtime. These are named in [`THE_CASE.md`](skills/hybrid-loops/references/THE_CASE.md).
+The framework's actual content is the *disciplines* the new block type (LLMs as fuzzy pattern mappers) requires beyond the conventional von-Neumann graph algebra: per-block calibration, context-as-code as core infrastructure, and the dev-time hybrid loop wrapping the runtime. These are named in [`THE_CASE.md`](skills/hybrid-loops/references/THE_CASE.md).
 
 ## Who it's for
 
@@ -111,7 +111,7 @@ The shape characterizations below are this writeup's reading of the maintainer's
 
 ### Adjacent practitioner work — Manuel Odendahl ("wesen")
 
-This writeup is meaningfully shaped by **wesen's** prior work. His stack at [github.com/go-go-golems](https://github.com/go-go-golems) and his writing at [the.scapegoat.dev](https://the.scapegoat.dev) directly influenced how this pattern is described — the *generalization shaping* framing, the use of "diary" over "log," "mapping" / "interface-mapping" as the right way to describe what an LLM does at the systems-design level, and "substrate" for typed event-streaming layers are all his. He'd describe his own projects in his own vocabulary — these aren't instances of *this writeup's* taxonomy, they're independent practitioner work in the same broader space, and they reward reading on their own terms.
+This writeup is substantially shaped by **wesen's** prior work. His stack at [github.com/go-go-golems](https://github.com/go-go-golems) and his writing at [the.scapegoat.dev](https://the.scapegoat.dev) directly influenced how this pattern is described — the *generalization shaping* framing, the use of "diary" over "log," "mapping" / "interface-mapping" as the right way to describe what an LLM does at the systems-design level, and "substrate" for typed event-streaming layers are all his. He'd describe his own projects in his own vocabulary — these aren't instances of *this writeup's* taxonomy, they're independent practitioner work in the same broader space, and they reward reading on their own terms.
 
 Worthwhile entry points to his ecosystem (linked here as a friendly pointer; his framing lives in his own READMEs and essays):
 
