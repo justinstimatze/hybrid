@@ -311,6 +311,18 @@ These systems are real and load-bearing for many readers' actual decisions; not 
 
 ---
 
+## Related taxonomies (orthogonal cuts)
+
+The four-shape cut asks *who carries the orchestration judgment*. Other 2026 classifications ask different questions and read as orthogonal rather than competing.
+
+**Anthropic Claude Code — four loop types** ([claude.com/blog/getting-started-with-loops](https://claude.com/blog/getting-started-with-loops), Delba de Oliveira and Michael Segner, June 30 2026): *turn-based*, *goal-based* (`/goal`), *time-based* (`/loop`, `/schedule`), and *proactive*. Anthropic's cut is *how loops are triggered and stopped* — a temporal / control-flow axis, not a judgment-locus axis. Any of the four Anthropic loop types can occur inside any of the four shapes; the taxonomies compose.
+
+One contact point is *along* Anthropic's axis rather than orthogonal to it — the framework's discoverable-vs-ambient meta-loop distinction. Anthropic's turn / goal / time-based loops are all human-initiated (discoverable in the framework's vocabulary); the proactive loop is *"[t]riggered by an event or schedule, with no human in real time"* — coincident with the ambient side *at the trigger level*. The framework's ambient meta-loop adds structure Anthropic's proactive doesn't require (deterministic hook + secondary evaluator running alongside a primary + condenser gating what surfaces), so *ambient ⊂ proactive*: every ambient meta-loop is proactive, but a bare cron-fired standalone agent is proactive without being ambient. The main four-shape cut remains orthogonal — proactive triggering doesn't select for any particular judgment-locus.
+
+Anthropic's own composition example — *"/schedule every hour: check #project-feedback for bug reports. /goal: don't stop until every report found this run is triaged, actioned, and responded to. When fixing a bug, use a workflow to explore three solutions in parallel worktrees and have a judge adversarially review them."* — fires proactively (ambient) but decomposes work via a shape-3-flavored dynamic workflow (parallel worktrees + adversarial judge). Cite this cross-taxonomy note when a reader arrives with Anthropic's vocabulary and wants a bridge to the framework's.
+
+---
+
 ## Migration paths between shapes
 
 The shapes aren't a strict hierarchy — most production setups end up at one and stay there. But two transitions are common enough to name:
