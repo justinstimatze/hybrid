@@ -22,7 +22,7 @@ The four shapes below are stable design points along that slider, each with its 
 | # | Name | Exemplar | Who carries the judgment | Calibration locus |
 |---|---|---|---|---|
 | 1 | Naive autonomous decomposition | (cautionary; no recommended exemplar) | The LLM orchestrator | None engineered; the gap bites |
-| 2 | Human-orchestrated parallel multiplexer | Conductor (Charlie / YC S24); Karpathy's daily practice | The human | Gut-feel, short feedback loop, macro-action review |
+| 2 | Human-orchestrated parallel multiplexer | Orca (Stably AI); Conductor (Charlie / YC S24); Karpathy's daily practice | The human | Gut-feel, short feedback loop, macro-action review |
 | 3 | Engineered-resilience autonomous w/ per-pack adversarial verification | Gas Town → Gas City (Yegge) | Distributed across infrastructure | Watchdogs, refinery, multi-agent crews |
 | 4 | Socially-validated federation | Wasteland (Yegge et al.) | A trust-graded peer network | Stamps on an append-only ledger |
 
@@ -61,11 +61,13 @@ The judgment is required at the *decomposition* step, before any subagent can be
 
 ## Shape 2: Human-orchestrated parallel multiplexer
 
-**Exemplar A:** Conductor (Charlie, co-founder; YC S24; desktop app for orchestrating coding agents on macOS). Source: practitioner walkthrough at https://www.youtube.com/watch?v=fQmlML9Lay4.
+**Exemplar A:** Orca (Stably AI, YC-backed; [onorca.dev](https://onorca.dev); [github.com/stablyai/orca](https://github.com/stablyai/orca), 26.5k stars July 2026). *"ADE for working with a fleet of parallel agents"* (Stably's coinage) — human-driven multi-CLI orchestration across isolated git worktrees on desktop (macOS / Windows / Linux), with iOS / Android companion and VPS-remote execution. Load-bearing to include because it broadens the *substrate* under shape 2 without changing the shape: the human-as-attester role survives multi-CLI (BYO-agent: Claude Code, Codex, Grok, Cursor, Amp, Cline, Goose et al.), cross-OS, and remote (mobile + VPS) — evidence the discipline isn't tied to any single tool stack. Its "fleet" framing is also where shape 2 empirically strains toward shape 3; see *Migration paths between shapes* below.
+
+**Exemplar B:** Conductor (Charlie, co-founder; YC S24; desktop app for orchestrating coding agents on macOS). Source: practitioner walkthrough at https://www.youtube.com/watch?v=fQmlML9Lay4. Narrower-substrate exemplar of the same shape (single-CLI Claude Code, macOS-only, no mobile / no VPS) — the earlier articulation before Orca showed the discipline is substrate-independent.
 
 *Not to be confused with Netflix Conductor, the workflow orchestrator listed in `PRIOR_ART.md` under workflow orchestration.*
 
-**Exemplar B:** Karpathy's own daily practice as of Q1 2026 — same shape, higher throughput:
+**Exemplar C:** Karpathy's own daily practice as of Q1 2026 — same shape, higher throughput:
 
 > "Code's not even the right verb anymore... I have to express my will to my agents for 16 hours a day. Manifest. I don't think I've typed like a line of code probably since December. The name of the game now is to increase your leverage. I put in just very few tokens just once in a while and a huge amount of stuff happens on my behalf."
 > — Karpathy, *No Priors* interview, Q1 2026
@@ -289,7 +291,7 @@ Five postures the framework should keep distinct from:
 
 | If you're... | Reach for... |
 |---|---|
-| One human doing parallel exploratory coding work | Shape 2 (Conductor or its open analogs, Karpathy-style throughput as the skill ceiling) |
+| One human doing parallel exploratory coding work | Shape 2 (Orca / Conductor and open analogs, Karpathy-style throughput as the skill ceiling) |
 | Replacing a recurring business process with an autonomous crew | Shape 3 (Gas City packs, two-or-three agents minimum) |
 | Coordinating work across organizations or contributors | Shape 4 (Wasteland-style federated validation) |
 | Tempted to spawn one LLM to "decide what to do" and fan out | Pause. You're in shape 1; the article's gap will likely bite unless you have Karpathy-level operator skill *or* shape-3 infrastructure. Default to dropping back to shape 2 until you have one of those. |
@@ -343,7 +345,8 @@ A useful epistemic practice for anyone applying this doc: when one of its claims
 | Karpathy (YC talk Jul 2025; No Priors Q1 2026) | Practitioner / theorist, joined Anthropic May 2026 | Same org as #1 |
 | Ryan Lopopolo / OpenAI, *Harness Engineering* (2026; https://openai.com/index/harness-engineering/) | Second substrate provider's framing of agent-native development | Distinct from Anthropic; partially offsets the substrate-provider consolidation noted below |
 | Yegge (× 4 essays: Survival 3.0, Gas Town, Gas City, Wasteland; Jan–Apr 2026) | Independent practitioner — also exemplar of shapes 3 and 4 and source of three of eight "what's new" findings | Distinct, but heavily weighted (~45% of evidentiary base by line count) |
-| Charlie / Conductor (YT walkthrough) | Independent practitioner — shape 2 exemplar | Distinct |
+| Charlie / Conductor (YT walkthrough) | Independent practitioner — shape 2 exemplar (earlier vintage) | Distinct |
+| Stably AI / Orca (landing site + GitHub README) | Independent product — shape 2 exemplar (current vintage) | Distinct |
 | Charity Majors (Jun 2026) | Independent observer | Distinct |
 | Maggie Appleton (Gas Town essay, Jan 2026) | Independent design-anthropology critic of Yegge's claims | Distinct |
 | Simon Willison (synthesis posts, May–Jun 2026) | Synthesis observer; second-hand cites for Uber caps, trust-account framing | Distinct (but synthesist) |
@@ -365,6 +368,7 @@ That's effectively **four independent sources + the substrate provider's framing
 - Karpathy No Priors interview: confirmed via user paste from https://www.youtube.com/watch?v=kwSVtQ7dziU; transcript not independently fetched. Date is post-December-2025 capability flip, pre-May-2026 Anthropic move.
 - Yegge essays: read in full from local Downloads archive copies of HTML originals. Live URLs at https://steve-yegge.medium.com/.
 - Conductor walkthrough: transcript pasted by user; not independently verified against video.
+- Orca: landing site at https://onorca.dev fetched via curl 2026-07-22; GitHub API metadata (description, stars, license, language, created date) confirmed against github.com/stablyai/orca. Category label (*"ADE"*) and framing phrase (*"fleet of parallel agents"*) verified verbatim against those primary sources; no video / walkthrough consulted.
 - Charity Majors: WebFetched 2026-06-04 from https://charity.wtf/; key quotes confirmed.
 - Anthropic dynamic-workflows blog: direct WebFetch returned HTTP 403 on 2026-07-01; full article text confirmed same day via user-supplied copy.
 - Simon Willison: WebFetched 2026-06-04 from https://simonwillison.net/; secondary cites (Uber, Anthropic sandboxing) noted but not fetched at primary source. Anthropic sandboxing post URL is unverified — 404 on first guess.
