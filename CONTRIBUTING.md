@@ -20,7 +20,7 @@ Semantic commits, one logical change per commit. Co-authored-by trailers welcome
 
 ## Code of conduct
 
-See `CODE_OF_CONDUCT.md`. Short version: be kind, assume good faith, don't drag personal disputes into Issues.
+`CODE_OF_CONDUCT.md` has the details. In short: be kind, assume good faith, don't drag personal disputes into Issues.
 
 ## License
 

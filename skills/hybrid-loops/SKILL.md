@@ -72,7 +72,7 @@ If all surfaces are A or B, this isn't a hybrid-loops project. Exit.
 - **Substrate-as-record (analytical):** typed log of past observations. For making sense of accumulated data over time.
 - **Substrate-as-vocabulary (interventional):** typed repertoire (curated roster, closed taxonomy). For discriminating the right move now.
 
-This is a diagnostic heuristic, not a hard binary. Most real surfaces end up as both — a typed library that *also* accumulates per-instance records — and the distinction is mainly useful for picking which side to design first. Lead with whichever the user-facing value is closer to (analytical → record-first; interventional → vocabulary-first), then add the other side once the first is working.
+This is a diagnostic heuristic. Most real surfaces end up as both — a typed library that *also* accumulates per-instance records — and the distinction is mainly useful for picking which side to design first. Lead with whichever the user-facing value is closer to (analytical → record-first; interventional → vocabulary-first), then add the other side once the first is working.
 
 ## Phase 4 — quick design (3 questions)
 
@@ -87,7 +87,7 @@ Defaults if not specified:
 - *Gate*: confidence threshold + chronological ordering. Add restraint policies (cooldown, ripeness window) only when over-firing is observed.
 - *Reasoner*: read recent records via simple query; produce structured output for the action.
 - *Calibration log*: append-only JSONL, predict + verdict. Add from day one even when verdict signals don't yet exist — the log surfaces which verdicts are reachable.
-- *Metabolism*: skip in v0. Triggers for v1+: substrate above ~1000 records, schema-version churn (≥2 bumps), or the calibration log showing a recurring class of failure that points at a substrate-shape issue rather than a per-block one. Until one of those fires, metabolism is over-engineering. (Note: re-checking the system's *own* confident claims against ground truth is not metabolism — it's calibration job (b) below, and it's worth doing from day one if the system reports findings someone will act on.)
+- *Metabolism*: skip in v0. Triggers for v1+: substrate above ~1000 records, schema-version churn (≥2 bumps), or the calibration log showing a recurring class of failure that points at a substrate-shape issue rather than a per-block one. Until one of those fires, metabolism is over-engineering. (Note: re-checking the system's *own* confident claims against ground truth belongs to calibration job (b) below, separate from metabolism — worth doing from day one if the system reports findings someone will act on.)
 
 Produce a draft scaffold from the three answers. Iterate from there.
 

@@ -10,7 +10,7 @@ Two actors — *deterministic code* and *LLM* — connected through one universa
 
 This isn't the only useful breakdown — a project might further partition the actor space (small classifiers, vector search, optimizers, simulation engines, human reviewers). The 2×2 below is the lowest-friction starting partition; substitute richer ones as the project demands.
 
-The "code" / "data" axis hides a real category between them: **context-as-code**. A markdown rule sheet is *data* to deterministic code (parse it, version it, lint it) and *code* to an LLM (the LLM interprets the rules and changes its behavior accordingly). This is why "LLM writes a system prompt for another LLM" is a real primitive, not a curiosity — it's code generating code, where both sides happen to be natural language and the executor is the LLM. `THE_CASE.md` unpacks the discipline of treating context-as-code as production infrastructure; the table below uses the simpler {code, data} distinction.
+The "code" / "data" axis hides a real category between them: **context-as-code**. A markdown rule sheet is *data* to deterministic code (parse it, version it, lint it) and *code* to an LLM (the LLM interprets the rules and changes its behavior accordingly). This is why "LLM writes a system prompt for another LLM" is a real primitive: code generating code, where both sides happen to be natural language and the executor is the LLM. `THE_CASE.md` unpacks the discipline of treating context-as-code as production infrastructure; the table below uses the simpler {code, data} distinction.
 
 | | reads data | reads code |
 |---|---|---|
@@ -135,11 +135,11 @@ Replace `code-filter` with `LLM-author-filter-code → code-run-it`. Tempting be
 - Idiomatic but semantically wrong code for an edge case the description didn't mention
 - Same description produces slightly different code each time — version skew across runs
 
-These are *mitigated*, not eliminated, by a deterministic verification step (typecheck, run tests). What you want is the triple `LLM-author + code-verify + LLM-revise-on-failure` — the agentic-codegen-with-verification pattern. The verification step is what makes the LLM-as-author primitive trustworthy enough to land in production. Without it, you're hoping.
+A deterministic verification step (typecheck, run tests) reduces how often these problems ship, though it can't stop them from happening in the first place. What you want is the triple `LLM-author + code-verify + LLM-revise-on-failure` — the agentic-codegen-with-verification pattern. The verification step is what makes the LLM-as-author primitive trustworthy enough to land in production. Without it, you're hoping.
 
 ### What hybrid loops do instead
 
-Hybrid loops don't collapse the algebra. They make the deterministic half explicitly responsible for *the consistency the LLM lacks*, and the LLM half responsible for *the fluency the deterministic side lacks*. Per-block calibration is what tells you each block is earning its keep — see `THE_CASE.md` for the full disciplines argument.
+Hybrid loops don't collapse the algebra. The deterministic half is explicitly responsible for the consistency an LLM alone can't guarantee. The LLM supplies the fluency that pure determinism doesn't have. Per-block calibration is what tells you each block is earning its keep — see `THE_CASE.md` for the full disciplines argument.
 
 ## Pairs: where primitives snap together
 

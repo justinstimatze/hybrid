@@ -1,8 +1,8 @@
 # Orchestration shapes — where the framework's discipline lands in 2026 practice
 
-Multi-agent orchestration in 2026 — broadly construed to include parallel-session multiplexing where the human is the orchestrator, not just genuinely autonomous multi-agent systems — has converged on four distinct shapes. Each elaborates calibration discipline differently because each is responding to a different failure mode. This doc names the four, shows where the framework's existing protocols already apply (sometimes in practitioners' vocabulary, sometimes not), and tracks where the framework currently lacks vocabulary.
+Multi-agent orchestration in 2026 — broadly construed to include parallel-session multiplexing where the human is the orchestrator, alongside genuinely autonomous multi-agent systems — has converged on four distinct shapes. Each elaborates calibration discipline differently because each is responding to a different failure mode. This doc names the four, shows where the framework's existing protocols already apply (sometimes in practitioners' vocabulary, sometimes not), and tracks where the framework currently lacks vocabulary.
 
-This is a vocabulary + research-notes doc, not an adoption guide — use it to recognize which shape a system is in, not to choose whether to build one. The picker table at the end is coarse.
+This is a vocabulary + research-notes doc, short of a full adoption guide — use it to recognize which shape a system is in, rather than to decide whether to build one. The picker table at the end is coarse.
 
 The observed pattern across all four: **each shape's calibration apparatus scales with how far it pushes the autonomy slider away from the human.** Shape 2 (human-as-attester) needs the least apparatus because the human IS the apparatus; shape 3 (LLM-pack-as-attester) needs watchdogs + escalation + per-pack adversarial verification; shape 4 (peer-network-as-attester) needs trust grades, attestation ledgers, anti-collusion topology. Noticed pattern across the four exemplars below, not proven law.
 
@@ -35,7 +35,7 @@ Karpathy's "jaggedness" framing names the same gap the framework's calibration d
 > "You're either on rails and you're part of the super intelligence circuits or you're not on Rails and you're outside of the verifiable domains and suddenly everything kind of just like meanders."
 > — Karpathy, *No Priors* interview, Q1 2026 (post-December capability flip, pre-May Anthropic move)
 
-The mapping is the framework's, not Karpathy's: he named the bimodal observation; the framework's discipline (substrate, gate, bounded action, verification primitives) is one answer to *how to keep loops on the verifiable side of that line*. Each of the four shapes below is a different engineering of those rails. Treat the alignment as confirmatory rather than as an endorsement — Karpathy doesn't know about hybrid-loops; we're noting that his observation has the shape the framework's discipline is built for.
+The mapping is the framework's: Karpathy named the bimodal observation; the framework's discipline (substrate, gate, bounded action, verification primitives) is one answer to *how to keep loops on the verifiable side of that line*. Each of the four shapes below is a different engineering of those rails. Treat the alignment as confirmatory rather than as an endorsement — Karpathy doesn't know about hybrid-loops; we're noting that his observation has the shape the framework's discipline is built for.
 
 ---
 
@@ -83,7 +83,7 @@ The human is the decomposer; the multi-agent infrastructure is fan-out for paral
 
 **Distinctive claim worth wrestling with:**
 
-- **"Code is almost like sawdust now"** (Charlie) — the durable artifact is the prompt (and the spec it encodes), not the generated code: *"when the next generation of models come out, you can just rerun your prompts again and you'll get new code."* Tension with the framework's substrate-as-durable-record concept. Resolution: in shape 2, prompts (or the spec they encode) are substrate; code is regenerable artifact. See `THE_CASE.md` §77–81.
+- **"Code is almost like sawdust now"** (Charlie) — the durable artifact is the prompt (and the spec it encodes): *"when the next generation of models come out, you can just rerun your prompts again and you'll get new code."* Tension with the framework's substrate-as-durable-record concept. Resolution: in shape 2, prompts (or the spec they encode) are substrate; code is regenerable artifact. See `THE_CASE.md` §77–81.
 
 **The trust-account framing as a bridge to shape 3.** Simon Willison, summarizing the 2026 enterprise picture: *"shipping code faster than engineers can read it... you are making withdrawals from a trust account."* (https://simonwillison.net/, May 27 2026). Charity Majors makes the bridge concrete: *"What would it take for you to feel comfortable shipping code without reading it?"* — then engineer the prerequisites. Shape 2 is sustainable when the verification gets dialed back to one fast loop the human can manage; when the throughput exceeds what one human can verify, you need shape 3.
 
@@ -182,7 +182,7 @@ Six patterns the framework currently lacks vocabulary for, tiered by evidentiary
 
 Two adjacent framings (§6 Yegge's Survival Ratio, §8 Karpathy's Iron Man suit metaphor) are noted below as useful vocabulary the framework can borrow, not as newly surfaced disciplines.
 
-Each item below is documented practice with a stated method, not theory.
+Each item below is documented practice with a stated method.
 
 ### 1. Agent UX / designing-for-the-LLM-end-user
 
@@ -190,7 +190,7 @@ The strongest convergence finding in the lit review — but worth disaggregating
 
 **1a. Substrate-side friction minimization** (the agent's interface to your data/state):
 - **Yegge (*Software Survival 3.0*, Jan 2026):** *"What I did was make their hallucinations real, over and over, by implementing whatever I saw the agents trying to do with Beads, until nearly every guess by an agent is now correct. I've driven the friction cost term about as low as it can go."* He calls this *Desire Paths* design.
-- **Kieran Klaassen (*The Folder Is the Agent*, Every, April 13 2026; https://every.to/source-code/the-folder-is-the-agent):** the substrate IS what individuates one agent from another. *"A project folder with a CLAUDE.md/AGENT.md...that's an agent."* / *"Just by pointing the model at this folder, which contains some of my personality, knowledge, and taste, the model can be a specialist."* / *"Just by changing the folder and not the model, I have a different agent."* The throughput claim that makes substrate-side friction consequential: *"I'm running 44 AI agents across multiple projects. Each one is just a model pointed at a folder."* When the folder is the agent, the design move is configuring the folder, not configuring the model — same orientation as Yegge's Desire Paths, stated at the individual-agent altitude rather than the substrate-build altitude.
+- **Kieran Klaassen (*The Folder Is the Agent*, Every, April 13 2026; https://every.to/source-code/the-folder-is-the-agent):** the substrate IS what individuates one agent from another. *"A project folder with a CLAUDE.md/AGENT.md...that's an agent."* / *"Just by pointing the model at this folder, which contains some of my personality, knowledge, and taste, the model can be a specialist."* / *"Just by changing the folder and not the model, I have a different agent."* The throughput claim that makes substrate-side friction consequential: *"I'm running 44 AI agents across multiple projects. Each one is just a model pointed at a folder."* When the folder is the agent, the design move is configuring the folder — same orientation as Yegge's Desire Paths, stated at the individual-agent altitude rather than the substrate-build altitude.
 
 **1b. Tool/protocol-side friction minimization** (the agent's interface to the broader world):
 - **Karpathy (YC, July 2025):** explicit "build for agents" — `lm.txt` files alongside `robots.txt`, markdown docs over HTML, replacing "click X" with "curl this endpoint", MCP as the canonical protocol.
@@ -201,7 +201,7 @@ The strongest convergence finding in the lit review — but worth disaggregating
 And separately, the discipline that makes shape (2) sustainable:
 - **Charity Majors (Jun 2026):** *"engineer the prerequisites (better evals, tests, feature flags, observability)"* so the verification is fast enough that velocity becomes sustainable. This is verification-velocity engineering, sister to 1a/b/c rather than identical.
 
-The framework currently treats the LLM block as a given and doesn't address any of 1a/1b/1c structurally. The unified discipline-sibling-to-calibration would be **Agent UX**, with the three sub-disciplines as the operational moves. Treat the convergence as: *three practitioners independently arrived at the orientation; the specific moves differ.* That's still a real convergence, just more honestly framed than "four endorsements of the same thing."
+The framework currently treats the LLM block as a given and doesn't address any of 1a/1b/1c structurally. The unified discipline-sibling-to-calibration would be **Agent UX**, with the three sub-disciplines as the operational moves. Treat the convergence as three practitioners independently arriving at the same orientation, even though their specific moves differ. That's still a real convergence, just more honestly framed than "four endorsements of the same thing."
 
 ### 2. Autonomy slider as product-design dimension
 
@@ -210,7 +210,7 @@ Karpathy's framing names the design choice each shape implicitly makes:
 > "We can build augmentations or we can build agents and we kind of want to do a bit of both, but at this stage I would say working with fallible LLMs, it's less Iron Man robots and more Iron Man suits that you want to build... less like building flashy demos of autonomous agents and more building partial autonomy products. And these products have custom GUIs and UI/UX, and this is done so that the generation-verification loop of the human is very very fast."
 > — Karpathy, YC, July 2025
 
-The four shapes sit at different slider positions; the framework should make the slider explicit.
+The four shapes sit at different slider positions. The framework should make that slider explicit.
 
 ### 3. Generation-verification loop velocity
 
@@ -219,7 +219,7 @@ The four shapes sit at different slider positions; the framework should make the
 > "It is in our interest to make this loop go as fast as possible so we're getting a lot of work done. ... GUIs are extremely important... a GUI utilizes your computer-vision GPU in all of our heads. Reading text is effortful and not fun, but looking at stuff is fun."
 > — Karpathy, YC, July 2025
 
-The speed of the loop is part of the design target, not just an optimization. This is the disciplined reframing of "vibe coding" — the loop is fine if it's fast and verifiable; it's broken if it's fast and unverified.
+The speed of the loop is itself part of the design target. This is the disciplined reframing of "vibe coding" — the loop is fine if it's fast and verifiable; it's broken if it's fast and unverified.
 
 ### 4. Markdown-as-organizational-substrate
 
@@ -229,7 +229,7 @@ Three independent endorsements of *the markdown describing the loop is the subst
 - **Yegge (Gas City, Apr 2026):** MEOW with Formulas (reusable templates) and Molecules (instances), version-controlled in Dolt, forkable across an org. *"Your library of formulas becomes a declarative inventory of every business process you've ever automated."*
 - **Anthropic Skills primitive** (referenced indirectly by Karpathy in No Priors): *"a skill is just a way to instruct the agent how to teach the thing."*
 
-This generalizes substrate-as-vocabulary (`EXAMPLES.md` coach template) from one professional's repertoire to a whole organization's process inventory, and answers the substrate question shape 2 left open: when code is regenerable, the durable artifact is *the org-spec markdown*, not the code.
+This generalizes substrate-as-vocabulary (`EXAMPLES.md` coach template) from one professional's repertoire to a whole organization's process inventory, and answers the substrate question shape 2 left open: when code is regenerable, the durable artifact is *the org-spec markdown*.
 
 ### 5. Compute-as-binding-constraint
 
@@ -281,7 +281,7 @@ Five postures the framework should keep distinct from:
 
 3. **"The end of teaching each other things"** (Karpathy, strong form). Cite the framing; don't adopt it. The framework keeps the weaker form — documentation should be readable to both agents AND humans; agents are increasingly the router, but humans still need access. The strong form risks foreclosing the auditability the framework cares about.
 
-4. **The outside-the-lab argument** (Karpathy, No Priors Q1 2026: *"I feel a bit more aligned with humanity outside of a frontier lab"*). He joined Anthropic by May 2026. The argument may still be sound, but the cite is no longer durable; Karpathy is a witness to the *pressures*, not a stable independent voice on the inside-vs-outside question.
+4. **The outside-the-lab argument** (Karpathy, No Priors Q1 2026: *"I feel a bit more aligned with humanity outside of a frontier lab"*). He joined Anthropic by May 2026. The argument may still be sound, but the cite is no longer durable; Karpathy is now a witness to the *pressures* shaping the discourse, no longer an independent voice on the inside-vs-outside question.
 
 5. **Speculative distributed-auto-research / "flop democratization"** (Karpathy, No Priors). Interesting; hold as a one-line note, not as framework input. The technical preconditions (untrusted-pool verification with low-cost checking) are not yet routine.
 
@@ -307,7 +307,7 @@ The four shapes were named because each has a distinct calibration apparatus wor
 - **Autonomous coding agents** (Devin from Cognition — cognition.ai — is the named example; the category also includes the various IDE-embedded background-agent products). Loops run without per-step human supervision but inside engineered constraints. Reads as **deployment-constrained shape 1** — the architectural specifics of how each product constrains the agent are mostly not publicly documented, so the mapping is suggestive.
 - **Handoff / routing patterns** (e.g., OpenAI Swarm). Stateless handoff between LLMs by role. Reads as **shape 1's task-routing variant** — the article's "judgment in choosing goals" gap bites at the routing decision unless the routing itself is constrained.
 
-These systems are real and consequential for many readers' actual decisions; not including them as separate shapes is a *scope choice*, not an assertion that they don't exist. If your problem fits one of them better than it fits the four shapes above, the shape-vocabulary in this doc still applies — it just reads onto a system someone else designed.
+These systems are real and consequential for many readers' actual decisions; not including them as separate shapes is a *scope choice* — their absence here doesn't assert they don't exist. If your problem fits one of them better than it fits the four shapes above, the shape-vocabulary in this doc still applies — it just reads onto a system someone else designed.
 
 ---
 

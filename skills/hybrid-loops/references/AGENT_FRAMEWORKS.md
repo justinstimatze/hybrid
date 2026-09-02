@@ -26,7 +26,7 @@ Critique that flattens to "this is just LangGraph" misunderstands the levels. Cr
 The closest cousin in this work. DSPy's typed-signature module is essentially a typed-block-with-an-LLM-actor; its compile-for-metric loop is structurally the same as the compress-and-verify shape this framework names, just optimizing prompts/demos rather than notation. If you've internalized DSPy you've internalized a chunk of the hybrid-loops algebra already.
 
 **Where they differ**:
-- DSPy's alphabet is *mostly LLM modules*. Deterministic non-LLM blocks are second-class — Python interop, not first-class architectural elements. Hybrid loops puts LLM and code on equal footing.
+- DSPy's alphabet is *mostly LLM modules*. Deterministic non-LLM blocks are second-class — plain Python interop, without architectural status of their own. Hybrid loops puts LLM and code on equal footing.
 - DSPy optimizes for a user-provided metric. Hybrid loops names *disciplines* — calibration treats per-block hit-rate as ship-blocking, not as one optimization signal among many.
 - DSPy doesn't distinguish runtime cycles from development-time cycles. The compile step *is* a dev-time loop, but the framework treats it as tooling, not architecture.
 - DSPy doesn't have an explicit substrate concept — programs are stateless w.r.t. each other. Hybrid loops treats typed-records-accumulating-over-time as a first-class role.
@@ -49,8 +49,8 @@ The closest cousin in this work. DSPy's typed-signature module is essentially a 
 **What it is**: a framework for multi-agent conversations. Agents have roles; messaging works as conversation; group chats coordinate via a "manager" agent.
 
 **Where they differ**:
-- AutoGen's primary primitive is *the conversation* — agents exchange messages, context accumulates as transcript. Hybrid loops's primary primitive is *the typed substrate* — records accumulate as structure, not as conversation.
-- AutoGen treats multi-agent as the default shape. Hybrid loops treats LLM blocks as one block type among others; whether multiple LLMs converse is a question of substrate-shape, not framework default.
+- AutoGen's primary primitive is *the conversation* — agents exchange messages, context accumulates as transcript. Hybrid loops's primary primitive is *the typed substrate* — records accumulate as structure.
+- AutoGen treats multi-agent as the default shape. Hybrid loops treats LLM blocks as one block type among others; whether multiple LLMs converse is a question of substrate-shape.
 - AutoGen doesn't separate runtime from dev-time. Multi-agent conversations are runtime constructs; the dev-time critique-and-patch loop is something users implement themselves.
 
 **Verdict**: AutoGen's shape is one specific cell — *multiple LLM blocks with conversational substrate*. It's powerful for that shape. Hybrid loops is broader; AutoGen is deeper inside it. Use AutoGen when the right pattern is multi-agent conversation; use hybrid loops as the umbrella when it isn't.
@@ -65,7 +65,7 @@ Same architectural cell as AutoGen, more opinionated about *how* the multi-agent
 
 **What they are**: structured-output validators / typed-schema enforcers for LLM calls. pydantic provides Python type-checking; instructor wraps LLM calls in pydantic models; Anthropic's tool use and OpenAI's structured outputs let you define a JSON Schema the LLM is constrained to output.
 
-These tools are how you implement *one* of the framework's disciplines — constrain LLM output to a typed schema. They don't tell you which schema to use. The framework's compress-and-verify shape (see `BLOCK_GRAPHS.md`) is one approach to schema discovery; pydantic / instructor / structured-outputs are how you'd enforce the schema at runtime.
+These tools are how you implement *one* of the framework's disciplines — constrain LLM output to a typed schema. They don't tell you which schema to use. The framework's compress-and-verify shape (see `BLOCK_GRAPHS.md`) is one approach to schema discovery. Enforcing that schema at runtime is what pydantic / instructor / structured-outputs are for.
 
 **Verdict**: different layers entirely. Use pydantic + instructor + structured-outputs to implement context-as-code constraints in your LLM blocks; the framework names *that this is a discipline* and explains why every LLM block in a non-trivial graph needs one.
 
@@ -149,7 +149,7 @@ A Claude Code plugin shipped under [anthropics/claude-code](https://github.com/a
 The smallest deployable instance of the framework's runtime cycle shape: one LLM block, one substrate (filesystem + git history the agent reads on each pass), one stop condition. Where DSPy is the academic cousin and Compound Engineering is the methodology cousin, Ralph Wiggum is the *runnable-tonight* cousin.
 
 **Where it differs:**
-- Implementation pattern, not a methodology or framework: it's an Anthropic-shipped Claude Code plugin you can install, not a discipline you adopt.
+- A Claude Code plugin you can install, not a discipline you adopt.
 - No explicit calibration discipline; the loop runs to a stop condition rather than tracking per-iteration hit-rate.
 - Substrate is implicit (whatever the agent leaves on disk and in git); not typed.
 - No graph: single-LLM, single-loop. Hybrid loops generalizes to graphs of typed blocks with multiple actors.

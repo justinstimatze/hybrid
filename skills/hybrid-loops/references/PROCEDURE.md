@@ -12,7 +12,7 @@ This doc adds five protocols. Two extend layers that already exist in the main s
 
 ## 1. Stratified standards of proof
 
-*Different action consequences demand different confidence thresholds.* Legal systems run multiple standards — preponderance of evidence for civil judgments, clear and convincing evidence for fraud or termination of parental rights, beyond reasonable doubt for criminal conviction. Courts have explicitly declined to assign these standards specific probability values; surveys of federal judges (canonically C.M.A. McCauliff's 1982 study, since replicated) find wide variance in how individual judges quantify them, and a strand of legal scholarship argues that beyond reasonable doubt is qualitatively different from a high preponderance rather than merely further along the same axis. The point worth porting isn't the specific numbers — it's that the standards are *ordered* by stakes, and the system explicitly recognizes that a single "act vs. don't act" threshold is wrong.
+*Different action consequences demand different confidence thresholds.* Legal systems run multiple standards — preponderance of evidence for civil judgments, clear and convincing evidence for fraud or termination of parental rights, beyond reasonable doubt for criminal conviction. Courts have explicitly declined to assign these standards specific probability values; surveys of federal judges (canonically C.M.A. McCauliff's 1982 study, since replicated) find wide variance in how individual judges quantify them, and a strand of legal scholarship argues that beyond reasonable doubt is qualitatively different from a high preponderance rather than merely further along the same axis. The point worth porting: the standards are *ordered* by stakes, and the system explicitly recognizes that a single "act vs. don't act" threshold is wrong.
 
 **Slot:** extension to *action*. The main skill mentions confidence thresholds in the gate's defaults but doesn't tier them to action reversibility.
 
@@ -24,7 +24,7 @@ This doc adds five protocols. Two extend layers that already exist in the main s
 
 The tiers are *ordered* — each tier requires the loop's confidence in its own judgment to be higher than the tier below — but the calibration of what counts as "enough" for each tier is project-specific and gets refined against the calibration log. The discipline is *making the tiers explicit and refusing to act on irreversible-tier actions with reversible-tier confidence*, not assigning specific numbers up front.
 
-**Diagnostic:** if the loop uses one confidence threshold for all actions, it's mis-calibrated. The fix is at the action layer, not the reasoner.
+**Diagnostic:** if the loop uses one confidence threshold for all actions, it's mis-calibrated. Fix it at the action layer — tuning the reasoner won't help.
 
 **Anti-diagnostic:** pure-suggestion loops where nothing is committed don't need this — overhead doesn't pay back. Single-tier projects are fine if all actions are in the same tier.
 
@@ -56,7 +56,7 @@ The main skill's substrate-as-record covers the storage shape and the reasoner-r
 
 **Slot:** extension to *substrate*, specifically a retrieval mode distinct from semantic similarity or chronological recency.
 
-**What it adds:** an explicit precedent retrieval step where the reasoner must surface and consider past decisions on structurally similar inputs *before* producing output. The retrieval function isn't "what's semantically close" — it's "what past decisions does this decision need to be consistent with."
+**What it adds:** an explicit precedent retrieval step where the reasoner must surface and consider past decisions on structurally similar inputs *before* producing output. The retrieval function surfaces what past decisions this decision needs to be consistent with.
 
 The output of the precedent step has to feed into the reasoner's prompt as a binding constraint, not just as additional context. The reasoner is asked: *(a)* is this case materially distinguishable from the retrieved precedents, and if not, *(b)* does your proposed decision follow them. If it doesn't, the reasoner has to explicitly articulate the deviation (the legal version: *distinguishing* the case).
 
@@ -68,7 +68,7 @@ Two constraints keep this from backfiring. Precedent must bind to *verified* out
 
 ## 4. Bounded action (limited remedies)
 
-*The action layer is bounded by what was requested.* Courts can only grant the relief asked for, within their jurisdiction. They cannot impose remedies the parties didn't request. The principle: action is constrained by input, not by what the reasoner thinks would also be good.
+*The action layer is bounded by what was requested.* Courts can only grant the relief asked for, within their jurisdiction. They cannot impose remedies the parties didn't request. The principle: action is constrained by what was requested.
 
 The single most common coding-agent failure mode is scope drift — the agent fixes the bug *and* refactors three unrelated files *and* updates the README *and* renames variables it didn't like. Each of those might be correct in isolation; together they violate the limited-remedy principle.
 
@@ -86,7 +86,7 @@ Adjacent improvements still get visibility — they're recorded in the substrate
 
 *Some reasoner-input combinations are structurally compromised regardless of reasoner quality.* Judges recuse from cases where they have known bias — financial interest, prior involvement, family relationship. The system acknowledges that the right answer here isn't "try harder" but "this reasoner shouldn't be the one deciding."
 
-**Slot:** cross-layer protocol that binds before lens and constrains reasoner choice. Closest existing concept is the deployment power-balance check, but recusal is about reasoner-input compatibility, not deployment shape.
+**Slot:** cross-layer protocol that binds before lens and constrains reasoner choice. Closest existing concept is the deployment power-balance check, but recusal addresses reasoner-input compatibility, a different axis.
 
 **What it adds:** an explicit enumeration of inputs the reasoner should not run on, with routing to a fallback (a different model, a human, a different procedure):
 
@@ -95,7 +95,7 @@ Adjacent improvements still get visibility — they're recorded in the substrate
 - *Conflict of training* — when the input is plausibly in the reasoner's training data in a way that would bias output (asking a model to evaluate its own provider's product, asking about its own training corpus), the result is suspect regardless of reasoner quality.
 - *Affective interference* — the reasoner is asked something that activates known sycophancy patterns (high-stakes emotional framing, user-stated belief that pre-commits to a position). Route through a deliberately adversarial framing.
 
-The protocol is a checklist that runs at the gate, not a piece of reasoning. Either the input matches a recusal condition (deterministic) or it doesn't; the reasoner is never asked "should you recuse yourself" because that question has the same sycophancy failure mode it's meant to prevent.
+The protocol is a checklist that runs at the gate: either the input matches a recusal condition (deterministic) or it doesn't; the reasoner is never asked "should you recuse yourself" because that question has the same sycophancy failure mode it's meant to prevent.
 
 **Diagnostic:** any time a loop's failure mode is "the reasoner was too agreeable / too confident / too aligned with the user's frame," recusal is missing or under-specified. The fix isn't a smarter reasoner; it's a route-around.
 
@@ -123,7 +123,7 @@ The legal-procedural analogy is generative but not exact. Judges have real-world
 
 The protocols also don't replace substantive design. A well-procedured loop with a bad substrate is still a bad loop. Procedure is necessary scaffolding around competent substance, not a substitute for it. *Substrate brings discrimination, code brings restraint, procedure brings discipline.* All three are required at scale.
 
-And like the rest of the skill, these protocols are reasoned conjecture, not ablation-validated: by the skill's own standard, a procedural overlay earns its keep only when a loop that has it measurably beats one that doesn't. Treat them as a hypothesis to test, not a result.
+And like the rest of the skill, these protocols are reasoned conjecture: by the skill's own standard, a procedural overlay earns its keep only when a loop that has it measurably beats one that doesn't. Treat them as a hypothesis to test, not a result.
 
 ## Citations
 

@@ -212,7 +212,7 @@ flowchart TB
     rounds -.evolve.-> design
 ```
 
-Almost every block is an LLM; the deterministic block is just metric aggregation. The notation is *context-as-code* — the LLM authors it, then later LLMs use it as instructions. The ER/correctness metrics close the dev-time loop on whether evolving the notation improved the system.
+Almost every block is an LLM. The one deterministic block just aggregates metrics. The notation is *context-as-code* — the LLM authors it, then later LLMs use it as instructions. The ER/correctness metrics close the dev-time loop on whether evolving the notation improved the system.
 
 **In the wild**: DSPy's compile step (Khattab et al. 2023, [arXiv:2310.03714](https://arxiv.org/abs/2310.03714)) is the closest published cousin — optimizes prompts/demos against a metric. The DreamCoder lineage (Ellis et al. 2021) is the academic ancestor.
 
@@ -315,7 +315,7 @@ flowchart TB
     inject -. shapes next turn .-> plens
 ```
 
-The axis the diagram makes visible: *who holds the gate of noticing*. In ReAct and tool-use generally, the primary LLM holds it and pays for it in attention. In an ambient meta-loop, deterministic code holds the gate-of-noticing, the secondary evaluator holds the evaluation, and a deterministic condenser holds the relevance-gate before anything reaches the primary again. It's the framework's recursive rhythm — determinism forcing windows for non-determinism forcing determinism again — applied across loop *boundaries* rather than within a single loop's stages. Several specific shapes in this catalog ([Conversation-topology hook](#conversation-topology-hook) most directly; the calibration meta-layer footnoted under the [5-role canonical loop](#the-5-role-canonical-hybrid-loop) when implemented as a runtime monitor) are particular instances of this general arrangement.
+The axis the diagram makes visible: *who holds the gate of noticing*. In ReAct and tool-use generally, the primary LLM holds it and pays for it in attention. In an ambient meta-loop, deterministic code holds the gate-of-noticing, a secondary evaluator judges what the trigger surfaced, and a deterministic condenser decides whether the result is worth surfacing to the primary. It's the framework's recursive rhythm — determinism forcing windows for non-determinism forcing determinism again — applied across loop *boundaries* rather than within a single loop's stages. Several specific shapes in this catalog ([Conversation-topology hook](#conversation-topology-hook) most directly; the calibration meta-layer footnoted under the [5-role canonical loop](#the-5-role-canonical-hybrid-loop) when implemented as a runtime monitor) are particular instances of this general arrangement.
 
 Multiple ambient meta-loops can run alongside the same primary without competing for attention budget — each is gated by its own deterministic trigger and condenser, so composition stacks rather than crowds. That's the property the discipline buys: a feedback layer dense enough to be useful (per-block calibration, claim-graph topology, viz-worthy structure detection, situational meme-fit, all running concurrently) without saturating the primary's working surface.
 
@@ -503,6 +503,6 @@ When designing a hybrid loop:
 3. *Check the cycle closure* — every entry has at least one feedback edge. Where does yours close? At runtime (substrate accumulates) or at dev-time (transcripts critique-and-patch the runtime), or both?
 4. *Check what's not drawn* — calibration is implicit in every entry with an LLM block; metabolism is implicit in every entry with a substrate that grows.
 
-These are starting positions, not prescriptions. Most real projects end up as variants — substituting one block type, splitting a block into a sub-cycle, or composing two of these shapes (a runtime that's one shape, wrapped by a dev-time loop that's another).
+Treat these as starting positions. Most real projects end up as variants — substituting one block type, splitting a block into a sub-cycle, or composing two of these shapes (a runtime that's one shape, wrapped by a dev-time loop that's another).
 
 For deeper unpacking of the algebra and how blocks compose, see `BUILDING_BLOCKS.md`. For the conceptual case behind the framework, see `THE_CASE.md`. For comparison with ecosystem tools that implement specific shapes (LangGraph, DSPy, Temporal, etc.), see `AGENT_FRAMEWORKS.md`.

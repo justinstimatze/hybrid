@@ -84,7 +84,7 @@ The reference docs each have a different reader in mind:
 
 ## Runnable instances in the wild
 
-The pattern is illustrated in working repos rather than via a canonical example in this one — diagnostic-first means there's no single "hello world" hybrid loop; the right shape depends on the surface, and the surface is project-specific. **If you only have time to read one, start with [winze](https://github.com/justinstimatze/winze)**: it's a knowledge base that maintains its own model of reality, audits itself for cognitive biases, predicts where it's wrong, and tracks whether it's right — three of the framework's roles in one project, end-to-end.
+The pattern is illustrated in working repos rather than via a canonical example in this one — diagnostic-first means there's no single "hello world" hybrid loop; what fits depends on the project. **If you only have time to read one, start with [winze](https://github.com/justinstimatze/winze)**: it's a knowledge base that maintains its own model of reality, audits itself for cognitive biases, predicts where it's wrong, and tracks whether it's right — three of the framework's roles in one project, end-to-end.
 
 Then reach for the entry in [`BLOCK_GRAPHS.md`](skills/hybrid-loops/references/BLOCK_GRAPHS.md) that matches your project's surface, and pick from the list below for shape.
 
@@ -148,7 +148,7 @@ The repo is markdown + manifests. There's no shipped code beyond the skill itsel
 
 ## Naming
 
-"Hybrid loops" is the *working name in this repo*, not a claim of universal nomenclature. The broader field has no settled name. Adjacent terms with partial coverage:
+"Hybrid loops" is a working name, local to this repo — the broader field has no settled name. Adjacent terms with partial coverage:
 
 - *"Compound AI systems"* (Zaharia et al., BAIR 2024) — broader umbrella; this pattern is one shape inside it
 - *"Generalization shaping"* (Manuel Odendahl / wesen, 2026) — the design principle inside hybrid loops; closest practitioner framing
