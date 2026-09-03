@@ -1,8 +1,8 @@
 # hybrid — a design pattern for LLM-and-code cycles
 
-**A cycle, not a pipeline.** Concretely: a tool that watches a recurring stream of soft input — agent traces, evaluator outputs, meeting transcripts, knowledge-base entries — labels each new item against a curated vocabulary, and flags when a pattern you said you'd address recurs. LLM extracts (lens) → typed records accumulate (substrate) → deterministic code filters and ranks (gate) → LLM reasons over the filtered slice (reasoner) → notification or action lands. Each new item becomes input for the next turn's lens.
+A *hybrid loop* is a cycle: a tool that watches a recurring stream of soft input — agent traces, evaluator outputs, meeting transcripts, knowledge-base entries — labels each new item against a curated vocabulary, and flags when a pattern you said you'd address recurs. LLM extracts (lens) → typed records accumulate (store) → deterministic code filters and ranks (gate) → LLM reasons over the filtered slice (reasoner) → notification or action lands. Each new item becomes input for the next turn's lens.
 
-That's a *hybrid loop*. The design pattern places LLM judgment and deterministic code in alternating layers that *mutually generate each other's working surface* — not just constraining each other, but producing the very inputs the other half operates over. The LLM generates typed records (and often the schema, notation, or code those records live in). The deterministic layer takes those records and produces filtered, scored, ranked context that becomes the next LLM call's input. Each half makes the other possible.
+LLM judgment and deterministic code alternate in layers, and each layer generates the working surface the next one operates over. The LLM produces typed records, and often the schema, notation, or code those records live in. The deterministic layer takes those records and produces filtered, scored, ranked context — the input for the next LLM call. Each half makes the other possible.
 
 ```mermaid
 flowchart LR
@@ -12,28 +12,28 @@ flowchart LR
 
     soft[(soft input<br/>transcript / doc / event)]:::data
     lens["LENS<br/>LLM extracts"]:::llm
-    sub[(SUBSTRATE<br/>typed records)]:::data
+    store[(STORE<br/>typed records)]:::data
     gate["GATE<br/>code: filter / score / rank"]:::code
-    reason["REASONER<br/>LLM consumes substrate"]:::llm
+    reason["REASONER<br/>LLM consumes store"]:::llm
     action["ACTION<br/>code: apply / dispatch"]:::code
 
     soft --> lens
-    lens --> sub
-    sub --> gate
+    lens --> store
+    store --> gate
     gate --> reason
     reason --> action
     action -. new content .-> soft
 ```
 
-Yellow = LLM acts. Blue = code acts. Grey = data flowing between. Two meta-layers close additional loops: *calibration* (predict + verdict log per evaluator — does the lens actually work?) and *metabolism* (substrate-wide audit — is the accumulated record drifting?).
+Yellow is the LLM, blue is code, grey is the data moving between them. Two meta-layers close additional loops: *calibration* (predict + verdict log per evaluator — does the lens actually work?) and *metabolism* (store-wide audit — is the accumulated record drifting?).
 
-## What this project actually is
+## What this project is
 
-What you get from reading this repo: a vocabulary for naming recurring shapes in LLM-and-code systems, a Claude Code skill that auto-triggers when you describe one of those shapes, and pointers to working repos exemplifying each shape.
+This repo gives you three things: a vocabulary for naming recurring shapes in LLM-and-code systems, a Claude Code skill that auto-triggers when you describe one of those shapes, and pointers to working repos that exemplify each shape.
 
-The skill is diagnostic-first — most projects don't need this pattern, and the skill tells Claude when not to use it. When a project does need it, the skill points at a library of recognizable shapes (RAG, ReAct, codegen-with-verification, multi-agent panels, the canonical 5-role hybrid loop, dev-time critique loops, knowledge-base auditors, plus a couple of cross-domain metaphors for the shape) so the design conversation has somewhere to start.
+The skill is diagnostic-first. Most projects don't need this pattern, so the skill's first job is telling Claude that. When a project does need it, the skill points at a library of recognizable shapes — RAG, ReAct, codegen-with-verification, multi-agent panels, the canonical 5-role hybrid loop, dev-time critique loops, knowledge-base auditors, plus a couple of cross-domain metaphors — so the design conversation has somewhere to start.
 
-The framework's actual content is the *disciplines* the new block type (LLMs as fuzzy pattern mappers) requires beyond the conventional von-Neumann graph algebra: per-block calibration, context-as-code as core infrastructure, and the dev-time hybrid loop wrapping the runtime. These are named in [`THE_CASE.md`](skills/hybrid-loops/references/THE_CASE.md).
+The framework's real content is the *disciplines* the new block type (LLMs as fuzzy pattern mappers) requires beyond the conventional von-Neumann graph algebra: per-block calibration, context-as-code as core infrastructure, and the dev-time hybrid loop wrapping the runtime. [`THE_CASE.md`](skills/hybrid-loops/references/THE_CASE.md) names them.
 
 ## Who it's for
 
@@ -59,7 +59,12 @@ ln -s /path/to/hybrid/skills/hybrid-loops ~/.claude/skills/hybrid-loops
 
 Either path gives you the same thing: the `hybrid-loops` skill auto-triggers on relevant prompts. To confirm install worked, type something like *"build me a tool that watches my evaluator outputs and flags when a regression pattern recurs"* — the skill should activate and start asking diagnostic questions about surfaces, scope, and shape. If it doesn't, the install didn't take — file a GitHub issue.
 
-The marketplace command requires this GitHub repo to be reachable. For forks or local development, use the local-path forms: `/plugin marketplace add /path/to/hybrid` and `/plugin install hybrid-loops@hybrid-loops`.
+The marketplace command requires this GitHub repo to be reachable. For forks or local development, use the local-path forms instead:
+
+```
+/plugin marketplace add /path/to/hybrid
+/plugin install hybrid-loops@hybrid-loops
+```
 
 ## Install — other agents
 
@@ -93,26 +98,26 @@ Then reach for the entry in [`BLOCK_GRAPHS.md`](skills/hybrid-loops/references/B
 The shape characterizations below are this writeup's reading of the maintainer's own work. Several entries — hindcast, slimemold, lucida, basanite, partly groupchat — instantiate the same higher-level shape: an [*ambient meta-loop*](skills/hybrid-loops/references/BLOCK_GRAPHS.md#ambient-meta-loop) where a deterministic hook fires a parallel evaluator (typically an LLM, sometimes deterministic) whose condensed output is injected back into the primary loop's context, sparing the primary the cost of holding the noticing-gate in attention. That composition is the structural alternative to the discoverable-tool / MCP invocation model — the framework's recursive rhythm, determinism forcing windows for non-determinism forcing determinism again, applied across loop boundaries rather than within a single loop's stages. Multiple such meta-loops can compose without crowding the primary's working surface, which is the property that makes the pattern interesting at the stack level rather than per-tool.
 
 - **[winze](https://github.com/justinstimatze/winze)** — *knowledge-base-auditor + calibration*. A KB that maintains its own model of reality, audits itself for cognitive biases, predicts where it's wrong, tracks whether it's right. The most direct on-pattern instance.
-- **[hindcast](https://github.com/justinstimatze/hindcast)** — *calibration substrate over the agent itself*. Per-project BM25-kNN over the maintainer's own past turn durations, surfaced as a calibrated wall-clock prior in Claude Code's context. The substrate is the agent's own behavior; the loop closes when the next turn's actual duration becomes a new training example. Cleanest calibration-discipline instance in the stack.
+- **[hindcast](https://github.com/justinstimatze/hindcast)** — *calibration store over the agent itself*. Per-project BM25-kNN over the maintainer's own past turn durations, surfaced as a calibrated wall-clock prior in Claude Code's context. The store is the agent's own behavior; the loop closes when the next turn's actual duration becomes a new training example. Cleanest calibration-discipline instance in the stack.
 - **[defn](https://github.com/justinstimatze/defn)** — *knowledge-base-auditor* applied to Go code. Round-trips between Go AST and SQL view; deterministic AST audits flag structural issues; LLM proposes edits to source.
 - **[slimemold](https://github.com/justinstimatze/slimemold)** — *conversation-topology hook*. Claude Code hook that extracts claims per turn, runs a graph topology audit, injects a suggested response into the next turn's context.
 - **[effigy](https://github.com/justinstimatze/effigy)** — *dense-notation NPC*. LLM authors character notation once at dev-time; deterministic context assembly per runtime turn; LLM consumes the assembled context to generate output.
 - **[gemot](https://github.com/justinstimatze/gemot)** — *adversarial-panel review*. Structured deliberation MCP server for multi-agent coordination.
-- **[ismyaialive](https://github.com/justinstimatze/ismyaialive)** — *lens + substrate-as-vocabulary*. Identifies patterns in AI conversations (sycophancy, validation cascades) against published research codebooks.
-- **[drivermap](https://github.com/justinstimatze/drivermap)** — *substrate-as-vocabulary* in pure form. Behavioral-mechanisms KB; agents consume the typed library to predict and verbalize human behavior.
+- **[ismyaialive](https://github.com/justinstimatze/ismyaialive)** — *lens + store-as-vocabulary*. Identifies patterns in AI conversations (sycophancy, validation cascades) against published research codebooks.
+- **[drivermap](https://github.com/justinstimatze/drivermap)** — *store-as-vocabulary* in pure form. Behavioral-mechanisms KB; agents consume the typed library to predict and verbalize human behavior.
 - **[score](https://github.com/justinstimatze/score)** — *coach's typed-move-library* applied to immersive-experience design. 356-play library + structural linter + participant planner + Miro sidebar app.
-- **[adit-code](https://github.com/justinstimatze/adit-code)** — *structural-analysis substrate*. Deterministic metrics on AI-edited codebases identify high-friction files; LLM-readable findings tell you what to refactor.
-- **[plancheck](https://github.com/justinstimatze/plancheck)** — *codegen-with-verification + predictive simulation*. Deterministic compiler over an ExecutionPlan JSON checks file existence, orphan detection, cascade risk. Subagents then simulate the planned change and their tool-call traces become a second substrate the LLM evaluates the plan against; revise-until-threshold loops over both layers.
+- **[adit-code](https://github.com/justinstimatze/adit-code)** — *structural-analysis store*. Deterministic metrics on AI-edited codebases identify high-friction files; LLM-readable findings tell you what to refactor.
+- **[plancheck](https://github.com/justinstimatze/plancheck)** — *codegen-with-verification + predictive simulation*. Deterministic compiler over an ExecutionPlan JSON checks file existence, orphan detection, cascade risk. Subagents then simulate the planned change and their tool-call traces become a second store the LLM evaluates the plan against; revise-until-threshold loops over both layers.
 - **[lucida](https://github.com/justinstimatze/lucida)** — *ambient lens*. Passive Claude Code observer; LLM extracts viz-worthy structures from conversation; deterministic renderer mints Vega/Mermaid/SVG outputs.
 - **[basanite](https://github.com/justinstimatze/basanite)** — *ambient meta-loop, applied to the writer's own diction*. Reads Claude Code's JSONL transcripts, ranks vocabulary tics by frequency drift (leave-loudest-out kills topic words), produces a WordNet-vetted demote ladder ordered by Resnik specificity, and injects awareness — never prohibition — at `UserPromptSubmit`. One optional LLM judge (fenced via stull's standalone `spec.Cell`) selects the demote rung from the deterministically-manufactured choice set, never inventing a word. Demonstrates the *manufactured-choice-set* shape: the deterministic stack builds the candidates and the fenced LLM only selects.
 - **[gastown](https://github.com/justinstimatze/gastown)** — *multi-agent orchestration*. Workspace manager for coordinating 20–30 agents with persistent state and a three-tier watchdog (also cited in `references/PRIOR_ART.md` Tier 2).
 - **[buddy](https://github.com/justinstimatze/buddy)** — coding companion (tamagotchi-style: 21 species, persistent personality, MCP-client-agnostic). The maintainer's contribution is essentially a port of slimemold's hook architecture into the companion shell.
-- **[groupchat](https://github.com/justinstimatze/groupchat)** — *substrate-as-vocabulary, playful register*. 66-entry typed meme library with `deploy_when` / `too_much_if` / `mechanism` / cooldown metadata; LLM picks against the substrate, deterministic cooldown gates, action drops to terminal. Demonstrates that the substrate-as-vocabulary discipline scales beyond serious-work surfaces.
-- **[stull](https://github.com/justinstimatze/stull)** — *the runtime form, not an instance*. Guarded statechart DSL → Claude Code hook mesh. A `Cell` (fenced LLM, mandatory Grammar + Safety stages) is the **lens/reasoner**, a `Guard` is the **gate**, an `Effect` (`Block`/`Inject`/`SetVar`/`Run`/`Emit`) is the **action**, `Fuel` bounds the loop. A static checker makes unsafe meshes inexpressible: a guard can't read a cell's raw output, a loop without a fuel bound won't compile. Where the other entries in this list are instances of hybrid loops, stull is the framework you'd build new ones on; its standalone `spec.Cell` is usable as a fenced-oracle library without the machine (basanite above is the first public consumer of that entry point).
+- **[groupchat](https://github.com/justinstimatze/groupchat)** — *store-as-vocabulary, playful register*. 66-entry typed meme library with `deploy_when` / `too_much_if` / `mechanism` / cooldown metadata; LLM picks against the store, deterministic cooldown gates, action drops to terminal. Demonstrates that the store-as-vocabulary discipline scales beyond serious-work surfaces.
+- **[stull](https://github.com/justinstimatze/stull)** — *the runtime form the other entries build on*. Guarded statechart DSL → Claude Code hook mesh. A `Cell` (fenced LLM, mandatory Grammar + Safety stages) is the **lens/reasoner**, a `Guard` is the **gate**, an `Effect` (`Block`/`Inject`/`SetVar`/`Run`/`Emit`) is the **action**, `Fuel` bounds the loop. A static checker makes unsafe meshes inexpressible: a guard can't read a cell's raw output, a loop without a fuel bound won't compile. Where the other entries in this list are instances of hybrid loops, stull is the framework you'd build new ones on; its standalone `spec.Cell` is usable as a fenced-oracle library without the machine (basanite above is the first public consumer of that entry point).
 
 ### Adjacent practitioner work — Manuel Odendahl ("wesen")
 
-This writeup is substantially shaped by **wesen's** prior work. His stack at [github.com/go-go-golems](https://github.com/go-go-golems) and his writing at [the.scapegoat.dev](https://the.scapegoat.dev) directly influenced how this pattern is described — the *generalization shaping* framing, the use of "diary" over "log," "mapping" / "interface-mapping" as the right way to describe what an LLM does at the systems-design level, and "substrate" for typed event-streaming layers are all his. He'd describe his own projects in his own vocabulary — these aren't instances of *this writeup's* taxonomy, they're independent practitioner work in the same broader space, and they reward reading on their own terms.
+This writeup is substantially shaped by **wesen's** prior work. His stack at [github.com/go-go-golems](https://github.com/go-go-golems) and his writing at [the.scapegoat.dev](https://the.scapegoat.dev) directly influenced how this pattern is described — the *generalization shaping* framing, the use of "diary" over "log" and "mapping" / "interface-mapping" as the right way to describe what an LLM does at the systems-design level are both his. He also calls his typed event-streaming layers "substrate" — this repo used the same word for its own typed-record role until this pass renamed it to "store." He'd describe his own projects in his own vocabulary — these aren't instances of *this writeup's* taxonomy, they're independent practitioner work in the same broader space, and they reward reading on their own terms.
 
 Worthwhile entry points to his ecosystem (linked here as a friendly pointer; his framing lives in his own READMEs and essays):
 
@@ -140,11 +145,11 @@ hybrid/
 └── CROSS_AGENT.md          portability notes
 ```
 
-The repo is markdown + manifests. There's no shipped code beyond the skill itself; the disciplines are illustrated by the runnable instances above (maintainer's other repos and wesen's), not by anything in this directory.
+The repo is markdown and manifests — there's no shipped code beyond the skill itself. The disciplines are illustrated by the runnable instances above (the maintainer's other repos and wesen's); this directory only holds the pattern description.
 
 ## Status
 
-**Practitioner notes, not a research artifact.** Not sold, not a SaaS. The maintainer also runs [gemot](https://github.com/justinstimatze/gemot), a commercial product built with this perspective. Audience is overwhelmingly AI engineers.
+This repo is a set of practitioner notes, informal and evolving. The maintainer runs [gemot](https://github.com/justinstimatze/gemot) as a separate commercial product built on the same perspective. The audience here is AI engineers.
 
 ## Naming
 

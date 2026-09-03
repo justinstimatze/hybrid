@@ -159,7 +159,7 @@ A pair is two primitives chained where the first's output type matches the secon
 
 ### Pairs starting from "LLM → data"
 
-- `LLM-extract` + `code-persist` — read transcripts, write typed records to substrate (the canonical lens path)
+- `LLM-extract` + `code-persist` — read transcripts, write typed records to store (the canonical lens path)
 - `LLM-classify` + `code-dispatch` — read intent, route to specialist handler (the canonical agentic shape)
 - `LLM-score` + `code-rank` — assign scores, sort by them
 - `LLM-summarize` + `LLM-summarize` — multi-stage summarization: per-doc → overall
@@ -174,7 +174,7 @@ A pair is two primitives chained where the first's output type matches the secon
 
 ### Pairs from "LLM reads code"
 
-- `LLM-review-code` + `code-persist` — review findings as typed records (calibration substrate for review quality)
+- `LLM-review-code` + `code-persist` — review findings as typed records (calibration store for review quality)
 - `LLM-explain-code` + `code-render-docs` — LLM produces explanations, code stitches them into a doc site
 - `LLM-audit-code` + `code-prioritize` — LLM emits findings, code prioritizes by severity / cooldown / age
 - `LLM-refactor` + `code-test` — LLM rewrites, test suite verifies

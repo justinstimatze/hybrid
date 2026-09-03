@@ -11,7 +11,7 @@ This is research-stage software. The pattern itself is the artifact; the skill i
 
 ## What changes the bar is high for
 
-- **Renaming the pattern or its roles.** "Hybrid loops" / "lens / substrate / gate / reasoner / action" are the working internal vocabulary. They're not perfect; changing them is disruptive enough to need real argument.
+- **Renaming the pattern or its roles.** "Hybrid loops" / "lens / store / gate / reasoner / action" are the working internal vocabulary. They're not perfect; changing them is disruptive enough to need real argument.
 - **Major skill structural changes.** The 5-phase diagnostic (find → scope → shape → quick design → scaffold) has been validated by trigger tests. Restructuring needs an equally rigorous validation.
 
 ## Commit style

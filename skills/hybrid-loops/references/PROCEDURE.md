@@ -2,13 +2,13 @@
 
 The main skill names the *substantive* layers — what each block does, what shape the data takes, where the cycle closes. This file names the *procedural* infrastructure that surrounds them — what must happen before a layer is invoked, what constraints bind its output, what review wraps around its decisions.
 
-The distinction is borrowed from legal systems, which have accumulated procedural scaffolding around soft-judgment/hard-rule reasoning over centuries of practical use under real stakes. *Substance is what gets decided. Procedure is the discipline around how it gets decided.* That dichotomy is itself contested in legal philosophy — the American *Erie* doctrine is the canonical battleground over how impossible it is to maintain a clean line, and Lon Fuller's *Morality of Law* argues the two interpenetrate at the root. This doc uses the distinction as a working partition, not a settled one. Even so, the rough partition is generative: legal systems have figured out that procedural patterns are at least as critical as substantive ones — a substantively correct outcome from a procedurally broken process is the legal equivalent of a kangaroo court. The same applies to hybrid loops: a well-designed substrate and a competent reasoner can still produce untrustworthy systems if the procedural scaffolding around them is missing.
+The distinction is borrowed from legal systems, which have accumulated procedural scaffolding around soft-judgment/hard-rule reasoning over centuries of practical use under real stakes. *Substance is what gets decided. Procedure is the discipline around how it gets decided.* That dichotomy is itself contested in legal philosophy — the American *Erie* doctrine is the canonical battleground over how impossible it is to maintain a clean line, and Lon Fuller's *Morality of Law* argues the two interpenetrate at the root. This doc uses the distinction as a working partition, not a settled one. Even so, the rough partition is generative: legal systems have figured out that procedural patterns are at least as critical as substantive ones — a substantively correct outcome from a procedurally broken process is the legal equivalent of a kangaroo court. The same applies to hybrid loops: a well-designed store and a competent reasoner can still produce untrustworthy systems if the procedural scaffolding around them is missing.
 
 The lineage drawn on here is specifically Anglo-American common law procedure. Civil-law systems (most of continental Europe, Latin America, Japan, and beyond) handle several of these problems with different infrastructure — *stare decisis* is barely a doctrine in civil-law tradition; standing works differently under inquisitorial procedure; recusal mechanisms vary substantially; the codified case-or-controversy requirement is parochially American. The engineering content of the protocols below transfers across traditions, but the vocabulary and citations are tradition-specific. Treat them as one well-developed lineage of procedural-infrastructure design, not as the only one.
 
 This doc adds five protocols. Two extend layers that already exist in the main skill; three are genuinely new. None of them is a substantive pattern — they are constraints on how the substantive patterns compose. Most loops need none of these — reach for this doc only when a loop is high-stakes, runs at scale, or has started failing in ways the substantive layers don't explain. Below that bar, the procedural overhead doesn't pay back.
 
-> *Vocabulary note: legal procedure has accumulated specialized terms (standing, recusal, stare decisis, limited remedies) over centuries. This doc uses them where they fit cleanly and aliases them where they don't. The main skill's vocabulary (lens, substrate, gate, reasoner, action, calibration, metabolism) stays primary; legal terms are pointers to a lineage, not replacements.*
+> *Vocabulary note: legal procedure has accumulated specialized terms (standing, recusal, stare decisis, limited remedies) over centuries. This doc uses them where they fit cleanly and aliases them where they don't. The main skill's vocabulary (lens, store, gate, reasoner, action, calibration, metabolism) stays primary; legal terms are pointers to a lineage, not replacements.*
 
 ## 1. Stratified standards of proof
 
@@ -19,8 +19,8 @@ This doc adds five protocols. Two extend layers that already exist in the main s
 **What it adds:** an explicit tiering of action consequence to required confidence. Suggested taxonomy:
 
 - *Reversible-suggestion tier:* "I think this would help." Low cost if wrong. Examples: highlighting a candidate, surfacing a tag, drafting a message for review.
-- *Persistent-edit tier:* file edits, refactors, records committed to the substrate. Reversible but expensive to undo. Examples: a calibration verdict that updates the schema, an autonomous code change.
-- *Irreversible-action tier:* `rm -rf`, `force-push`, schema migrations, external API side effects that can't be retracted, public-facing posts. Examples: deleting from the substrate, sending an email, applying a database migration.
+- *Persistent-edit tier:* file edits, refactors, records committed to the store. Reversible but expensive to undo. Examples: a calibration verdict that updates the schema, an autonomous code change.
+- *Irreversible-action tier:* `rm -rf`, `force-push`, schema migrations, external API side effects that can't be retracted, public-facing posts. Examples: deleting from the store, sending an email, applying a database migration.
 
 The tiers are *ordered* — each tier requires the loop's confidence in its own judgment to be higher than the tier below — but the calibration of what counts as "enough" for each tier is project-specific and gets refined against the calibration log. The discipline is *making the tiers explicit and refusing to act on irreversible-tier actions with reversible-tier confidence*, not assigning specific numbers up front.
 
@@ -39,7 +39,7 @@ The main skill's Phase 2 (scope each surface as A/B/C) is design-time standing �
 **What it adds:** an explicit gate that runs before the lens, asking three questions of the input:
 
 - *Is the input real?* (injury-in-fact) — is there actual content to reason about, or is the loop being invoked on whitespace, on a test fixture, on cached output that already exists?
-- *Is the reasoner the right address?* (traceability) — could substrate alone answer this, or does the user actually need a deterministic check or a human?
+- *Is the reasoner the right address?* (traceability) — could store alone answer this, or does the user actually need a deterministic check or a human?
 - *Can the action layer redress it?* (redressability) — if the reasoner produces output, does the action layer have authority to act on it, or will it just produce text that goes nowhere?
 
 If any answer is no, the loop should not fire. Return early, route to a fallback, or surface the standing failure as the output.
@@ -48,23 +48,23 @@ If any answer is no, the loop should not fire. Return early, route to a fallback
 
 **Anti-diagnostic:** in agentic loops where the agent is expected to handle whatever input it gets, hard standing checks suppress the value. The standing check belongs at user-facing surfaces, not at internal loop edges.
 
-## 3. Precedent retrieval (extension to substrate)
+## 3. Precedent retrieval (extension to store)
 
-*The reasoner is constrained by past decisions on similar inputs.* Stare decisis: courts must follow binding precedent. This is structurally distinct from generic substrate read — it's not "retrieve semantically similar context" but "retrieve past decisions this decision must be consistent with."
+*The reasoner is constrained by past decisions on similar inputs.* Stare decisis: courts must follow binding precedent. This is structurally distinct from generic store read — it's not "retrieve semantically similar context" but "retrieve past decisions this decision must be consistent with."
 
-The main skill's substrate-as-record covers the storage shape and the reasoner-reads-recent default covers basic retrieval. What's missing is the *consistency obligation* — the reasoner being told not just "here is relevant context" but "you are bound to decide consistently with these prior records unless you can articulate why this case differs."
+The main skill's store-as-record covers the storage shape and the reasoner-reads-recent default covers basic retrieval. What's missing is the *consistency obligation* — the reasoner being told not just "here is relevant context" but "you are bound to decide consistently with these prior records unless you can articulate why this case differs."
 
-**Slot:** extension to *substrate*, specifically a retrieval mode distinct from semantic similarity or chronological recency.
+**Slot:** extension to *store*, specifically a retrieval mode distinct from semantic similarity or chronological recency.
 
 **What it adds:** an explicit precedent retrieval step where the reasoner must surface and consider past decisions on structurally similar inputs *before* producing output. The retrieval function surfaces what past decisions this decision needs to be consistent with.
 
 The output of the precedent step has to feed into the reasoner's prompt as a binding constraint, not just as additional context. The reasoner is asked: *(a)* is this case materially distinguishable from the retrieved precedents, and if not, *(b)* does your proposed decision follow them. If it doesn't, the reasoner has to explicitly articulate the deviation (the legal version: *distinguishing* the case).
 
-Two constraints keep this from backfiring. Precedent must bind to *verified* outcomes, not the reasoner's own prior outputs — otherwise the loop anchors on its own unverified history and a first-cycle error ossifies into binding "precedent," a self-justifying drift. And consistency is necessary but not sufficient for a *correct* substrate: a reasoner perfectly consistent with a biased record produces stable bias, not quality. Precedent retrieval enforces consistency; whether the precedent set itself is sound is a substrate-quality question for the metabolism layer, not something the consistency obligation can settle. In consequential domains (anything that scores or sorts people) this distinction is the whole game: consistency guards against arbitrary inconsistency (in legal terms, disparate *treatment*) but does nothing about a uniformly-applied biased criterion (disparate *impact*) — procedural fairness over a biased baseline is exactly how substantive bias persists.
+Two constraints keep this from backfiring. Precedent must bind to *verified* outcomes, not the reasoner's own prior outputs — otherwise the loop anchors on its own unverified history and a first-cycle error ossifies into binding "precedent," a self-justifying drift. And consistency is necessary but not sufficient for a *correct* store: a reasoner perfectly consistent with a biased record produces stable bias, not quality. Precedent retrieval enforces consistency; whether the precedent set itself is sound is a store-quality question for the metabolism layer, not something the consistency obligation can settle. In consequential domains (anything that scores or sorts people) this distinction is the whole game: consistency guards against arbitrary inconsistency (in legal terms, disparate *treatment*) but does nothing about a uniformly-applied biased criterion (disparate *impact*) — procedural fairness over a biased baseline is exactly how substantive bias persists.
 
-**Diagnostic:** when consistency across the substrate matters (architectural style, naming conventions, classification taxonomies, scoring rubrics), substrate access has to include precedent retrieval — not just relevant context retrieval. Loops that produce inconsistent decisions on structurally similar inputs are missing this step.
+**Diagnostic:** when consistency across the store matters (architectural style, naming conventions, classification taxonomies, scoring rubrics), store access has to include precedent retrieval — not just relevant context retrieval. Loops that produce inconsistent decisions on structurally similar inputs are missing this step.
 
-**Anti-diagnostic:** for genuinely novel problems where past decisions are uninformative, precedent retrieval is noise. Also skip in loops where the substrate is too small (~<20 records) for precedent to mean anything.
+**Anti-diagnostic:** for genuinely novel problems where past decisions are uninformative, precedent retrieval is noise. Also skip in loops where the store is too small (~<20 records) for precedent to mean anything.
 
 ## 4. Bounded action (limited remedies)
 
@@ -76,7 +76,7 @@ The single most common coding-agent failure mode is scope drift — the agent fi
 
 **What it adds:** an explicit gate at the action layer that compares what was requested in the input (the lens's read of the prompt) with what the action is about to do. Anything in the action that isn't traceable to the input is either rejected (strict mode) or surfaced as a suggestion rather than committed (advisory mode).
 
-Adjacent improvements still get visibility — they're recorded in the substrate, surfaced in the next reasoner cycle, presented to the user — but they don't take effect in the action layer of the current cycle. The discipline: *suggesting and acting are different things*. Legal analog: an advisory opinion isn't a judgment.
+Adjacent improvements still get visibility — they're recorded in the store, surfaced in the next reasoner cycle, presented to the user — but they don't take effect in the action layer of the current cycle. The discipline: *suggesting and acting are different things*. Legal analog: an advisory opinion isn't a judgment.
 
 **Diagnostic:** if the action's output set is larger than the input's request set, scope is drifting. Tighten the action gate, don't make the reasoner smarter.
 
@@ -111,17 +111,17 @@ The five protocols above interact with the two meta-layers already in the main s
 - Precedent deviations (cases the reasoner distinguished from retrieved precedent) as flagged records for review. A loop that distinguishes precedent frequently is either handling genuinely novel cases or is drifting from its own past decisions; the calibration log surfaces which.
 - Recusal triggers as their own log stream. A loop whose recusal protocol fires often is either over-specified (too many false-positive recusals) or operating in a domain that's largely outside its competence.
 
-**Metabolism.** The substrate-wide audit already looks for drift. The procedural protocols give it more things to check:
+**Metabolism.** The store-wide audit already looks for drift. The procedural protocols give it more things to check:
 
 - Are the standards-of-proof tiers calibrated against actual outcomes? A loop whose irreversible-tier actions have the same error rate as its reversible-tier actions has mis-calibrated tiers.
-- Is the precedent set growing without coherence — multiple precedents that contradict each other on structurally identical inputs? That's a substrate-shape problem, not a per-decision problem, and metabolism is where it gets caught.
+- Is the precedent set growing without coherence — multiple precedents that contradict each other on structurally identical inputs? That's a store-shape problem, not a per-decision problem, and metabolism is where it gets caught.
 - Are the recusal conditions getting hit on inputs that look very similar to inputs the loop *should* be handling? That's a sign the recusal definitions are over-broad and should be tightened.
 
 ## What this doc does not claim
 
 The legal-procedural analogy is generative but not exact. Judges have real-world consequences for their decisions — career, impeachment, reputation — and that backpressure shapes the whole system's incentives. Reasoner instances do not face that backpressure, and neither half of the courtroom's accountability transfers: the subject of an automated adverse action, unlike a litigant, has no motion to file. The five protocols above port what's portable; they do not claim to reproduce the accountability infrastructure that makes legal procedure work. A perfectly-procedured but unaccountable loop — procedure outrunning accountability — is precisely the object this warning names as the analogy's failure mode; the more consequential the action, the more the irreversible tier belongs with a human.
 
-The protocols also don't replace substantive design. A well-procedured loop with a bad substrate is still a bad loop. Procedure is necessary scaffolding around competent substance, not a substitute for it. *Substrate brings discrimination, code brings restraint, procedure brings discipline.* All three are required at scale.
+The protocols also don't replace substantive design. A well-procedured loop with a bad store is still a bad loop. Procedure is necessary scaffolding around competent substance, not a substitute for it. *Store brings discrimination, code brings restraint, procedure brings discipline.* All three are required at scale.
 
 And like the rest of the skill, these protocols are reasoned conjecture: by the skill's own standard, a procedural overlay earns its keep only when a loop that has it measurably beats one that doesn't. Treat them as a hypothesis to test, not a result.
 
@@ -135,7 +135,7 @@ And like the rest of the skill, these protocols are reasoned conjecture: by the 
 
 ## See also
 
-- Main `SKILL.md` — substantive layers (lens, substrate, gate, reasoner, action) and the calibration / metabolism meta-layers
+- Main `SKILL.md` — substantive layers (lens, store, gate, reasoner, action) and the calibration / metabolism meta-layers
 - `references/THE_CASE.md` — the algebra-vs-alphabet-vs-disciplines argument; procedural infrastructure is closest to the *disciplines* leg
 - `references/BUILDING_BLOCKS.md` — primitive blocks the procedural protocols constrain
 - `references/EXAMPLES.md` — worked examples; the protocols here would be layered on top of any of them in production. The recruiter fit-scoring overlay there shows all five applied to one surface in compact form, with the depth kept in this file

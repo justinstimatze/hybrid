@@ -35,7 +35,7 @@ Karpathy's "jaggedness" framing names the same gap the framework's calibration d
 > "You're either on rails and you're part of the super intelligence circuits or you're not on Rails and you're outside of the verifiable domains and suddenly everything kind of just like meanders."
 > — Karpathy, *No Priors* interview, Q1 2026 (post-December capability flip, pre-May Anthropic move)
 
-The mapping is the framework's: Karpathy named the bimodal observation; the framework's discipline (substrate, gate, bounded action, verification primitives) is one answer to *how to keep loops on the verifiable side of that line*. Each of the four shapes below is a different engineering of those rails. Treat the alignment as confirmatory rather than as an endorsement — Karpathy doesn't know about hybrid-loops; we're noting that his observation has the shape the framework's discipline is built for.
+The mapping is the framework's: Karpathy named the bimodal observation; the framework's discipline (store, gate, bounded action, verification primitives) is one answer to *how to keep loops on the verifiable side of that line*. Each of the four shapes below is a different engineering of those rails. Treat the alignment as confirmatory rather than as an endorsement — Karpathy doesn't know about hybrid-loops; we're noting that his observation has the shape the framework's discipline is built for.
 
 ---
 
@@ -83,7 +83,7 @@ The human is the decomposer; the multi-agent infrastructure is fan-out for paral
 
 **Distinctive claim worth wrestling with:**
 
-- **"Code is almost like sawdust now"** (Charlie) — the durable artifact is the prompt (and the spec it encodes): *"when the next generation of models come out, you can just rerun your prompts again and you'll get new code."* Tension with the framework's substrate-as-durable-record concept. Resolution: in shape 2, prompts (or the spec they encode) are substrate; code is regenerable artifact. See `THE_CASE.md` §77–81.
+- **"Code is almost like sawdust now"** (Charlie) — the durable artifact is the prompt (and the spec it encodes): *"when the next generation of models come out, you can just rerun your prompts again and you'll get new code."* Tension with the framework's store-as-durable-record concept. Resolution: in shape 2, prompts (or the spec they encode) are the store; code is regenerable artifact. See `THE_CASE.md` §77–81.
 
 **The trust-account framing as a bridge to shape 3.** Simon Willison, summarizing the 2026 enterprise picture: *"shipping code faster than engineers can read it... you are making withdrawals from a trust account."* (https://simonwillison.net/, May 27 2026). Charity Majors makes the bridge concrete: *"What would it take for you to feel comfortable shipping code without reading it?"* — then engineer the prerequisites. Shape 2 is sustainable when the verification gets dialed back to one fast loop the human can manage; when the throughput exceeds what one human can verify, you need shape 3.
 
@@ -113,7 +113,7 @@ Adversarial verification per pack as a deployment rule, not a guideline. The fra
 
 - **Refinery's batched-merge-with-verification-gates** ≈ §81's "deterministic verifier that re-derives the claim from raw ground truth," moved to the architecturally-critical boundary (merge to main)
 - **Two-or-three-agents-per-pack** ≈ verification primitives embodied as a deployment rule
-- **MEOW (Molecular Expression of Work) / Formulas → Molecules** ≈ substrate-as-vocabulary at organizational scale (Formula = template; Molecule = instance; version-controlled in Dolt, forkable). Maps onto the coach-with-typed-intervention-library example in `EXAMPLES.md`, scaled from one professional's repertoire to one organization's process inventory.
+- **MEOW (Molecular Expression of Work) / Formulas → Molecules** ≈ store-as-vocabulary at organizational scale (Formula = template; Molecule = instance; version-controlled in Dolt, forkable). Maps onto the coach-with-typed-intervention-library example in `EXAMPLES.md`, scaled from one professional's repertoire to one organization's process inventory.
 - **Watchdog tier** ≈ calibration discipline expressed as infrastructure rather than convention
 - **"Reliability, friends, is a dial. You choose where to set it. More rounds of review, more backstops, more guardrails, more judges..."** (*Welcome to Gas City*) = the framework's calibration claim in different vocabulary, with concrete knobs
 
@@ -148,16 +148,16 @@ Stamps as multi-dimensional verdicts (quality, reliability, creativity, with con
 
 - **Trust levels** = standing (`PROCEDURE.md` §2). New rigs have limited standing; standing accumulates via validated work.
 - **Yearbook rule** ("you can't stamp your own work") = recusal (`PROCEDURE.md` §5).
-- **Stamp ledger** = substrate-as-record with full provenance (`PROCEDURE.md` §3): *"the graph is fully traversable. And because the underlying storage is append-only and versioned, the history can't be rewritten — your ledger is permanent."*
+- **Stamp ledger** = store-as-record with full provenance (`PROCEDURE.md` §3): *"the graph is fully traversable. And because the underlying storage is append-only and versioned, the history can't be rewritten — your ledger is permanent."*
 
 Bounded action (`PROCEDURE.md` §4) doesn't have a clean Wasteland analog — that protocol pertains to what an autonomous loop can enact, while the Wasteland's structure is about who may attest.
 
-The Wasteland's anti-collusion frame is metabolism applied to validation patterns rather than to substrate drift:
+The Wasteland's anti-collusion frame is metabolism applied to validation patterns rather than to store drift:
 
 > "The stamp graph has a shape, and collusion rings have a distinctive topology — lots of mutual stamping, sharp boundaries, no outside critics. The Wasteland system is designed to make fraud unprofitable, not impossible."
 > — Yegge, *Welcome to the Wasteland*, § Why is the Wasteland any different (March 2026)
 
-Worth borrowing into `PROCEDURE.md`'s metabolism section as a second flavor: drift in the *validation graph topology* is a distinct audit target from drift in substrate contents.
+Worth borrowing into `PROCEDURE.md`'s metabolism section as a second flavor: drift in the *validation graph topology* is a distinct audit target from drift in store contents.
 
 ---
 
@@ -177,7 +177,7 @@ Shape 1 is the null where the attester is missing or the actor itself — the "j
 
 Six patterns the framework currently lacks vocabulary for, tiered by evidentiary weight:
 
-- **Strong** (multiple independent practitioners, convergent moves): §1 Agent UX (4 sources across 3 related sub-disciplines; §1a alone has 2), §4 markdown-as-org-substrate (3 sources), §5 compute-as-binding-constraint (3 sources of different kinds).
+- **Strong** (multiple independent practitioners, convergent moves): §1 Agent UX (4 sources across 3 related sub-disciplines; §1a alone has 2), §4 markdown-as-org-store (3 sources), §5 compute-as-binding-constraint (3 sources of different kinds).
 - **Medium** (single well-grounded source with clean operational claim): §2 autonomy slider (Karpathy), §3 generation-verification loop velocity (Karpathy), §7 organizational-level feedback loops (Charity).
 
 Two adjacent framings (§6 Yegge's Survival Ratio, §8 Karpathy's Iron Man suit metaphor) are noted below as useful vocabulary the framework can borrow, not as newly surfaced disciplines.
@@ -188,9 +188,9 @@ Each item below is documented practice with a stated method.
 
 The strongest convergence finding in the lit review — but worth disaggregating, because the five practitioner citations bundled here are addressing three distinct sub-disciplines, not one. They share an orientation (LLMs are the end-user; design accordingly) but the moves are different:
 
-**1a. Substrate-side friction minimization** (the agent's interface to your data/state):
+**1a. Store-side friction minimization** (the agent's interface to your data/state):
 - **Yegge (*Software Survival 3.0*, Jan 2026):** *"What I did was make their hallucinations real, over and over, by implementing whatever I saw the agents trying to do with Beads, until nearly every guess by an agent is now correct. I've driven the friction cost term about as low as it can go."* He calls this *Desire Paths* design.
-- **Kieran Klaassen (*The Folder Is the Agent*, Every, April 13 2026; https://every.to/source-code/the-folder-is-the-agent):** the substrate IS what individuates one agent from another. *"A project folder with a CLAUDE.md/AGENT.md...that's an agent."* / *"Just by pointing the model at this folder, which contains some of my personality, knowledge, and taste, the model can be a specialist."* / *"Just by changing the folder and not the model, I have a different agent."* The throughput claim that makes substrate-side friction consequential: *"I'm running 44 AI agents across multiple projects. Each one is just a model pointed at a folder."* When the folder is the agent, the design move is configuring the folder — same orientation as Yegge's Desire Paths, stated at the individual-agent altitude rather than the substrate-build altitude.
+- **Kieran Klaassen (*The Folder Is the Agent*, Every, April 13 2026; https://every.to/source-code/the-folder-is-the-agent):** the store IS what individuates one agent from another. *"A project folder with a CLAUDE.md/AGENT.md...that's an agent."* / *"Just by pointing the model at this folder, which contains some of my personality, knowledge, and taste, the model can be a specialist."* / *"Just by changing the folder and not the model, I have a different agent."* The throughput claim that makes store-side friction consequential: *"I'm running 44 AI agents across multiple projects. Each one is just a model pointed at a folder."* When the folder is the agent, the design move is configuring the folder — same orientation as Yegge's Desire Paths, stated at the individual-agent altitude rather than the store-build altitude.
 
 **1b. Tool/protocol-side friction minimization** (the agent's interface to the broader world):
 - **Karpathy (YC, July 2025):** explicit "build for agents" — `lm.txt` files alongside `robots.txt`, markdown docs over HTML, replacing "click X" with "curl this endpoint", MCP as the canonical protocol.
@@ -221,15 +221,15 @@ The four shapes sit at different slider positions. The framework should make tha
 
 The speed of the loop is itself part of the design target. This is the disciplined reframing of "vibe coding" — the loop is fine if it's fast and verifiable; it's broken if it's fast and unverified.
 
-### 4. Markdown-as-organizational-substrate
+### 4. Markdown-as-organizational-store
 
-Three independent endorsements of *the markdown describing the loop is the substrate*:
+Three independent endorsements of *the markdown describing the loop is the store*:
 
 - **Karpathy (No Priors, Q1 2026):** *"A research organization is a set of markdown files that describe all the roles and how the whole thing connects."* His `program.md` is the spec for his auto research loop; meta-optimization over `program.md` is recursive self-improvement at the org-spec level.
 - **Yegge (Gas City, Apr 2026):** MEOW with Formulas (reusable templates) and Molecules (instances), version-controlled in Dolt, forkable across an org. *"Your library of formulas becomes a declarative inventory of every business process you've ever automated."*
 - **Anthropic Skills primitive** (referenced indirectly by Karpathy in No Priors): *"a skill is just a way to instruct the agent how to teach the thing."*
 
-This generalizes substrate-as-vocabulary (`EXAMPLES.md` coach template) from one professional's repertoire to a whole organization's process inventory, and answers the substrate question shape 2 left open: when code is regenerable, the durable artifact is *the org-spec markdown*.
+This generalizes store-as-vocabulary (`EXAMPLES.md` coach template) from one professional's repertoire to a whole organization's process inventory, and answers the store question shape 2 left open: when code is regenerable, the durable artifact is *the org-spec markdown*.
 
 ### 5. Compute-as-binding-constraint
 
@@ -252,7 +252,7 @@ Survival(T) ∝ (Savings × Usage × H) / (Awareness_cost + Friction_cost)
 Six levers — Insight Compression, Substrate Efficiency, Broad Utility, Publicity, Friction Minimization, Human Coefficient. Different organizing principle from hybrid-loops' discipline-pattern decomposition; reaches overlapping conclusions about what makes a good tool block. Worth a See-Also from `BUILDING_BLOCKS.md` — non-self-referential evidence that the *discipline of tools for agents* has economic stakes.
 
 Two levers map directly:
-- **Lever 1 (Insight Compression)** ≈ substrate as crystallized knowledge (*"Git represents decades of accumulated wisdom"* / *"crystallized cognition"*)
+- **Lever 1 (Insight Compression)** ≈ store as crystallized knowledge (*"Git represents decades of accumulated wisdom"* / *"crystallized cognition"*)
 - **Lever 2 (Substrate Efficiency)** ≈ the gate concept (*"grep saves cognition by doing it on a cheaper substrate: CPUs"*)
 
 ### 7. Organizational-level feedback loops
@@ -329,7 +329,7 @@ The shapes aren't a strict hierarchy — most production setups end up at one an
 
 **Shape 2 → Shape 3 (vibe-coding hits a verification ceiling).** Signal: the human reviewer is the bottleneck on throughput, and the team is making "withdrawals from a trust account" (Simon) faster than they can repay them with review cycles. The migration is to per-pack adversarial verification (Gas City's "two-or-three agents" rule), which moves verification off the human's critical path. Charity's bridge question — *"what would it take for you to feel comfortable shipping code without reading it?"* — names the engineering work that has to ship before the migration is real.
 
-**Shape 3 → Shape 4 (single-org verification hits a trust ceiling).** Signal: the substrate of attested outcomes outgrows what any single organization can validate, or the work crosses organizational boundaries (open-source contributions, cross-team coordination, contractor work). The migration is to federation with trust-graded stamps. The Wasteland is one design; other federated-validation systems (Git's PR model is the classical example) are others.
+**Shape 3 → Shape 4 (single-org verification hits a trust ceiling).** Signal: the store of attested outcomes outgrows what any single organization can validate, or the work crosses organizational boundaries (open-source contributions, cross-team coordination, contractor work). The migration is to federation with trust-graded stamps. The Wasteland is one design; other federated-validation systems (Git's PR model is the classical example) are others.
 
 What we don't have a worked example of: **Shape 1 ← anywhere**. Genuinely autonomous decomposition without one of the scaffolding strategies is not a stable destination as of 2026.
 
@@ -366,13 +366,13 @@ A useful epistemic practice for anyone applying this doc: when one of its claims
 
 **Two consolidations the doc carries, not one.**
 
-The Anthropic-Karpathy ladder is named above. A second consolidation is the **YC / blog-circle cluster** that supplies most of the "what's new" findings: Charlie (YC S24), Karpathy (YC AI Startup School speaker, then No Priors podcast), Yegge (regular Discord-and-blog presence in the same ecosystem), Charity Majors (frequent Yegge-adjacent voice in the ops-blog circuit), Simon Willison (active citer of all of them). These sources don't share an employer, but they share a discourse — they cite each other, attend each other's events, podcast on each other's shows. The convergence findings (Agent UX, compute-as-binding-constraint, markdown-as-org-substrate) are real *within this cluster*; whether they generalize to multi-agent practice outside of US developer-tools Twitter is an open question this doc does not answer.
+The Anthropic-Karpathy ladder is named above. A second consolidation is the **YC / blog-circle cluster** that supplies most of the "what's new" findings: Charlie (YC S24), Karpathy (YC AI Startup School speaker, then No Priors podcast), Yegge (regular Discord-and-blog presence in the same ecosystem), Charity Majors (frequent Yegge-adjacent voice in the ops-blog circuit), Simon Willison (active citer of all of them). These sources don't share an employer, but they share a discourse — they cite each other, attend each other's events, podcast on each other's shows. The convergence findings (Agent UX, compute-as-binding-constraint, markdown-as-org-store) are real *within this cluster*; whether they generalize to multi-agent practice outside of US developer-tools Twitter is an open question this doc does not answer.
 
 **Yegge weighting is materially heavier than the row count suggests.** He contributes four essays, two of the four shapes' canonical exemplars (Gas Town / Gas City for shape 3; Wasteland for shape 4), and three of the eight "what's new" findings. Where this doc treats Yegge-attested facts (e.g., "hundreds of concurrent workers per Gas City," "Gas Town hasn't changed shape across model generations," the Wasteland's stamp-protocol behavior) as evidence, those are practitioner self-reports from the evangelist position. Maggie Appleton's *speculative-design-fiction* framing tempers shape 3; nothing in the current draft equivalently tempers the shape-4 protocol mapping, which still rests on Yegge's essay without independent field verification.
 
 That's effectively **four independent sources + the platform vendor's framing + one synthesist**, but the four are not equally weighted: Yegge is closer to 3-4 sources, and one peer-cluster connects most of the rest.
 
-**Asymmetric Karpathy note.** Karpathy's pre-Anthropic quotes (YC July 2025, No Priors Q1 2026) were made independently and remain independent evidence; joining Anthropic in May 2026 doesn't retroactively make them platform-vendor statements. The asymmetry matters going forward: *future* Karpathy quotes should be tiered with Anthropic; *past* Karpathy quotes stay where they were said. The doc treats his existing quotes as independent and would not lift any future post-May-2026 Karpathy statement at the same evidentiary weight without flagging the consolidation. The convergence findings (Agent UX, markdown-as-org-substrate, compute-as-binding-constraint) still triangulate across genuinely independent vantages. Power-balance and outside-the-lab arguments derived from Karpathy alone are weaker than they read in isolation.
+**Asymmetric Karpathy note.** Karpathy's pre-Anthropic quotes (YC July 2025, No Priors Q1 2026) were made independently and remain independent evidence; joining Anthropic in May 2026 doesn't retroactively make them platform-vendor statements. The asymmetry matters going forward: *future* Karpathy quotes should be tiered with Anthropic; *past* Karpathy quotes stay where they were said. The doc treats his existing quotes as independent and would not lift any future post-May-2026 Karpathy statement at the same evidentiary weight without flagging the consolidation. The convergence findings (Agent UX, markdown-as-org-store, compute-as-binding-constraint) still triangulate across genuinely independent vantages. Power-balance and outside-the-lab arguments derived from Karpathy alone are weaker than they read in isolation.
 
 **Verification status per source:**
 - Anthropic RSI article: WebFetched 2026-06-04; quotes and section attributions confirmed verbatim.

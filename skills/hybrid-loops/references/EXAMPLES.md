@@ -2,16 +2,16 @@
 
 The hybrid-loops pattern applies across many domains. These are illustrative examples — fictional or generic — for someone scaffolding a project. When designing your own, pick whichever is closest in *shape*; domain doesn't matter, structure does.
 
-Every example below uses the five-role default arrangement (lens → substrate → gate → reasoner → action) as its skeleton. Where it directly instantiates a more specific named shape from [`BLOCK_GRAPHS.md`](BLOCK_GRAPHS.md), a *Shape:* line appears at the top of the entry. The [three disciplines from `THE_CASE.md`](THE_CASE.md#three-new-disciplines) — per-block calibration, context-as-code as core infrastructure, the dev-time hybrid loop wrapping the runtime — apply across all of them; this file focuses on the per-example surface details (schema sketches, gate policies, calibration paths).
+Every example below uses the five-role default arrangement (lens → store → gate → reasoner → action) as its skeleton. Where it directly instantiates a more specific named shape from [`BLOCK_GRAPHS.md`](BLOCK_GRAPHS.md), a *Shape:* line appears at the top of the entry. The [three disciplines from `THE_CASE.md`](THE_CASE.md#three-new-disciplines) — per-block calibration, context-as-code as core infrastructure, the dev-time hybrid loop wrapping the runtime — apply across all of them; this file focuses on the per-example surface details (schema sketches, gate policies, calibration paths).
 
 ---
 
-## A teacher tracking which interventions work for which kinds of students (substrate-as-record, education)
+## A teacher tracking which interventions work for which kinds of students (store-as-record, education)
 
 - *Shape:* [Teacher's intervention tracker](BLOCK_GRAPHS.md#teachers-intervention-tracker) (cross-domain metaphor in the BLOCK_GRAPHS.md catalog).
 - **Surface scope** — only the post-interaction reflection. The rest of the teacher's day (lesson planning, grading, classroom management) is not a hybrid loop.
 - **Lens** — LLM extracts typed records from the teacher's brief notes after each student interaction: `{student_id, situation_type, intervention_used, response_pattern, notes, schema_version, model_id}`
-- **Substrate** — sqlite; per-student-per-week records; schema versioned because `intervention_used` taxonomy will evolve as the teacher learns
+- **Store** — sqlite; per-student-per-week records; schema versioned because `intervention_used` taxonomy will evolve as the teacher learns
 - **Gate** — flags unusual patterns (a student whose responses don't match their typical cluster); aggregates per-intervention success rates per student-type
 - **Reasoner** — given a current situation, suggests interventions ranked by historical fit, citing specific past records
 - **Action** — note in the teacher's planning doc; optional weekly digest
@@ -19,11 +19,11 @@ Every example below uses the five-role default arrangement (lens → substrate �
 
 The canonical "single-domain-expert wants to learn from their own past" shape. The whole project is the surface; no separate UI complexity needed. A notebook + sqlite is enough.
 
-## A parent reflecting on interactions with their child (substrate-as-record, personal)
+## A parent reflecting on interactions with their child (store-as-record, personal)
 
 - **Surface scope** — the reflection-after-the-fact pass. Real-time parenting is not a hybrid loop and shouldn't be.
 - **Lens** — voice-note transcription + LLM extraction of `{moment_type, child_state, parent_response, emotion_in_self, what_worked, what_didnt, schema_version}`
-- **Substrate** — sqlite locally; tagged by date, context, emotion
+- **Store** — sqlite locally; tagged by date, context, emotion
 - **Gate** — clusters similar moments (recurring scenarios); flags when child_state escalates over a week
 - **Reasoner** — when asked, surfaces patterns ("you tend to respond with X when child is Y; here's a moment where Z worked better")
 - **Action** — written reflection in a journal note; never auto-intervention — the user invokes
@@ -31,37 +31,37 @@ The canonical "single-domain-expert wants to learn from their own past" shape. T
 
 Privacy note: data stays local; never sent beyond the LLM call. Schema includes a `consent_recorded` field per interaction if other family members are described. The deployment shape (local-only, no cloud) is central.
 
-## A small advocacy group tracking legislators on an issue (substrate-as-record + metabolism, civic)
+## A small advocacy group tracking legislators on an issue (store-as-record + metabolism, civic)
 
 - **Surface scope** — the legislator-position-tracking pass. Fundraising, event planning, member communications are separate (probably non-hybrid-loop) parts of the project.
 - **Lens** — LLM extracts position-on-issue from voting records, press releases, social posts: `{legislator_id, issue, position, evidence_type, evidence_quote, date, source_url}`
-- **Substrate** — sqlite; per-legislator-per-issue records over time; provenance enforced
+- **Store** — sqlite; per-legislator-per-issue records over time; provenance enforced
 - **Gate** — trajectory detection (drift over months); confidence threshold for inclusion; source-diversity audit
 - **Reasoner** — when planning advocacy strategy, suggests targets by movability + influence
 - **Action** — strategy memo; alerts when a legislator's trajectory changes
 - **Calibration** — verdict via subsequent voting record matching predicted trajectory
 - **Metabolism** — re-extract weekly; bias audit against source distribution (don't over-weight one outlet)
 
-Substrate is record AND vocabulary (the issue taxonomy is the vocabulary the system uses to discriminate).
+Store is record AND vocabulary (the issue taxonomy is the vocabulary the system uses to discriminate).
 
-## A coach with a typed intervention library (substrate-as-vocabulary, professional/coaching)
+## A coach with a typed intervention library (store-as-vocabulary, professional/coaching)
 
 - *Shape:* [Coach's typed move-library](BLOCK_GRAPHS.md#coachs-typed-move-library) (cross-domain metaphor in the BLOCK_GRAPHS.md catalog).
 - **Surface scope** — the intervention-selection moment during a session. Session notes, scheduling, billing are not hybrid loops.
 - **Lens** — at the session moment, an LLM classifies the conversation's current state: `{client_emotional_register, conversation_topic, stuckness_signal, recent_breakthrough}`
-- **Substrate** — a *curated* repertoire of typed intervention questions: `[{question_text, deploy_when, contraindications, mechanism, depth_level}]` — maybe 30-100 entries, hand-authored or distilled from training
+- **Store** — a *curated* repertoire of typed intervention questions: `[{question_text, deploy_when, contraindications, mechanism, depth_level}]` — maybe 30-100 entries, hand-authored or distilled from training
 - **Gate** — restraint policy: don't suggest the same intervention twice in one session; honor `contraindications`; only fire when stuckness_signal is high enough
 - **Reasoner** — picks the best-fit intervention given conversation state and recent history
 - **Action** — surfaces the suggestion to the coach (not to the client) as a card during the session
 - **Calibration** — verdict signal is whether the coach used the suggestion; success rate is whether the session unstuck after
 
-Substrate-as-vocabulary projects almost always have human authorship of the repertoire as a required step. The coach designs the library; the system picks from it. Partnership, not automation.
+Store-as-vocabulary projects almost always have human authorship of the repertoire as a required step. The coach designs the library; the system picks from it. Partnership, not automation.
 
-## A writer maintaining voice consistency across drafts (substrate-as-record, creative)
+## A writer maintaining voice consistency across drafts (store-as-record, creative)
 
 - **Surface scope** — the voice-checking pass on a finished draft. Generation of new content is not a hybrid loop here (it's the writer writing).
 - **Lens** — LLM extracts voice features from finished pieces: `{piece_id, sentence_complexity, lexical_register, rhetorical_moves, cadence_features, stylistic_quirks}`
-- **Substrate** — JSONL; one record per piece; the writer's "voice corpus"
+- **Store** — JSONL; one record per piece; the writer's "voice corpus"
 - **Gate** — for a new draft, computes deviation from rolling-window average; flags passages that drift significantly
 - **Reasoner** — when invoked on a draft, identifies passages reading differently from the writer's baseline and explains the deviation
 - **Action** — annotations in markdown comments; never auto-edits
@@ -74,18 +74,18 @@ The lens schema is the writer's *implicit theory of their own voice*, made expli
 This project has *three* surfaces, illustrating Phase 2 scope decisions:
 
 - **Surface 1 — resume parsing** (Bucket B, *not* hybrid loop): extracting `{name, education, experience_entries[]}` is mostly deterministic if resume format is consistent. Use a parser library, not an LLM, unless the formats vary wildly.
-- **Surface 2 — fit-scoring** (Bucket C, hybrid loop, analytical): lens extracts candidate-criteria-fit `{years_in_role, domain_match, level, signal_strength}`; substrate over all candidates; gate filters below threshold; reasoner ranks for human review; calibration via "did we interview, did they pass."
+- **Surface 2 — fit-scoring** (Bucket C, hybrid loop, analytical): lens extracts candidate-criteria-fit `{years_in_role, domain_match, level, signal_strength}`; store over all candidates; gate filters below threshold; reasoner ranks for human review; calibration via "did we interview, did they pass."
 - **Surface 3 — outreach composition** (Bucket C, hybrid loop, interventional): typed library of message templates `[{template, deploy_when, tone, length}]`; reasoner picks given candidate context; gate restrains template reuse within same-day; action drafts message. *Same shape as* [Coach's typed move-library](BLOCK_GRAPHS.md#coachs-typed-move-library) — typed repertoire + deploy_when criteria + per-use restraint policy — on a different surface.
 
 The "project" is one tool; the surfaces are three with different shapes. Realistic case for most non-toy projects.
 
 ## The recruiter fit-scoring surface, with the procedural overlay (substantive + procedural, hiring)
 
-Takes Surface 2 above (fit-scoring, Bucket C) and shows what the five protocols in `references/PROCEDURE.md` add in production — substrate and lens unchanged. Hiring earns the demo because it's where "procedurally clean" and "actually fair" come apart. (Exception: *bounded action* — PROCEDURE.md's *limited remedies* — is just scope discipline here; the other four earn their legal names.)
+Takes Surface 2 above (fit-scoring, Bucket C) and shows what the five protocols in `references/PROCEDURE.md` add in production — store and lens unchanged. Hiring earns the demo because it's where "procedurally clean" and "actually fair" come apart. (Exception: *bounded action* — PROCEDURE.md's *limited remedies* — is just scope discipline here; the other four earn their legal names.)
 
 - **Stratified standards of proof** *(action)* — tier by reversibility: *surface for review* < *filter below the line* < *auto-reject*. Refuse a higher tier on lower-tier confidence. Automated rejection is also a regulated activity (NYC Local Law 144; the EU AI Act high-risk class; a shifting US state patchwork — Colorado's 2024 AI Act was repealed before it took effect), so that tier may be legally gated regardless of confidence.
 - **Standing** *(gate, pre-lens)* — is the input real (blank/exact-dupe = deterministic, near-dupe/spam = a cheap classifier, not free), is the reasoner the right address (a hard credential is a deterministic filter), is there an open req to route to. Any "no" returns before the lens.
-- **Precedent retrieval** *(substrate)* — score consistently with *human-verified* outcomes (interview/pass — never the model's own prior scores), keyed on job-relevant fields only, never protected-attribute proxies. Per PROCEDURE.md §3 this guards disparate *treatment*, not disparate *impact*, and stays inert until ~20 verified outcomes accrue (which, since interviews take weeks, is a long cold-start here).
+- **Precedent retrieval** *(store)* — score consistently with *human-verified* outcomes (interview/pass — never the model's own prior scores), keyed on job-relevant fields only, never protected-attribute proxies. Per PROCEDURE.md §3 this guards disparate *treatment*, not disparate *impact*, and stays inert until ~20 verified outcomes accrue (which, since interviews take weeks, is a long cold-start here).
 - **Bounded action** *(a.k.a. limited remedies)* — scores fit and nothing else; adjacent observations ("this req's seniority band looks off") are only recorded for the next cycle.
 - **Recusal** *(cross-layer)* — separate flags from judgments: a hiring-manager referral is a metadata flag and the outreach drafter never grades its own fit, but "unusual resume" needs a classifier — so it's a judgment call, and its human path must be equal-or-better review.
 
@@ -97,10 +97,10 @@ Each protocol's triggers become verdict classes in the calibration log — the o
 
 | Shape | Use when... | Example anchor |
 |---|---|---|
-| Substrate-as-record (analytical) | Value comes from making sense of accumulated data over time | Teacher's intervention tracker; writer's voice corpus |
-| Substrate-as-vocabulary (interventional) | System needs to discriminate the right move from a typed repertoire | Coach's intervention library |
-| Both (record AND vocabulary) | Substrate is queried by present moment AND grows over time | Advocacy legislator-tracker (record of positions, vocabulary of issue types) |
-| Substrate provider for downstream agents | Output is intentionally typed for other agents to consume | A typed accountability-data corpus exposed via MCP |
+| Store-as-record (analytical) | Value comes from making sense of accumulated data over time | Teacher's intervention tracker; writer's voice corpus |
+| Store-as-vocabulary (interventional) | System needs to discriminate the right move from a typed repertoire | Coach's intervention library |
+| Both (record AND vocabulary) | Store is queried by present moment AND grows over time | Advocacy legislator-tracker (record of positions, vocabulary of issue types) |
+| Store provider for downstream agents | Output is intentionally typed for other agents to consume | A typed accountability-data corpus exposed via MCP |
 | Multiple surfaces in one project | Project has 2-3 distinct fuzzy-judgment places | Recruiter tool above |
 
 ---
@@ -112,7 +112,7 @@ Each protocol's triggers become verdict classes in the calibration log — the o
 - Coach / clinician / facilitator with a typed move library → coach template
 - Recruiter / triage / customer-service routing → multi-surface (recruiter) template
 - Multi-agent or multi-party deliberation → typed-deliberation template (positions, votes, cruxes, cluster discovery)
-- Substrate provider for downstream agents → typed-corpus-as-MCP template
+- Store provider for downstream agents → typed-corpus-as-MCP template
 - High-stakes / fairness-sensitive / production deployment → start from the closest example above, then apply the procedural overlay (see the recruiter fit-scoring overlay and `references/PROCEDURE.md`)
 
 Resist inventing a new architecture. Pick the closest existing example, name what's different, design the difference.

@@ -124,7 +124,7 @@ flowchart TB
 
 **In the wild**: Aider's auto-test mode, Cursor's debug-with-tests workflow, the SWE-bench harness setup (agent + test suite per task), Claude Code with test-runner subagents. The TypeScript/Python type-checker tightens the loop in IDE coding-assist generally.
 
-*Maintainer's experiment at a much smaller scope* (not in the league of the above): [plancheck](https://github.com/justinstimatze/plancheck) applies the same shape pre-execution rather than to code itself. A deterministic compiler over an `ExecutionPlan` JSON checks orphan files, cascade risk, and reference-graph consistency; *subagents then simulate the planned change*, and their tool-call traces become a second substrate the LLM evaluates the plan against. Revise-until-threshold loops over both layers.
+*Maintainer's experiment at a much smaller scope* (not in the league of the above): [plancheck](https://github.com/justinstimatze/plancheck) applies the same shape pre-execution rather than to code itself. A deterministic compiler over an `ExecutionPlan` JSON checks orphan files, cascade risk, and reference-graph consistency; *subagents then simulate the planned change*, and their tool-call traces become a second store the LLM evaluates the plan against. Revise-until-threshold loops over both layers.
 
 ### Multi-agent conversation
 
@@ -152,7 +152,7 @@ flowchart TB
     coord -.done.-> out
 ```
 
-The shared transcript is the substrate; the coordinator is the deterministic gate that decides routing. Whether the shape works depends on whether agents have genuinely different roles or whether they all reach for the same answer — in the latter case they're an expensive ensemble of one.
+The shared transcript is the store; the coordinator is the deterministic gate that decides routing. Whether the shape works depends on whether agents have genuinely different roles or whether they all reach for the same answer — in the latter case they're an expensive ensemble of one.
 
 **In the wild**: AutoGen, CrewAI, and OpenAI's Swarm cover the production end; [ChatDev](https://github.com/OpenBMB/ChatDev) and [MetaGPT](https://github.com/geekan/MetaGPT) are the academic instances. The "agent crew" pattern dominates much of the 2024-2025 multi-agent literature.
 
@@ -162,7 +162,7 @@ The shared transcript is the substrate; the coordinator is the deterministic gat
 
 ### The 5-role canonical hybrid loop
 
-The arrangement the skill defaults to. Lens extracts; substrate accumulates; gate filters; reasoner consumes; action lands and feeds back.
+The arrangement the skill defaults to. Lens extracts; store accumulates; gate filters; reasoner consumes; action lands and feeds back.
 
 ```mermaid
 flowchart TB
@@ -172,17 +172,17 @@ flowchart TB
 
     soft[(soft input<br/>transcript / doc / event)]:::data
     lens["LENS<br/>LLM: extract"]:::llm
-    sub[(SUBSTRATE<br/>typed records)]:::data
+    store[(STORE<br/>typed records)]:::data
     gate["GATE<br/>code: filter / score / rank"]:::code
-    reason["REASONER<br/>LLM: consume substrate"]:::llm
+    reason["REASONER<br/>LLM: consume store"]:::llm
     action["ACTION<br/>code: apply"]:::code
     state[(state change)]:::data
 
-    soft --> lens --> sub --> gate --> reason --> action --> state
+    soft --> lens --> store --> gate --> reason --> action --> state
     state -. new content .-> soft
 ```
 
-The cycle closes when the action produces new content the lens reads next turn. *Calibration* (predict + verdict per LLM block) and *metabolism* (substrate-wide audit) close additional loops not drawn here.
+The cycle closes when the action produces new content the lens reads next turn. *Calibration* (predict + verdict per LLM block) and *metabolism* (store-wide audit) close additional loops not drawn here.
 
 **In the wild**: most production hybrid-loop projects collapse into roughly this shape. Anthropic's "Building Effective Agents" workflow tier maps onto it. Many enterprise document-processing pipelines (extract → store → filter → reason → act) instantiate it without naming it. Compare with CoALA's (Sumers et al. 2024) memory + actions + decision-making decomposition.
 
@@ -243,7 +243,7 @@ flowchart TB
     patched -. next round .-> artifact
 ```
 
-Parallel LLM blocks doing different jobs (each with its own role-as-context-as-code) → typed substrate of findings → deterministic prioritization → patch generation. Used for design review, code review, content critique. The deterministic prioritization is what makes the panel's output actionable instead of overwhelming.
+Parallel LLM blocks doing different jobs (each with its own role-as-context-as-code) → typed store of findings → deterministic prioritization → patch generation. Used for design review, code review, content critique. The deterministic prioritization is what makes the panel's output actionable instead of overwhelming.
 
 **In the wild**: Reflexion (Shinn et al. 2023, [arXiv:2303.11366](https://arxiv.org/abs/2303.11366)) — agent reflects on its own trajectory, generates verbal feedback, retries. Agent-as-judge / LLM-as-judge eval frameworks (Zhuge et al. 2024). Anthropic's [Constitutional AI](https://www.anthropic.com/research/constitutional-ai) critique loop. Cursor's "review my diff" multi-agent mode. The broader LLM-as-judge literature.
 
@@ -333,7 +333,7 @@ Conspicuously *absent* from the current AI-browser wave (Atlas, Comet, Dia — a
 
 ### Knowledge-base auditor
 
-Substrate is valid source code (often Go AST); auditors run deterministic checks against the AST; an LLM proposes edits to the substrate.
+Store is valid source code (often Go AST); auditors run deterministic checks against the AST; an LLM proposes edits to the store.
 
 ```mermaid
 flowchart TB
@@ -347,7 +347,7 @@ flowchart TB
     audits["code: AST audits<br/>(deterministic)"]:::code
     findings[(.audit-log.json)]:::data
     refine["LLM: dream / refine<br/>(edits source)"]:::llm
-    build["code: type-check<br/>validates substrate"]:::code
+    build["code: type-check<br/>validates store"]:::code
 
     sources --> extract --> kb
     kb --> audits --> findings --> refine
@@ -355,7 +355,7 @@ flowchart TB
     kb --> build --> kb
 ```
 
-Code-as-substrate does triple duty: LLM-readable (no markdown intermediate), executable (the language runtime can run it), analyzable by deterministic tools (linters, type checkers, AST queries). One artifact, three readers.
+Code-as-store does triple duty: LLM-readable (no markdown intermediate), executable (the language runtime can run it), analyzable by deterministic tools (linters, type checkers, AST queries). One artifact, three readers.
 
 **In the wild**: less common as a deployed shape — most knowledge bases use markdown or RDF-style triples. The OpenCog tradition is the academic cousin. Concept-tracking PKM tools (Logseq, Roam) approach this from the other direction with structured-content + light analysis but typically lack the LLM-author + deterministic-validate triple.
 
@@ -416,7 +416,7 @@ flowchart TB
 
 The injected suggested response is *context-as-code* — text in markdown that the next LLM call interprets as instructions. The topology audit is a pure-graph computation; the LLM doesn't need to assess its own reasoning, the deterministic gate does. Slimemold-shape; one specific instance of the general [Ambient meta-loop](#ambient-meta-loop) pattern (claim-graph as the typed signal, turn-end as the trigger, next-turn context as the seam).
 
-**In the wild**: argumentation frameworks (Dung 1995, [On the Acceptability of Arguments](https://www.sciencedirect.com/science/article/pii/000437029400041X)) provide the typed claim-with-attack-edges substrate. Less directly: claim-mapping tools (Kialo, Argunet) approximate the typed substrate without the LLM-extraction layer.
+**In the wild**: argumentation frameworks (Dung 1995, [On the Acceptability of Arguments](https://www.sciencedirect.com/science/article/pii/000437029400041X)) provide the typed claim-with-attack-edges store. Less directly: claim-mapping tools (Kialo, Argunet) approximate the typed store without the LLM-extraction layer.
 
 *Maintainer's experiment at a much smaller scope*: [slimemold](https://github.com/justinstimatze/slimemold) is a small Claude Code hook that does roughly this graph.
 
@@ -424,7 +424,7 @@ The injected suggested response is *context-as-code* — text in markdown that t
 
 ## Cross-domain metaphors
 
-These are non-engineering surfaces used as metaphors to make the framework's shape vocabulary land — illustrations, not deployed applications. The cited prior art (MTSS, OARS, ICF, IFS) is real, well-established, and entirely human-driven; the LLM-augmented variants below are sketches the framework uses to talk about *substrate-as-vocabulary* and *typed-move-library* shapes in familiar terms. Whether building any of these tools would meet real demand is empirically open.
+These are non-engineering surfaces used as metaphors to make the framework's shape vocabulary land — illustrations, not deployed applications. The cited prior art (MTSS, OARS, ICF, IFS) is real, well-established, and entirely human-driven; the LLM-augmented variants below are sketches the framework uses to talk about *store-as-vocabulary* and *typed-move-library* shapes in familiar terms. Whether building any of these tools would meet real demand is empirically open.
 
 ### Teacher's intervention tracker
 
@@ -439,18 +439,18 @@ flowchart TB
     obs[(observation:<br/>'student froze at column addition')]:::data
     classify["LLM: classify against<br/>typed intervention library"]:::llm
     record[(typed record)]:::data
-    sub[(weekly substrate)]:::data
+    store[(weekly store)]:::data
     aggregate["code: aggregate by student"]:::code
     summary[(per-student summary)]:::data
     weekly["LLM: weekly review<br/>suggest adjustments"]:::llm
     plan[(intervention plan)]:::data
 
-    obs --> classify --> record --> sub
-    sub --> aggregate --> summary --> weekly --> plan
+    obs --> classify --> record --> store
+    store --> aggregate --> summary --> weekly --> plan
     plan -. updates intervention library .-> classify
 ```
 
-Substrate-as-vocabulary (the typed intervention library) is the central artifact — it's what the LLM classifies *against*. The teacher edits the library when they notice a recurring pattern that doesn't fit. The dev-time loop is the teacher curating the library; the runtime is per-observation classification + weekly summary.
+Store-as-vocabulary (the typed intervention library) is the central artifact — it's what the LLM classifies *against*. The teacher edits the library when they notice a recurring pattern that doesn't fit. The dev-time loop is the teacher curating the library; the runtime is per-observation classification + weekly summary.
 
 **Prior art (no LLM, but the typed-vocabulary half is well-established)**:
 
@@ -481,7 +481,7 @@ flowchart TB
     move -. coach refines library .-> match
 ```
 
-Substrate-as-vocabulary in its purest form: the move library is curated, finite, and editable by the coach. The LLM is constrained to selecting from the library rather than generating fresh advice — that constraint is the discipline that makes the system trustworthy in a domain where bad advice has real consequences.
+Store-as-vocabulary in its purest form: the move library is curated, finite, and editable by the coach. The LLM is constrained to selecting from the library rather than generating fresh advice — that constraint is the discipline that makes the system trustworthy in a domain where bad advice has real consequences.
 
 **Prior art (typed move-libraries widely used in coaching/therapy without LLMs)**:
 
@@ -490,7 +490,7 @@ Substrate-as-vocabulary in its purest form: the move library is curated, finite,
 - *Internal Family Systems (IFS) therapy moves* — typed library of "parts" plus intervention templates clinicians work from.
 - *[ICF coaching competencies](https://coachingfederation.org/credentials-and-standards/core-competencies)* — typed library of professional coaching moves used in certification.
 
-**LLM-augmented examples in the wild**: BetterUp, [Bunch](https://www.bunch.ai/), Reach AI, and similar coaching-app startups approach this shape (closed move-library + observation-matching) but typically don't expose the typed vocabulary as editable substrate. The shape above is illustrative; the cycle is what an LLM-augmented Motivational-Interviewing-style tool would need.
+**LLM-augmented examples in the wild**: BetterUp, [Bunch](https://www.bunch.ai/), Reach AI, and similar coaching-app startups approach this shape (closed move-library + observation-matching) but typically don't expose the typed vocabulary as editable store. The shape above is illustrative; the cycle is what an LLM-augmented Motivational-Interviewing-style tool would need.
 
 ---
 
@@ -500,8 +500,8 @@ When designing a hybrid loop:
 
 1. *Find the closest entry* to the surface you're scaffolding.
 2. *Check what blocks differ* for your case — what's an LLM in the canonical shape but might want to be code in yours, or vice versa.
-3. *Check the cycle closure* — every entry has at least one feedback edge. Where does yours close? At runtime (substrate accumulates) or at dev-time (transcripts critique-and-patch the runtime), or both?
-4. *Check what's not drawn* — calibration is implicit in every entry with an LLM block; metabolism is implicit in every entry with a substrate that grows.
+3. *Check the cycle closure* — every entry has at least one feedback edge. Where does yours close? At runtime (store accumulates) or at dev-time (transcripts critique-and-patch the runtime), or both?
+4. *Check what's not drawn* — calibration is implicit in every entry with an LLM block; metabolism is implicit in every entry with a store that grows.
 
 Treat these as starting positions. Most real projects end up as variants — substituting one block type, splitting a block into a sub-cycle, or composing two of these shapes (a runtime that's one shape, wrapped by a dev-time loop that's another).
 

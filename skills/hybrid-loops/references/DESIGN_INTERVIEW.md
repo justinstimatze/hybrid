@@ -4,22 +4,22 @@ Use when SKILL.md's Phase 4 quick-design (3 questions + auto-defaults) isn't suf
 
 Default to quick-design for v0 projects. This file is loaded on demand.
 
-The interview assumes the **five-role default arrangement** (lens / substrate / gate / reasoner / action) from SKILL.md. That covers most analytical and interventional surfaces. For surfaces that depart from the default — `LLM-as-architect`, `code-as-perceiver`, `LLM-audits-code`, `LLM-generates-prompts-for-LLM`, and the rest of the [eight primitives](BUILDING_BLOCKS.md#eight-primitive-blocks) — first identify the relevant blocks from `BUILDING_BLOCKS.md`, then run the question set against *those* blocks instead of (or in addition to) the five-role ones.
+The interview assumes the **five-role default arrangement** (lens / store / gate / reasoner / action) from SKILL.md. That covers most analytical and interventional surfaces. For surfaces that depart from the default — `LLM-as-architect`, `code-as-perceiver`, `LLM-audits-code`, `LLM-generates-prompts-for-LLM`, and the rest of the [eight primitives](BUILDING_BLOCKS.md#eight-primitive-blocks) — first identify the relevant blocks from `BUILDING_BLOCKS.md`, then run the question set against *those* blocks instead of (or in addition to) the five-role ones.
 
-## For analytical surfaces (substrate-as-record)
+## For analytical surfaces (store-as-record)
 
 1. **What is the non-deterministic input?** Transcripts, dialogue turns, screenshots, plans, behavior logs, observations, sensor readings, journal entries.
 2. **What does the lens extract?** Sketch the schema. Fields, types, enums.
    - Required: `notes` (free-text rationale for graceful failure), `model_id`, `schema_version`.
    - Useful: provenance pointers to source documents, per-field confidence scores, extraction timestamp.
-3. **Where does the substrate live?** JSONL file, sqlite, an existing database, a typed module in the host language, an MCP-exposed query API.
-4. **What aggregations or queries does the substrate need to support?** Group-by, time-series, similarity search, full-text? This shapes the substrate choice.
-5. **What does the reasoner do with the substrate?** Concrete output: ranked list, recommendation, alert, summary, generated content informed by typed structure.
-6. **What's the action?** UI render, file write, notification, new record back into substrate, external API call.
+3. **Where does the store live?** JSONL file, sqlite, an existing database, a typed module in the host language, an MCP-exposed query API.
+4. **What aggregations or queries does the store need to support?** Group-by, time-series, similarity search, full-text? This shapes the store choice.
+5. **What does the reasoner do with the store?** Concrete output: ranked list, recommendation, alert, summary, generated content informed by typed structure.
+6. **What's the action?** UI render, file write, notification, new record back into store, external API call.
 7. **What does the calibration log capture?** Predict + verdict per call. What's the verdict signal — follow-up user action, a metric, a manual confirm, a second LLM check?
-8. **Does this surface need metabolism?** Almost always: no, in v0. Add only when the substrate accumulates over weeks and needs periodic audit (consolidation, bias-check, speculative connection).
+8. **Does this surface need metabolism?** Almost always: no, in v0. Add only when the store accumulates over weeks and needs periodic audit (consolidation, bias-check, speculative connection).
 
-## For interventional surfaces (substrate-as-vocabulary)
+## For interventional surfaces (store-as-vocabulary)
 
 1. **What's the moment that needs a move?** What triggers consideration?
 2. **What's the repertoire?** Sketch the typed library. Entries, fields per entry, discrimination criteria.
@@ -32,7 +32,7 @@ The interview assumes the **five-role default arrangement** (lens / substrate / 
 
 ## For surfaces that are both
 
-If a surface accumulates AND offers a typed repertoire (the substrate-as-record-and-vocabulary case), run both interviews and reconcile. Substrate often has separate "record" tables and "vocabulary" tables; the gate operates on both.
+If a surface accumulates AND offers a typed repertoire (the store-as-record-and-vocabulary case), run both interviews and reconcile. Store often has separate "record" tables and "vocabulary" tables; the gate operates on both.
 
 ## Schema design tips
 
@@ -47,7 +47,7 @@ If a surface accumulates AND offers a typed repertoire (the substrate-as-record-
 - **Asking all 8 questions before producing a draft.** Produce a draft after Q1-3; let the user revise.
 - **Designing for hypothetical future calibration before having any v0 calibration data.** Log first; design later.
 - **Over-specifying the gate before observing actual over-firing patterns.** Start permissive; tighten with data.
-- **Designing the metabolism phase before the substrate has accumulated 4+ weeks of records.** Premature.
+- **Designing the metabolism phase before the store has accumulated 4+ weeks of records.** Premature.
 - **Making the schema large because it might-need-this-later.** Smaller schemas evolve better than larger ones.
 
 ## Companion to SKILL.md

@@ -29,7 +29,7 @@ The closest cousin in this work. DSPy's typed-signature module is essentially a 
 - DSPy's alphabet is *mostly LLM modules*. Deterministic non-LLM blocks are second-class — plain Python interop, without architectural status of their own. Hybrid loops puts LLM and code on equal footing.
 - DSPy optimizes for a user-provided metric. Hybrid loops names *disciplines* — calibration treats per-block hit-rate as ship-blocking, not as one optimization signal among many.
 - DSPy doesn't distinguish runtime cycles from development-time cycles. The compile step *is* a dev-time loop, but the framework treats it as tooling, not architecture.
-- DSPy doesn't have an explicit substrate concept — programs are stateless w.r.t. each other. Hybrid loops treats typed-records-accumulating-over-time as a first-class role.
+- DSPy doesn't have an explicit store concept — programs are stateless w.r.t. each other. Hybrid loops treats typed-records-accumulating-over-time as a first-class role.
 
 **Verdict**: complementary. Use DSPy to implement the LLM blocks of a hybrid-loops graph when prompt/demo optimization is worth the compile-step cost.
 
@@ -38,7 +38,7 @@ The closest cousin in this work. DSPy's typed-signature module is essentially a 
 **What it is**: a graph executor for LLM-centric agent workflows. Nodes are typically LLM calls or tool calls; edges express the control flow; supports cycles (hence "graph" not "chain").
 
 **Where they differ**:
-- LangGraph nodes are typically LLM calls or tools — the deterministic-substrate / deterministic-gate / typed-substrate-store roles are implemented ad hoc. Hybrid loops names those roles structurally.
+- LangGraph nodes are typically LLM calls or tools — the deterministic-store / deterministic-gate / typed-store-store roles are implemented ad hoc. Hybrid loops names those roles structurally.
 - LangGraph's graph IS code (Python). A hybrid-loops graph would be data, in principle — typed specs that code could validate, lint, simulate. That spec and executor don't ship in this repo; the framework points the direction. LangGraph chose the practical alternative of letting Python be the graph.
 - LangGraph doesn't have an opinion on calibration, context-as-code as infra, or dev-time-loop discipline. It's a runtime, not a methodology.
 
@@ -49,11 +49,11 @@ The closest cousin in this work. DSPy's typed-signature module is essentially a 
 **What it is**: a framework for multi-agent conversations. Agents have roles; messaging works as conversation; group chats coordinate via a "manager" agent.
 
 **Where they differ**:
-- AutoGen's primary primitive is *the conversation* — agents exchange messages, context accumulates as transcript. Hybrid loops's primary primitive is *the typed substrate* — records accumulate as structure.
-- AutoGen treats multi-agent as the default shape. Hybrid loops treats LLM blocks as one block type among others; whether multiple LLMs converse is a question of substrate-shape.
+- AutoGen's primary primitive is *the conversation* — agents exchange messages, context accumulates as transcript. Hybrid loops's primary primitive is *the typed store* — records accumulate as structure.
+- AutoGen treats multi-agent as the default shape. Hybrid loops treats LLM blocks as one block type among others; whether multiple LLMs converse is a question of store-shape.
 - AutoGen doesn't separate runtime from dev-time. Multi-agent conversations are runtime constructs; the dev-time critique-and-patch loop is something users implement themselves.
 
-**Verdict**: AutoGen's shape is one specific cell — *multiple LLM blocks with conversational substrate*. It's powerful for that shape. Hybrid loops is broader; AutoGen is deeper inside it. Use AutoGen when the right pattern is multi-agent conversation; use hybrid loops as the umbrella when it isn't.
+**Verdict**: AutoGen's shape is one specific cell — *multiple LLM blocks with conversational store*. It's powerful for that shape. Hybrid loops is broader; AutoGen is deeper inside it. Use AutoGen when the right pattern is multi-agent conversation; use hybrid loops as the umbrella when it isn't.
 
 ## CrewAI
 
@@ -89,11 +89,11 @@ These make hybrid-loop-shaped graphs *visible* — the canvas IS the graph-as-da
 
 Visual workflow automation focused on integrating SaaS apps. Zapier is consumer-grade; n8n is open-source and developer-leaning; Make sits between them.
 
-Massive integration libraries (thousands of services) make these the practical choice when most blocks of a hybrid loop are *interactions with external SaaS systems* rather than LLM reasoning. They've added LLM nodes recently (n8n especially), making them increasingly hybrid-loop-shaped. Not designed around the LLM-as-fuzzy-mapper view; LLM nodes are bolted on alongside deterministic integration steps without the framework's disciplines applied. State, substrate, and calibration are absent or minimal. A real entry point when the project is mostly SaaS-integration with some LLM work.
+Massive integration libraries (thousands of services) make these the practical choice when most blocks of a hybrid loop are *interactions with external SaaS systems* rather than LLM reasoning. They've added LLM nodes recently (n8n especially), making them increasingly hybrid-loop-shaped. Not designed around the LLM-as-fuzzy-mapper view; LLM nodes are bolted on alongside deterministic integration steps without the framework's disciplines applied. State, store, and calibration are absent or minimal. A real entry point when the project is mostly SaaS-integration with some LLM work.
 
 ### Compound engineering (Every.to / Kieran Klaassen)
 
-A practitioner methodology for AI-assisted software development; see the guide at https://every.to/guides/compound-engineering (Jan 17, 2026; updated May 2026). The current articulation is a seven-step loop: **Ideate → Brainstorm → Plan → Work → Review → Polish → Compound**. The final step embeds learnings into searchable artifacts (CLAUDE.md updates, YAML-metadata repos) so subsequent work is "easier, not harder." Distinctive moves: multi-agent parallel review with explicit severity tiering ("findings marked P1 (must fix), P2 (should fix), or P3 (nice to fix)"), CLAUDE.md as living substrate (*"when something goes wrong, add a note so the agent learns"*), and the Compound step as substrate-with-retrieval-aware-schema. Heavy planning + review weight, lighter implementation weight; "teach the system, don't do the work yourself."
+A practitioner methodology for AI-assisted software development; see the guide at https://every.to/guides/compound-engineering (Jan 17, 2026; updated May 2026). The current articulation is a seven-step loop: **Ideate → Brainstorm → Plan → Work → Review → Polish → Compound**. The final step embeds learnings into searchable artifacts (CLAUDE.md updates, YAML-metadata repos) so subsequent work is "easier, not harder." Distinctive moves: multi-agent parallel review with explicit severity tiering ("findings marked P1 (must fix), P2 (should fix), or P3 (nice to fix)"), CLAUDE.md as living store (*"when something goes wrong, add a note so the agent learns"*), and the Compound step as store-with-retrieval-aware-schema. Heavy planning + review weight, lighter implementation weight; "teach the system, don't do the work yourself."
 
 The "compound" step is structurally the **dev-time hybrid loop wrapping the runtime** — feedback from runtime behavior reshapes the layers below. "Teach the system" maps onto *context-as-code as core infrastructure*. Multi-agent parallel review maps onto the *adversarial-panel-process* shape.
 
@@ -114,12 +114,12 @@ The thesis is the most direct restatement of hybrid-loops' design-disciplines po
 
 - **AGENTS.md as table of contents, `docs/` as system of record** — *"give Codex a map, not a 1,000-page instruction manual."* Maps onto **context-as-code as core infrastructure**, and answers the "what's the right shape for the agent's standing context" question with progressive-disclosure (short stable entry point, mechanical link-checking).
 - **Enforce invariants, not implementations** — *"enforcing invariants, not micromanaging implementations"*; *"enforce boundaries centrally, allow autonomy locally."* Mechanical enforcement via linters + structural tests + "taste invariants" (e.g. statically enforce structured logging, naming conventions). Reads as **gate discipline at the repository-boundary altitude** — ship-blocking deterministic checks that enforce shape, distinct from §81's per-output deterministic-re-derivation but in the same spirit (don't ask the LLM to be trustworthy; constrain the surface it can affect).
-- **Recurring cleanup ("garbage collection")** — *"golden principles"* encoded into the repo, plus a recurring "doc-gardening" agent and background Codex tasks that scan for drift, update quality grades, and open targeted refactoring PRs. Maps onto **metabolism** — substrate-drift audit, expressed as scheduled agent work that pays down technical-debt continuously rather than in painful bursts.
+- **Recurring cleanup ("garbage collection")** — *"golden principles"* encoded into the repo, plus a recurring "doc-gardening" agent and background Codex tasks that scan for drift, update quality grades, and open targeted refactoring PRs. Maps onto **metabolism** — store-drift audit, expressed as scheduled agent work that pays down technical-debt continuously rather than in painful bursts.
 - **Cross-reference: Ralph Wiggum Loop.** OpenAI's standard PR-driving pattern is named in the article as *"effectively this is a Ralph Wiggum Loop"* — the runnable-tonight plugin pattern below has crossed into OpenAI's working vocabulary.
 
 **Where it differs:** engineering-only framing; no explicit per-block-hit-rate calibration (invariant enforcement is the closest analog); non-LLM actors (linters, doc-gardening agents) are implicit rather than first-class.
 
-**Verdict:** the closest practitioner-instance of hybrid-loops' discipline-orthogonal-to-capability posture from a non-Anthropic source. The recurring-cleanup-as-garbage-collection pattern is worth borrowing into any substrate-as-record deployment.
+**Verdict:** the closest practitioner-instance of hybrid-loops' discipline-orthogonal-to-capability posture from a non-Anthropic source. The recurring-cleanup-as-garbage-collection pattern is worth borrowing into any store-as-record deployment.
 
 ### Agent-native architectures (Every / Dan Shipper + Claude)
 
@@ -138,7 +138,7 @@ The granularity principle is the central reframing of "feature": not predetermin
 **Where it differs:**
 - Application-design framing; hybrid loops is a design pattern one altitude up (the loop is the unit of design, regardless of whether it's a "feature" or not).
 - No calibration discipline; Improvement Over Time is the closest analog but doesn't track per-block hit-rate.
-- The substrate is implicit (files + context window) rather than typed-records-as-first-class-substrate.
+- The store is implicit (files + context window) rather than typed-records-as-first-class-store.
 
 **Verdict:** the closest product-design-altitude statement of "feature = outcome achieved by an agent in a loop." Useful vocabulary for explaining the framework to product/design audiences; same altitude as Compound Engineering (companion Every guide on the engineering side).
 
@@ -146,12 +146,12 @@ The granularity principle is the central reframing of "feature": not predetermin
 
 A Claude Code plugin shipped under [anthropics/claude-code](https://github.com/anthropics/claude-code/blob/main/plugins/ralph-wiggum/README.md). The plugin's own framing: *"Ralph is a Bash loop"* — a `while true` that repeatedly feeds an AI agent a prompt file, letting it iteratively improve its work until completion. Core principle: *"Iteration > Perfection"* — *"Don't aim for perfect on first try. Let the loop refine the work."* Practical safety net: `--max-iterations` cap to prevent runaway loops on impossible tasks.
 
-The smallest deployable instance of the framework's runtime cycle shape: one LLM block, one substrate (filesystem + git history the agent reads on each pass), one stop condition. Where DSPy is the academic cousin and Compound Engineering is the methodology cousin, Ralph Wiggum is the *runnable-tonight* cousin.
+The smallest deployable instance of the framework's runtime cycle shape: one LLM block, one store (filesystem + git history the agent reads on each pass), one stop condition. Where DSPy is the academic cousin and Compound Engineering is the methodology cousin, Ralph Wiggum is the *runnable-tonight* cousin.
 
 **Where it differs:**
 - A Claude Code plugin you can install, not a discipline you adopt.
 - No explicit calibration discipline; the loop runs to a stop condition rather than tracking per-iteration hit-rate.
-- Substrate is implicit (whatever the agent leaves on disk and in git); not typed.
+- Store is implicit (whatever the agent leaves on disk and in git); not typed.
 - No graph: single-LLM, single-loop. Hybrid loops generalizes to graphs of typed blocks with multiple actors.
 
 **Verdict:** the bash-loop reduction is useful as the *minimum viable* instance of a runtime hybrid loop. If you're new to the pattern, run Ralph against a small project for a day before reaching for any of the heavier frameworks above — the deployable-tonight version makes the runtime-cycle / dev-time-loop distinction concrete in a way no methodology document can.
@@ -169,16 +169,16 @@ Two convergences worth flagging on their own:
 
 **Where it differs:**
 - No persistent per-block calibration log. Adversarial-verify / judge-panel / loop-until-dry are per-instance quality gates inside one run, not a rolling hit-rate tracked across runs the way `THE_CASE.md` §81 asks for.
-- No explicit substrate-as-vocabulary. The closest analog — a saved workflow script reused as a template — is closer to substrate-as-record (a reusable artifact) than a curated taxonomy.
+- No explicit store-as-vocabulary. The closest analog — a saved workflow script reused as a template — is closer to store-as-record (a reusable artifact) than a curated taxonomy.
 - No described critique-and-patch loop over past runs. Workflows can be saved and reused, but nothing in the public description has a critic-LLM read transcripts of prior workflow runs and rewrite the script — the move that would make it a true dev-time loop per `STACKING.md`'s definition, rather than a runtime-resume mechanism.
 
 **Verdict:** the most direct existing instance of `LLM-design-notation + code-compress` applied to orchestration itself, and the clearest embodiment yet of the "graph-as-data stays alive... routing logic decides at runtime which subgraph fires" language already in `SKILL.md`'s "What this looks like in practice" section. The missing calibration and dev-time-loop discipline is exactly the gap this framework would flag if asked to harden the pattern for repeated production use rather than one-off tasks.
 
 ### Discipline-coverage across the ecosystem
 
-The disciplines named in `THE_CASE.md` (calibration, context-as-code, dev-time loop) plus the framework's additions (substrate-as-record, substrate-as-vocabulary, decline-when), tabulated against what each tool addresses:
+The disciplines named in `THE_CASE.md` (calibration, context-as-code, dev-time loop) plus the framework's additions (store-as-record, store-as-vocabulary, decline-when), tabulated against what each tool addresses:
 
-| | calibration | context-as-code as infra | dev-time loop | substrate-as-record | substrate-as-vocabulary | decline-when |
+| | calibration | context-as-code as infra | dev-time loop | store-as-record | store-as-vocabulary | decline-when |
 |---|---|---|---|---|---|---|
 | **DSPy** | yes (optimization-shaped) | implicit (signatures) | yes (compile) | no | no | no |
 | **LangGraph** | no | partial (prompts) | no | partial (memory) | no | no |
@@ -204,8 +204,8 @@ Three lines that hold up:
 
 > **"This is just LangGraph."** LangGraph is a runtime; this is a design pattern. You can execute a hybrid-loops graph in LangGraph if your graph is LLM-heavy; you'd use a thinner runtime if it isn't. The disciplines apply regardless of which runtime you pick.
 
-> **"This is just DSPy."** DSPy is the closest cousin and you've internalized a chunk of this already. Hybrid loops puts deterministic non-LLM blocks on equal footing with LLM modules (DSPy's are second-class), names calibration as ship-blocking rather than as one optimization signal, distinguishes runtime cycles from dev-time cycles, and treats substrate as a first-class role. Use DSPy to implement and tune the LLM blocks of a hybrid-loops graph.
+> **"This is just DSPy."** DSPy is the closest cousin and you've internalized a chunk of this already. Hybrid loops puts deterministic non-LLM blocks on equal footing with LLM modules (DSPy's are second-class), names calibration as ship-blocking rather than as one optimization signal, distinguishes runtime cycles from dev-time cycles, and treats store as a first-class role. Use DSPy to implement and tune the LLM blocks of a hybrid-loops graph.
 
-> **"pydantic and structured outputs already solved this."** Those tools implement *one* of the framework's disciplines (context-as-code constraint at LLM output). They don't tell you the rest (calibration, substrate audit, dev-time loop) or how to design the graph the LLM blocks live in. Different layers.
+> **"pydantic and structured outputs already solved this."** Those tools implement *one* of the framework's disciplines (context-as-code constraint at LLM output). They don't tell you the rest (calibration, store audit, dev-time loop) or how to design the graph the LLM blocks live in. Different layers.
 
 The shared move: acknowledge the overlap, then name what's still on the table.

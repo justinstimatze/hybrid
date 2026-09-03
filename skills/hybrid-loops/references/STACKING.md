@@ -72,7 +72,7 @@ A "finding" record, a "claim" record, an "entity" record — these should have s
 
 If a project family has *almost-canonical* shapes (claim records in one project, mechanism records in another, finding records in a third) but they're not aligned, a v1 of the hybrid pattern in that family would standardize the cross-cutting record shapes.
 
-### 2. MCP-first for substrate providers
+### 2. MCP-first for store providers
 
 If a loop's output is intended for another loop, expose it as MCP tools. This is the protocol that makes composition work at solo-developer scale. Hook-shaped loops (those that fire automatically on lifecycle events) need an MCP layer added if their output should compose with other loops.
 
