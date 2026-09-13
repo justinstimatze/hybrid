@@ -139,7 +139,7 @@ A deterministic verification step (typecheck, run tests) reduces how often these
 
 ### What hybrid loops do instead
 
-Hybrid loops don't collapse the algebra. The deterministic half is explicitly responsible for the consistency an LLM alone can't guarantee. The LLM supplies the fluency that pure determinism doesn't have. Per-block calibration is what tells you each block is earning its keep — see `THE_CASE.md` for the full disciplines argument.
+The deterministic half stays explicitly responsible for the consistency an LLM alone can't guarantee; the LLM supplies the fluency pure determinism doesn't have. Per-block calibration is what tells you each block is earning its keep — see `THE_CASE.md` for the full disciplines argument.
 
 ## Pairs: where primitives snap together
 

@@ -120,7 +120,7 @@ flowchart TB
 
 *Semantic verifier* (test suite, integration test, schema validator with examples): "does this code do what we wanted?" The tests themselves are *context-as-code* — an artifact encoding the intent the LLM is trying to satisfy. Tests can be written by a human (LLM-reads-spec-and-tests-and-code) or by the LLM as part of the same loop. Different answer to "where does intent come from."
 
-**Modern absorption.** In 2023 codegen-with-verification was often standalone — give an LLM a function signature, get back a function with tests, run the tests, iterate. By 2026 the pattern usually lives inside a [ReAct](#react--reason--act-with-tool-calls) loop where the test runner is one tool among many. The diagram above is the conceptually-clean version; in practice you'll see ReAct with a test-runner tool. The shape still matters as a teaching diagram — it makes the syntactic-vs-semantic distinction visible, and it shows the deterministic verifier is what makes the LLM's authoring trustworthy enough to ship.
+**Modern absorption.** In 2023 codegen-with-verification was often standalone — give an LLM a function signature, get back a function with tests, run the tests, iterate. By 2026 the pattern usually lives inside a [ReAct](#react--reason--act-with-tool-calls) loop where the test runner is one tool among many. The diagram above is the conceptually-clean version; in practice you'll see ReAct with a test-runner tool. The shape still matters as a teaching diagram: it makes the syntactic-vs-semantic distinction visible, and the deterministic verifier is what lets the LLM's authoring ship safely.
 
 **In the wild**: Aider's auto-test mode, Cursor's debug-with-tests workflow, the SWE-bench harness setup (agent + test suite per task), Claude Code with test-runner subagents. The TypeScript/Python type-checker tightens the loop in IDE coding-assist generally.
 
@@ -284,11 +284,56 @@ The runtime stays small (one or two cycles per user-facing decision); the dev lo
 
 **In the wild**: [Compound engineering](https://every.to/guides/compound-engineering) (Klaassen et al., Every.to). [Structured Prompt-Driven Development](https://martinfowler.com/articles/structured-prompt-driven/) (Patel/Sharif/Fowler, martinfowler.com). Game-AI playtesting → critique → patch → re-playtest pipelines. Post-incident-review loops in SRE generally (the SLI/SLO/error-budget framework is a calibration-shaped variant). Stope-style adversarial-panel-review pipelines.
 
+### Regenerable codebase
+
+A dev-time loop in which the maintained artifacts are laws, an enumerated boundary, a recorded corpus, and a decision record — and the code is regenerated from them rather than edited. It specializes the shape above: the store is executable (laws plus a conformance suite), and the runtime's own transcripts are the recorded corpus. Three verifier tiers instead of codegen-with-verification's two: syntactic (typecheck), semantic (property-based laws and a conformance suite), and behavioral (replay of recorded inputs against the previous version, diffed).
+
+```mermaid
+flowchart TB
+    classDef llm fill:#fff4d6,stroke:#b8860b,color:#000
+    classDef code fill:#d6e9ff,stroke:#1e6ab8,color:#000
+    classDef data fill:#e8e8e8,stroke:#666,color:#000
+
+    laws[(laws<br/>executable, property-based)]:::data
+    boundary[(boundary<br/>enumerated non-promises)]:::data
+    record[(decision record<br/>dated, supersedes chain)]:::data
+    gen["LLM: regenerate implementation"]:::llm
+    src[(generated source)]:::data
+    syn["code: typecheck"]:::code
+    sem["code: laws + conformance suite"]:::code
+    beh["code: replay corpus, diff vs previous version"]:::code
+    diffs[(difference list)]:::data
+    close["LLM: close each diff as impl / law / boundary"]:::llm
+    human["human: boundary move or law removal only"]:::code
+    corpus[(corpus<br/>recorded inputs + versioned outputs)]:::data
+    runtime["code: the product, in production"]:::code
+
+    laws --> gen
+    boundary --> gen
+    record --> gen
+    gen --> src --> syn --> sem --> beh
+    corpus --> beh
+    beh --> diffs --> close
+    close -. impl fix .-> gen
+    close -. law condition .-> laws
+    close -. boundary entry .-> boundary
+    close -. decision .-> record
+    close -. two decisions .-> human
+    src --> runtime
+    runtime -. records .-> corpus
+```
+
+Three things distinguish it from the dev-time critique loop above it. The generator never reads the corpus — the corpus is the exam, and property-based laws over generated inputs exist because the recorded corpus is finite and a model fits finite things well. Each difference closes with exactly one of three edits, and the corpus is never the thing edited; a stale input is retired by an appended event, never deleted. The checker is never the author: per-regeneration validation runs as a program, following Pnueli, Siegel, and Singerman's translation-validation rule. Where a judgment call can't be avoided, it goes to a different model family — Knight and Leveson's 1986 finding on correlated errors is why a same-family judge doesn't count as independent.
+
+**In the wild**: wesen's extracted kits (`go-go-golems`) are the closest instances. `oh-auth`'s `ports.go` defines nine typed interfaces — `Store[A]`, `ScopePolicy`, `PrincipalRevalidator`, `TokenService`, `AuditSink`, `SecretSource`, `Clock`, `LoginStarter`, `ClaimProvider` — behind an 82-line `transitions.go` of four pure validation predicates; a `store_conformance_test.go` runs one behavioral suite against both its in-memory and SQLite stores. `flowkit` states its law in the README (identity fixes the cache key, policy never alters it) and composes `Step` values with `Pipe2`/`Pipe3`/`Pipe4` and `Batched`. `optkit/space/lens.go` checks the three lens laws (get-put, put-get, put-put) in a thirty-line function. `tiny-idp` and `go-go-goja` each ship a store-conformance runner — `RunStoreSuite` and `RunStoreContract` respectively — that every store implementation must pass. Diffy and GitHub's Scientist are the behavioral verifier without a stored corpus: shadow traffic, diff, keep only mismatches.
+
+**Not yet seen in the wild**: a corpus recorded from use rather than authored (golden files in this ecosystem are authored snapshots, and property-based testing appears in only a couple of files across the surveyed repos), and a published boundary (the strongest statement found is a README line that public APIs may evolve before v1).
+
 ### Ambient meta-loop
 
 Most of this catalog assumes the *discoverable-tool* invocation model: an LLM in the primary loop notices that a situation calls for a capability, decides to invoke it, reads back the result. Tool calls work that way; MCP servers expose capabilities that way; most of the field's vocabulary is shaped around it. The cost is real — the primary LLM holds both the gate-of-noticing (when to invoke) and the reasoner (what to do with the result), and every additional capability competes for attention budget against the user's actual task.
 
-The *ambient* alternative inverts that load. A deterministic hook fires on a trigger the primary doesn't have to notice. A secondary evaluator — typically an LLM with its own separate context window, sometimes a purely deterministic computation — runs against the trigger's context. A deterministic condenser decides whether the result clears a threshold worth surfacing, and only the condensed output reaches the primary, often as a single paragraph injected at a specific seam (turn-start, file-write, post-response).
+The *ambient* alternative inverts that load: a deterministic hook fires on a trigger the primary doesn't have to notice. A secondary evaluator — typically an LLM with its own separate context window, sometimes a purely deterministic computation — runs against the trigger's context. A deterministic condenser decides whether the result clears a threshold worth surfacing, and only the condensed output reaches the primary, often as a single paragraph injected at a specific seam (turn-start, file-write, post-response).
 
 ```mermaid
 flowchart TB
@@ -503,6 +548,6 @@ When designing a hybrid loop:
 3. *Check the cycle closure* — every entry has at least one feedback edge. Where does yours close? At runtime (store accumulates) or at dev-time (transcripts critique-and-patch the runtime), or both?
 4. *Check what's not drawn* — calibration is implicit in every entry with an LLM block; metabolism is implicit in every entry with a store that grows.
 
-Treat these as starting positions. Most real projects end up as variants — substituting one block type, splitting a block into a sub-cycle, or composing two of these shapes (a runtime that's one shape, wrapped by a dev-time loop that's another).
+Treat these as starting positions: most real projects end up as variants — substituting one block type, splitting a block into a sub-cycle, or composing two of these shapes (a runtime that's one shape, wrapped by a dev-time loop that's another).
 
 For deeper unpacking of the algebra and how blocks compose, see `BUILDING_BLOCKS.md`. For the conceptual case behind the framework, see `THE_CASE.md`. For comparison with ecosystem tools that implement specific shapes (LangGraph, DSPy, Temporal, etc.), see `AGENT_FRAMEWORKS.md`.

@@ -2,7 +2,7 @@
 
 Multi-agent orchestration in 2026 — broadly construed to include parallel-session multiplexing where the human is the orchestrator, alongside genuinely autonomous multi-agent systems — has converged on four distinct shapes. Each elaborates calibration discipline differently because each is responding to a different failure mode. This doc names the four, shows where the framework's existing protocols already apply (sometimes in practitioners' vocabulary, sometimes not), and tracks where the framework currently lacks vocabulary.
 
-This is a vocabulary + research-notes doc, short of a full adoption guide — use it to recognize which shape a system is in, rather than to decide whether to build one. The picker table at the end is coarse.
+The doc is a vocabulary and research-notes reference, short of a full adoption guide — use it to recognize which shape a system is in, rather than to decide whether to build one. The picker table at the end is coarse.
 
 The observed pattern across all four: **each shape's calibration apparatus scales with how far it pushes the autonomy slider away from the human.** Shape 2 (human-as-attester) needs the least apparatus because the human IS the apparatus; shape 3 (LLM-pack-as-attester) needs watchdogs + escalation + per-pack adversarial verification; shape 4 (peer-network-as-attester) needs trust grades, attestation ledgers, anti-collusion topology. Noticed pattern across the four exemplars below, not proven law.
 
@@ -13,7 +13,7 @@ A complementary framing from Maggie Appleton's January 2026 essay on Gas Town �
 > "You are in charge of the autonomy slider, and depending on the complexity of the task at hand you can tune the amount of autonomy that you're willing to give up for that task."
 > — Karpathy, *Software in the era of AI*, YC AI Startup School, July 2025 (https://www.youtube.com/watch?v=LCEmiRjPEtQ)
 
-The four shapes below are stable design points along that slider, each with its own failure mode and its own engineered response.
+Each is a stable design point along that slider, with its own failure mode and its own engineered response.
 
 ---
 
@@ -210,7 +210,7 @@ Karpathy's framing names the design choice each shape implicitly makes:
 > "We can build augmentations or we can build agents and we kind of want to do a bit of both, but at this stage I would say working with fallible LLMs, it's less Iron Man robots and more Iron Man suits that you want to build... less like building flashy demos of autonomous agents and more building partial autonomy products. And these products have custom GUIs and UI/UX, and this is done so that the generation-verification loop of the human is very very fast."
 > — Karpathy, YC, July 2025
 
-The four shapes sit at different slider positions. The framework should make that slider explicit.
+Each shape sits at a different slider position. The framework should make that slider explicit.
 
 ### 3. Generation-verification loop velocity
 
@@ -233,7 +233,7 @@ This generalizes store-as-vocabulary (`EXAMPLES.md` coach template) from one pro
 
 ### 5. Compute-as-binding-constraint
 
-Three independent sources converging within ~30 days on compute as the new binding constraint:
+Three independent sources converged within about a month of each other:
 
 - **Karpathy (No Priors, Q1 2026):** *"You're not maximizing your subscription at least... it's not about flops, it's about tokens. So what is your token throughput and what token throughput do you command?"* Plus the explicit reframing: *"Is flop the thing that actually everyone cares about in the future?"*
 - **Yegge (Survival 3.0, Jan 2026):** the entire Survival Ratio is denominated in tokens-as-cognitive-cost.
@@ -261,7 +261,7 @@ Charity Majors (https://charity.wtf/, *AI enthusiasts are in a race against time
 
 > "There is no natural feedback loop connecting enthusiasts with skeptics... Designing feedback loops to help mend the gap in shared reality between the two groups is a fascinating organizational design problem."
 
-This is calibration discipline at the *organizational* level — distinct from the per-loop calibration the framework currently addresses. Add as a separate dimension of metabolism.
+Call this calibration discipline at the *organizational* level — distinct from the per-loop calibration the framework currently addresses. Add it as a separate dimension of metabolism.
 
 ### 8. Iron Man suit as the product-shape
 
@@ -300,7 +300,7 @@ Five postures the framework should keep distinct from:
 
 ## Systems this taxonomy reads onto but doesn't categorize
 
-The four shapes were named because each has a distinct calibration apparatus worth talking about. Several other production multi-agent systems in 2026 sit somewhere the taxonomy reads onto rather than picks out a new shape:
+Each shape was named because it carries a distinct calibration apparatus worth talking about. Several other production multi-agent systems in 2026 sit somewhere the taxonomy reads onto rather than picks out a new shape:
 
 - **Vertical-domain agent platforms** (Sierra is one named example, sierra.ai — a multi-vertical customer-experience agent platform; the broader category includes other domain-focused agent products in customer service, legal, healthcare, and research). Reads as **constrained-scope shape 3** — adversarial verification happens between the LLM and an escalation policy rather than pack-vs-pack, and tight domain scope substitutes for engineered-resilience-infrastructure depth.
 - **Compiled pipelines (DSPy, LangGraph, AutoGen).** Typed handoffs in a human-authored graph; the graph IS the orchestrator's decomposition, executed at runtime. Reads as **shape 2 with the graph as the human's design-time work**. Covered at the implementation-toolkit altitude in `AGENT_FRAMEWORKS.md`.
@@ -364,7 +364,7 @@ A useful epistemic practice for anyone applying this doc: when one of its claims
 | Simon Willison (synthesis posts, May–Jun 2026) | Synthesis observer; second-hand cites for Uber caps, trust-account framing | Distinct (but synthesist) |
 | Anthropic — Shihipar & Bidasaria, *A harness for every task: dynamic workflows in Claude Code* (blog, Jun 2 2026) | Substrate provider's own product announcement, cited above under Shape 1's "third path" update | Same org as #1 |
 
-**Two consolidations the doc carries, not one.**
+**This doc carries two consolidations.**
 
 The Anthropic-Karpathy ladder is named above. A second consolidation is the **YC / blog-circle cluster** that supplies most of the "what's new" findings: Charlie (YC S24), Karpathy (YC AI Startup School speaker, then No Priors podcast), Yegge (regular Discord-and-blog presence in the same ecosystem), Charity Majors (frequent Yegge-adjacent voice in the ops-blog circuit), Simon Willison (active citer of all of them). These sources don't share an employer, but they share a discourse — they cite each other, attend each other's events, podcast on each other's shows. The convergence findings (Agent UX, compute-as-binding-constraint, markdown-as-org-store) are real *within this cluster*; whether they generalize to multi-agent practice outside of US developer-tools Twitter is an open question this doc does not answer.
 
